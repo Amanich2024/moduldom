@@ -1,0 +1,2085 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Юлия и Юрий · дома</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Макет: одна колонка шириной телефона; карточки домов как листы проекта — фото, название, строка размеров моноширинным шрифтом, как подпись на чертеже */
+:root {
+  --bg: #EDEFEC;          /* светлый серо-зелёный, как пасмурное небо над участком */
+  --surface: #FFFFFF;
+  --ink: #1D2125;          /* графит фасада */
+  --muted: #5E666C;
+  --line: #D5D9D5;
+  --wood: #B4672C;         /* лиственница, тёплое дерево */
+  --wood-ink: #FFFFFF;
+  --wood-soft: #F3E3D4;
+  --ok: #2E7D4F;
+  --f-display: "Oswald", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  --f-body: "Onest", "Segoe UI", Roboto, system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --radius: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111416; --surface: #1B1F22; --ink: #E7E5E0; --muted: #9AA2A7; --line: #2C3236;
+    --wood: #D88B4C; --wood-ink: #1A1206; --wood-soft: #3A2A1C; --ok: #6CCB93;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111416; --surface: #1B1F22; --ink: #E7E5E0; --muted: #9AA2A7; --line: #2C3236;
+  --wood: #D88B4C; --wood-ink: #1A1206; --wood-soft: #3A2A1C; --ok: #6CCB93;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.app { max-width: 520px; margin: 0 auto; padding-inline: 16px; padding-block: calc(14px + env(safe-area-inset-top, 0px)) calc(104px + env(safe-area-inset-bottom, 0px)); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--wood); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+/* Шапка */
+.brand { display: flex; align-items: center; gap: 12px; padding-block: 6px 18px; }
+.mark { width: 44px; height: 44px; border-radius: 12px; background: var(--ink); display: grid; place-items: center; flex: 0 0 auto; }
+.mark svg { width: 28px; height: 28px; }
+.brand-name { font-family: var(--f-display); font-weight: 600; font-size: 21px; line-height: 1.1; letter-spacing: 0.01em; margin: 0; }
+.brand-sub { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 22px; }
+.fact { background: var(--surface); border-radius: 12px; padding: 10px 10px 9px; min-width: 0; }
+.fact b { display: block; font-family: var(--f-display); font-weight: 600; font-size: 22px; line-height: 1.1; }
+.fact span { display: block; font-size: 12px; line-height: 1.3; color: var(--muted); margin-top: 3px; }
+
+.section-title { font-family: var(--f-display); font-weight: 500; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+
+/* Каталог */
+.list { display: grid; gap: 16px; }
+.card { display: block; width: 100%; text-align: left; padding: 0; border: 0; background: var(--surface); border-radius: var(--radius); overflow: hidden; cursor: pointer; }
+.card-photo { position: relative; aspect-ratio: 4 / 3; max-width: 100%; background: var(--line); overflow: hidden; }
+.card-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.badge { position: absolute; left: 10px; top: 10px; background: rgba(17, 20, 22, 0.78); color: #fff; font-size: 12px; font-weight: 500; padding: 4px 9px; border-radius: 99px; }
+.card-body { padding: 12px 14px 14px; display: grid; gap: 6px; }
+.card-name { font-family: var(--f-display); font-weight: 600; font-size: 21px; line-height: 1.15; margin: 0; text-wrap: balance; }
+.dim { font-family: var(--f-mono); font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.dim::before, .dim::after { content: ""; height: 1px; background: currentColor; opacity: 0.5; flex: 0 0 14px; }
+.dim::after { flex: 1 1 auto; }
+.card-lead { margin: 0; font-size: 14px; color: var(--muted); }
+.card-more { justify-self: start; margin-top: 4px; font-weight: 600; font-size: 14px; color: var(--wood); }
+
+/* О компании */
+.about { margin-top: 28px; background: var(--surface); border-radius: var(--radius); padding: 16px; }
+.about h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0 0 10px; }
+.about ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.about li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; font-size: 14px; }
+.about li::before { content: ""; width: 10px; height: 10px; margin-top: 6px; border: 2px solid var(--wood); border-radius: 2px; }
+.channel { display: inline-flex; margin-top: 14px; font-weight: 600; font-size: 14px; color: var(--wood); text-decoration: none; }
+.demo-note { margin: 18px 0 0; font-size: 12px; color: var(--muted); text-align: center; }
+
+/* Страница дома */
+.topbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.back { display: inline-flex; align-items: center; gap: 6px; border: 0; background: var(--surface); border-radius: 99px; padding: 7px 14px 7px 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.gallery-wrap { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--line); }
+.gallery { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.gallery::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 100%; scroll-snap-align: start; aspect-ratio: 4 / 3; max-width: 100%; border: 0; padding: 0; background: transparent; cursor: zoom-in; }
+.slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.counter { position: absolute; right: 10px; bottom: 10px; background: rgba(17, 20, 22, 0.78); color: #fff; font-family: var(--f-mono); font-size: 12px; padding: 3px 8px; border-radius: 99px; }
+.thumbs { display: flex; gap: 6px; overflow-x: auto; padding-block: 8px 2px; scrollbar-width: none; }
+.thumbs::-webkit-scrollbar { display: none; }
+.thumb { flex: 0 0 56px; height: 42px; border-radius: 8px; overflow: hidden; border: 2px solid transparent; padding: 0; background: var(--line); cursor: pointer; opacity: 0.7; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb[aria-current="true"] { border-color: var(--wood); opacity: 1; }
+
+.house-head { margin: 16px 0 12px; display: grid; gap: 6px; }
+.house-head h1 { font-family: var(--f-display); font-weight: 600; font-size: 28px; line-height: 1.1; margin: 0; text-wrap: balance; }
+.specs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+.spec { background: var(--surface); padding: 10px 12px; min-width: 0; }
+.spec span { display: block; font-size: 12px; color: var(--muted); }
+.spec b { display: block; font-family: var(--f-mono); font-weight: 500; font-size: 15px; margin-top: 2px; overflow-wrap: anywhere; }
+.text p { margin: 0 0 12px; max-width: 65ch; }
+.quote { margin: 4px 0 16px; padding: 12px 14px; background: var(--wood-soft); border-radius: 12px; font-size: 15px; }
+.quote small { display: block; margin-top: 6px; font-size: 12px; color: var(--muted); }
+.block { background: var(--surface); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px; }
+.block h2 { font-family: var(--f-display); font-weight: 600; font-size: 18px; margin: 0 0 10px; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 15px; }
+.checks li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; }
+.checks li::before { content: "✓"; color: var(--wood); font-weight: 600; }
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.plan { border: 0; padding: 0; border-radius: 10px; overflow: hidden; background: #fff; cursor: zoom-in; aspect-ratio: 1 / 1; max-width: 100%; }
+.plan img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* Кнопка покупки */
+.buybar { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to top, var(--bg) 70%, transparent); }
+.buybar-inner { max-width: 520px; margin: 0 auto; padding-inline: 0; }
+.buy { width: 100%; border: 0; border-radius: 14px; padding: 15px 18px; background: var(--wood); color: var(--wood-ink); font-weight: 600; font-size: 17px; cursor: pointer; }
+.buy:active { transform: translateY(1px); }
+
+/* Экран покупки */
+.done { min-height: 70vh; display: grid; place-items: center; text-align: center; padding-top: 24px; }
+.done-inner { display: grid; gap: 14px; justify-items: center; }
+.seal { width: 112px; height: 112px; border-radius: 50%; background: var(--wood); display: grid; place-items: center; }
+.seal svg { width: 60px; height: 60px; }
+.seal path { stroke: var(--wood-ink); stroke-width: 7; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 80; stroke-dashoffset: 0; animation: draw 0.6s ease-out both; }
+@keyframes draw { from { stroke-dashoffset: 80; } to { stroke-dashoffset: 0; } }
+.done h1 { font-family: var(--f-display); font-weight: 600; font-size: 34px; line-height: 1.1; margin: 4px 0 0; text-wrap: balance; }
+.done p { margin: 0; color: var(--muted); max-width: 32ch; }
+.done-house { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; align-items: center; background: var(--surface); border-radius: 12px; padding: 8px 12px 8px 8px; text-align: left; width: min(100%, 360px); }
+.done-house img { width: 64px; height: 48px; object-fit: cover; border-radius: 8px; display: block; }
+.done-house b { font-family: var(--f-display); font-weight: 500; font-size: 16px; line-height: 1.2; }
+.ghost { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 11px 18px; font-weight: 600; cursor: pointer; }
+.confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.confetti i { position: absolute; top: -12px; width: 8px; height: 12px; border-radius: 2px; opacity: 0.9; animation: fall linear forwards; }
+@keyframes fall { to { transform: translateY(110vh) rotate(540deg); } }
+
+/* Просмотр фото */
+.viewer { position: fixed; inset: 0; background: rgba(8, 10, 11, 0.94); display: grid; place-items: center; padding: 16px; z-index: 10; }
+.viewer img { max-width: 100%; max-height: 86vh; object-fit: contain; border-radius: 8px; }
+.viewer button { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); right: 12px; border: 0; background: rgba(255,255,255,0.14); color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 22px; cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+  .seal path { animation: none; }
+  .confetti { display: none; }
+}
+
+/* Добавлено: таблица цен и пометки */
+.prices { display: grid; gap: 0; margin: 0; }
+.prices div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.prices div:last-child { border-bottom: 0; }
+.prices b { font-family: var(--f-mono); font-weight: 500; font-size: 14px; white-space: nowrap; }
+.block-note { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+.count { color: var(--muted); }
+.tg-link { margin: 6px 0 0; text-align: center; }
+
+/* Конструктор «Собрать свой дом» */
+.build-cta { display: grid; grid-template-columns: 128px minmax(0, 1fr) 16px; gap: 12px; align-items: center; width: 100%; text-align: left; border: 0; background: var(--surface); border-radius: var(--radius); padding: 10px 12px 10px 10px; margin-bottom: 22px; cursor: pointer; }
+.cta-pic { display: block; border-radius: 9px; overflow: hidden; aspect-ratio: 360 / 210; }
+.cta-pic svg { display: block; width: 100%; height: 100%; }
+.cta-text b { display: block; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.15; }
+.cta-text span { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
+.cta-arrow { color: var(--wood); font-weight: 600; font-size: 18px; }
+.b-head h1 { font-family: var(--f-display); font-weight: 600; font-size: 28px; line-height: 1.1; margin: 2px 0 4px; }
+.b-head p { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
+.b-preview { position: sticky; top: 0; z-index: 3; background: var(--bg); margin: 0 -16px; padding: 8px 16px 10px; }
+.b-canvas { border-radius: 12px; overflow: hidden; aspect-ratio: 360 / 210; background: #F7F5F0; }
+.b-canvas svg { display: block; width: 100%; height: 100%; }
+.b-bar { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.b-seg { display: inline-flex; flex: 0 0 auto; background: var(--surface); border-radius: 99px; padding: 3px; }
+.b-seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 99px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; }
+.b-seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.b-meta { min-width: 0; font-family: var(--f-mono); font-size: 11.5px; line-height: 1.35; color: var(--muted); }
+.b-group { margin: 16px 0 0; }
+.b-group h2 { font-family: var(--f-display); font-weight: 500; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 8px 13px; font-size: 14px; line-height: 1.25; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.swatches { display: flex; flex-wrap: wrap; gap: 6px 4px; }
+.swatch { display: grid; justify-items: center; gap: 6px; border: 0; background: transparent; padding: 4px 0; width: 82px; cursor: pointer; font-size: 12px; line-height: 1.25; color: var(--muted); text-align: center; }
+.swatch i { width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, 0.18); }
+.swatch[aria-pressed="true"] i { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--wood); }
+.swatch[aria-pressed="true"] span { color: var(--ink); font-weight: 600; }
+.toggles { display: grid; background: var(--surface); border-radius: 12px; padding: 2px 14px; }
+.toggle { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); cursor: pointer; font-size: 15px; }
+.toggle:last-child { border-bottom: 0; }
+.toggle input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.toggle .sw { width: 40px; height: 24px; border-radius: 99px; background: var(--line); position: relative; transition: background 0.15s; }
+.toggle .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.15s; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
+.toggle input:checked + .sw { background: var(--wood); }
+.toggle input:checked + .sw::after { transform: translateX(16px); }
+.toggle input:focus-visible + .sw { outline: 2px solid var(--wood); outline-offset: 2px; }
+.toggle.off { opacity: 0.45; cursor: default; }
+.b-summary { margin-top: 20px; }
+.b-specs div { display: flex; justify-content: space-between; gap: 14px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.b-specs div:last-child { border-bottom: 0; }
+.b-specs span { color: var(--muted); flex: 0 0 auto; }
+.b-specs b { font-weight: 500; text-align: right; }
+.b-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.b-actions button { width: 100%; min-height: 48px; line-height: 1.2; }
+.viewer { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.viewer p { color: #fff; font-size: 14px; text-align: center; margin: 12px 0 0; max-width: 34ch; opacity: 0.85; }
+.toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: rgba(17, 20, 22, 0.9); color: #fff; padding: 9px 16px; border-radius: 99px; font-size: 14px; z-index: 20; white-space: nowrap; }
+.slider { margin: 12px 0 2px; }
+.slider input[type=range] { width: 100%; accent-color: var(--wood); height: 28px; margin: 2px 0; }
+.sl-cap { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.sl-lbl { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); }
+.sl-lbl b { color: var(--ink); font-weight: 600; }
+.sl-ends { font-size: 12px; }
+.sl-note { margin: 10px 0 0; font-size: 13px; color: var(--muted); }
+.b-edit { margin-top: 12px; width: 100%; }
+.b-canvas { cursor: pointer; }
+/* Редактор плана */
+body.pe-open { overflow: hidden; }
+.pe { position: fixed; inset: 0; z-index: 60; background: var(--bg); display: flex; flex-direction: column; }
+.pe-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.pe-top b { font-size: 16px; font-weight: 600; }
+.pe-reset { border: 0; background: none; color: var(--muted); font: inherit; font-size: 15px; padding: 6px 2px; cursor: pointer; }
+.pe-done { border: 0; background: var(--ink); color: var(--bg); border-radius: 99px; padding: 8px 16px; font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; }
+.pe-canvas { flex: 0 0 auto; margin: 10px 10px 0; background: #F7F5F0; border-radius: 12px; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.pe-canvas svg { display: block; width: 100%; height: auto; max-height: 64vh; }
+.pe-panel { flex: 1 1 auto; overflow: auto; padding: 10px; }
+.pe-card { background: var(--surface); border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.45; }
+.pe-card p { margin: 6px 0 0; color: var(--muted); }
+.pe-card p:first-child { margin-top: 0; }
+.pe-h { display: block; font-size: 15px; margin-bottom: 8px; }
+.pe-dot { color: #E07A2E; }
+.pe-gab { font-family: var(--f-mono); font-size: 12px; }
+.pe-chips .chip { min-width: 74px; }
+.pe-del { margin-top: 10px; width: 100%; }
+.pe-foot { flex: 0 0 auto; padding: 0 10px calc(10px + env(safe-area-inset-bottom)); }
+.pe-mat { width: 100%; }
+.swatch { position: relative; }
+.sw-pick { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
+.done-pic { display: block; width: 100%; aspect-ratio: 360 / 210; border-radius: 10px; overflow: hidden; }
+.done-pic svg { display: block; width: 100%; height: 100%; }
+.b-lead { display: block; width: 100%; margin-top: 14px; border: 0; border-radius: 12px; padding: 14px 18px; background: var(--wood); color: #fff; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+.b-lead:active { filter: brightness(0.95); }
+.b-bar { flex-wrap: wrap; row-gap: 6px; }
+.b-meta { flex: 1 1 150px; }
+.b-seg button { padding: 6px 10px; }
+@media (prefers-reduced-motion: reduce) { .toggle .sw, .toggle .sw::after { transition: none; } }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="buybar" id="buybar" hidden><div class="buybar-inner"><button class="buy" id="buy" type="button">Купить</button></div></div>
+<div class="viewer" id="viewer" hidden><img id="viewer-img" alt=""><p id="viewer-hint" hidden></p><button type="button" id="viewer-close" aria-label="Закрыть">×</button></div>
+
+<script>
+const src = (k) => "img/" + k + ".jpg";
+
+/* База домов. Всё взято из канала t.me/modul_doma_SPb; даты — даты постов. */
+const HOUSES = [
+  {
+    id: "dom-66",
+    badge: "Угловая терраса",
+    name: "Дом 66 м² с угловой террасой",
+    dim: "66 м² вместе с террасой",
+    lead: "Две спальни, кухня-гостиная с печью и второй выход на террасу. Сдан в мае 2026.",
+    photos: ["h66-1","h66-2","h66-3","h66-4","h66-5","h66-6","h66-7","h66-8"],
+    plans: ["h66-plan"],
+    specs: [["Площадь","66 м² с террасой"],["Спальни","2"],["Терраса","угловая, крытая"],["Фасад","графит + рыжее дерево"]],
+    text: [
+      "Типовой проект с небольшими дополнениями. Основной вход перенесли с террасы на боковую сторону дома, там сделали крыльцо. Добавился второй выход из кухни-гостиной на террасу.",
+      "Дом собирали в цеху, 1 мая установили на участке, 2 мая сдали заказчику."
+    ],
+    quote: ["Ждём манипулятор. Завтра установка этого красавчика! Дом 66м2 с террасой будет установлен на участке клиента.", "из канала, 30 апреля"],
+    inside: ["Две спальни","Кухня-гостиная с дровяной печью","Санузел с душевой, тёмный камень на стенах","Система водоочистки","Угловая крытая терраса с резным ограждением","Одна комната в тёмной отделке"]
+  },
+  {
+    id: "dom-48",
+    badge: "Самый популярный",
+    name: "Дом 48 м² с угловой террасой",
+    dim: "48 м² + терраса 12,5 м²",
+    lead: "Две спальни, кухня-столовая, гостиная и крытая терраса.",
+    photos: ["h48-1","h48-2","h48-3","h48-4","h48-5","h48-6","h48-7","h48-8","h48-9","h48-10"],
+    plans: ["h48-plan"],
+    specs: [["Тёплый контур","48 м²"],["Терраса","12,5 м², крытая"],["Спальни","2"],["Фасад","графитовые панели"]],
+    text: [
+      "Компактный дом с крытой угловой террасой. Внутри две спальни, кухня-столовая, гостиная и санузел с душевой.",
+      "Заказчики прислали фото уже после заселения, поэтому здесь видно, как дом выглядит с мебелью, а не пустым."
+    ],
+    quote: ["Очень много запросов по этому проекту. Всем нужна планировка, поэтому решила отдельно ещё раз показать планировку и рендер.", "из канала, 31 июля"],
+    inside: ["Крытая угловая терраса со ступенями и ограждением","Кухня-столовая","Гостиная с местом под диван и ТВ","Две спальни","Санузел с душевой и бойлером","Стены и потолок в светлой деревянной отделке"]
+  },
+  {
+    id: "dom-69",
+    badge: "Три спальни",
+    name: "Зимний дом 69 м² с тремя спальнями",
+    dim: "54 м² + терраса 15 м²",
+    lead: "Спальни для родителей, бабушки с дедушкой и детей, кухня-гостиная на 4–6 человек.",
+    photos: ["h72-1","h72-2","h72-3","h72-4","h72-5"],
+    plans: ["h72-render","h72-plan"],
+    specs: [["Общая площадь","69 м²"],["Тёплый контур","54 м²"],["Терраса","15 м², крытая"],["Спальни","3"]],
+    text: [
+      "Обычно в проектах компании две спальни, а здесь заказчики попросили три: для родителей, для бабушки с дедушкой и детскую. Напротив санузла спальня.",
+      "При этом осталась немаленькая кухня-гостиная, где свободно разместятся 4–6 человек. Большая терраса под навесом — отдельная обеденная зона на улице.",
+      "Дополнительно в этом проекте: большая лестница на террасу на сваях, второй выход из дома на террасу, крыльцо, цоколь, водосточная система."
+    ],
+    quote: ["Важно знаете что? Что они полностью придуманы нашими заказчиками. Планировки и цветовые решения — это всё часть техзадания. Мы лишь исполнители ваших мечт!", "из канала, 14 июля"],
+    inside: ["Три изолированные спальни","Кухня-гостиная на 4–6 человек","Санузел","Большая крытая терраса со ступенями и подсветкой","Тёмный фасад и тёплая доска под навесом","Дровяная печь","Зимний вариант — для жизни круглый год"]
+  },
+  {
+    id: "dom-76",
+    badge: "Большая терраса",
+    name: "Зимний дом 76,5 м² с террасой 22,5 м²",
+    dim: "54 м² + терраса 22,5 м²",
+    lead: "Две спальни, кухня-гостиная с печью-камином, большая прихожая и вход в санузел из прихожей.",
+    photos: ["h76-1","h76-2","h76-3","h76-4","h76-5"],
+    plans: ["h76-render","h76-plan"],
+    specs: [["Тёплый контур","6×9 м, 54 м²"],["Терраса","2,5×9 м, 22,5 м²"],["Спальни","2"],["Цена в канале","3,8 млн ₽, типовая"]],
+    text: [
+      "Большая прихожая, где можно организовать места для хранения. Вход в санузел из прихожей — не надо с улицы идти в туалет через весь дом.",
+      "Большая кухня-гостиная с печью-камином, две полноценные спальни и терраса во всю длину дома.",
+      "Срок изготовления 4–5 недель «под ключ», установка и монтаж 1–2 дня. Мебель и техника заказчика приехали на участок прямо в доме."
+    ],
+    quote: ["Дом на месте ✅. В доме уже много личных вещей заказчика. Осталось только собрать и можно жить", "из канала, 8 августа"],
+    inside: ["Две спальни","Кухня-гостиная с печью-камином","Большая прихожая с местами хранения","Санузел с душем, тёмный камень на стенах","Отделка тёмной вагонкой, светлый пол","Терраса вдоль всего дома"],
+    prices: {
+      title: "Цены из канала, август 2026",
+      rows: [["Дом в типовой комплектации","3,8 млн ₽"],["Электрика","от 160 тыс. ₽"],["Сантехнические работы","от 120 тыс. ₽"],["Фундамент","от 120 тыс. ₽"],["Доставка и установка до 100 км","от 170 тыс. ₽"]],
+      note: "Точный расчёт делается под клиента."
+    }
+  },
+  {
+    id: "dom-48s",
+    badge: "Одна спальня",
+    name: "Дом 48 м² с одной спальней",
+    dim: "48 м², без террасы",
+    lead: "Одна спальня и просторная кухня-гостиная. Установлен в марте 2026.",
+    photos: ["h48s-1"],
+    plans: ["h48s-plan"],
+    specs: [["Площадь","48 м²"],["Спальни","1"],["Печь","дровяная «Бахта 2»"],["Фасад","рыжее дерево + графит"]],
+    text: [
+      "Проект с одной спальней и большой кухней-гостиной. Кроме них в доме санузел, прихожая и гардеробная.",
+      "Отопление — дровяная печь «Бахта 2» с большой стеклянной дверкой, как у камина. Её мощности хватает на весь дом."
+    ],
+    quote: ["Ну а мы мчим на установку дома 48 кв м. Скоро покажем вам всякого интересного", "из канала, 10 марта"],
+    inside: ["Спальня","Просторная кухня-гостиная","Санузел","Гардеробная и прихожая","Дровяная печь «Бахта 2»"]
+  },
+  {
+    id: "ugol-banya",
+    badge: "С парной",
+    name: "Угловой дом с баней",
+    dim: "Г-образный дом · спальня + парная",
+    lead: "Изолированная спальня, кухня-гостиная, большой санузел и своя парная.",
+    photos: ["hug-1","hug-2","hug-3","hug-4","hug-5","hug-6"],
+    plans: ["hug-plan"],
+    specs: [["Форма","угловая, Г-образная"],["Спальня","изолированная"],["Парная","есть"],["Фасад","графит + дерево"]],
+    text: [
+      "Дом из двух модулей, поставленных углом. В одном крыле изолированная спальня и кухня-гостиная, в другом большой санузел и парная.",
+      "Фасад собран из графитовых панелей и тёплого дерева, окна высокие. Подходит для дачной жизни: баня прямо в доме."
+    ],
+    quote: ["Один из самых любимых проектов — угловой дом с баней. Идеально для дачной жизни.", "из канала, 18 августа"],
+    inside: ["Изолированная спальня","Кухня-гостиная","Большой санузел с душевой и бойлером","Парная с печью и полками","Отделка вагонкой","Высокие окна"]
+  },
+  {
+    id: "minidom-banya",
+    badge: "Минидом + баня",
+    name: "Угловой комплекс «Минидом с баней»",
+    dim: "2 модуля углом · 2 террасы",
+    lead: "Дачный домик с русской парной в Карелии: спальня, кухня, санузел и техпомещение.",
+    photos: ["hmb-1","hmb-2","hmb-3","hmb-4","hmb-5","hmb-6","hmb-7","hmb-8"],
+    plans: ["hmb-plan"],
+    specs: [["Модули","2, поставлены Г-образно"],["Террасы","открытая и крытая"],["Парная","русская"],["Сборка","3 недели + монтаж 1–2 дня"]],
+    text: [
+      "Два модуля, установленных буквой Г. Две террасы — открытая и крытая — и два входа. Есть техпомещение, где стоит всё оборудование, полноценный санузел и русская парная с проливными полами.",
+      "Идеально для небольшой семьи в качестве дачного дома, под аренду или для баз отдыха. Проект обсуждали с заказчицей полгода, домик поставили в июне 2025."
+    ],
+    quote: ["В домике очень тепло. Парная прогрелась до 50° меньше чем за час. И с открытой дверью в парную печь прекрасно обогревает минидом.", "из канала, 29 декабря 2025"],
+    inside: ["Спальня с большой кроватью","Кухня с обеденным столом","Декоративная перегородка","Санузел с душевой кабиной","Русская парная с проливными полами","Техпомещение: бойлер, гидробак, стиральная машина"]
+  },
+  {
+    id: "dom-39",
+    badge: "С хозблоком",
+    name: "Дачный дом 3×9 м с хозблоком",
+    dim: "3×9 м · дом + большой хозблок",
+    lead: "Кухня, санузел с душем и печь в доме, отдельный вход в продуманный хозблок.",
+    photos: ["h39-1","h39-2","h39-3","h39-4"],
+    plans: [],
+    specs: [["Размер","3×9 м"],["Хозблок","большой, свой вход"],["Отопление","дровяная печь"],["Фасад","коричневый + графит"]],
+    text: [
+      "Модульный дачный дом с большим хозблоком. В доме кухня с духовкой, посудомойкой и холодильником, печь, санузел с душем и местом под стиральную машину.",
+      "В хозблоке откидной столик, где заряжаются аккумуляторы садовой техники и весной стоит рассада. В углу стеллаж: нижний отсек под крупную технику, сверху что-то поменьше. Справа система очистки воды и настенное хранение лопат и грабель."
+    ],
+    quote: ["Очень продуманный хозблок получился 👍", "из канала, 27 августа"],
+    inside: ["Кухня с духовкой и посудомойкой","Дровяная печь","Санузел с душем","Место под стиральную машину и водоочистку","Хозблок со стеллажом и откидным столиком","Крыльцо с пандусом"]
+  },
+  {
+    id: "vyborg",
+    badge: "Год спустя",
+    name: "Светлый дом в Выборгском районе",
+    dim: "дом через год после сдачи",
+    lead: "Как дом выглядит спустя год: печь, панорамные окна и новая кухня владельцев.",
+    photos: ["hvyb-1","hvyb-2","hvyb-3","hvyb-4","hvyb-5"],
+    plans: [],
+    specs: [["Где","Выборгский район"],["Возраст","1 год"],["Отопление","дровяная печь"],["Отделка","светлая вагонка"]],
+    text: [
+      "Фото от владельцев ровно через год после установки. Дом радует уютом и теплом, а за это время в нём появилась красивая и функциональная кухонная зона.",
+      "Внутри светлая вагонка, серый пол, печь у каменной стены и большие окна и двери в сад."
+    ],
+    quote: ["Кто помнит этот чудесный светлый дом? Ему ровно год! Он радует своих владельцев уютом и теплом.", "из канала, 16 сентября"],
+    inside: ["Просторная гостиная","Дровяная печь у каменной стены","Белая кухня с подсветкой","Панорамные окна и дверь в сад","Обеденная зона"]
+  },
+  {
+    id: "banya",
+    badge: "Баня",
+    name: "Модульная баня",
+    dim: "отдельная баня на участке",
+    lead: "Комната отдыха с печью-камином, моечная и парная со стеклянной дверью.",
+    photos: ["hbanya-1","hbanya-2","hbanya-3","hbanya-4","hbanya-5","hbanya-6"],
+    plans: [],
+    specs: [["Тип","модульная баня"],["Парная","печь с баком, полки"],["Отдых","печь-камин"],["Фасад","тёмное дерево + графит"]],
+    text: [
+      "Готовая баня-модуль, которую привозят и ставят на участке. Внутри комната отдыха с печью-камином, моечная и парная за стеклянной дверью.",
+      "Отделка светлой вагонкой, в парной полки углом и печь с баком."
+    ],
+    quote: ["Банька дома ✅ Поздравляем наших заказчиков и желаем им здоровья и легкого пара!", "из канала, 13 августа"],
+    inside: ["Комната отдыха с печью-камином","Моечная","Парная со стеклянной дверью","Полки углом","Печь с баком"]
+  },
+  {
+    id: "minidom-20",
+    badge: "Студия 20 м²",
+    name: "Минидом 20 м²",
+    dim: "20 м² · для 1–2 человек",
+    lead: "Маленький тёплый домик с кухней, спальным местом и санузлом. Можно перевезти на другой участок.",
+    photos: ["hmini-1","hmini-2","hmini-3","hmini-4"],
+    plans: [],
+    specs: [["Площадь","20 м²"],["Для кого","1–2 человека"],["Кровля","почти плоская"],["Есть","кухня и санузел"]],
+    text: [
+      "Один из первых заказов: заказчице нужен был очень маленький, но тёплый домик с кухней, удобным спальным местом и санузлом, который при необходимости можно перевезти.",
+      "Сделали почти плоскую кровлю и лестницу на крышу. Строили в два этапа: зимой холодный контур, ближе к лету утепление и отделка. На базе этого домика появился типовой проект минидома 20 м²."
+    ],
+    quote: ["Для 1-2 человек — отличное начало дачной жизни. Доступно по деньгам, очень выгодно и экономично в эксплуатации и содержании.", "из канала, 5 марта"],
+    inside: ["Кухонная зона","Спальное место","Санузел","Крытое крыльцо","Лестница на крышу"]
+  },
+
+
+];
+
+/* ===== Конструктор «Собрать свой дом» ===== */
+const B_SIZES = [
+  { id: "3x6", name: "Минидом 3×6", L: 6, W: 3 },
+  { id: "3x9", name: "Дачный 3×9", L: 9, W: 3 },
+  { id: "6x6", name: "Дом 6×6", L: 6, W: 6 },
+  { id: "6x8", name: "Дом 6×8", L: 8, W: 6 },
+  { id: "6x9", name: "Дом 6×9", L: 9, W: 6 }
+];
+const D = (o, c, a, b, side, hinge = "a", ext = false) => ({ o, c, a, b, side, hinge, ext });
+const R = (t, x, y, w, h) => ({ t, x, y, w, h });
+/* Дверь по центру m (ширину проёма потом задаёт выбор 69/79/89, входная — 90) */
+const dc = (o, c, m, side, hinge = "a", ext = false) => D(o, c, m - 0.4, m + 0.4, side, hinge, ext);
+/* Стена, которую можно двигать пальцем. o: "v" — поперёк дома (координата x), "h" — вдоль дома (координата y).
+   min/max — числа или функции от других стен (p). Все размеры — по осям стен, м. */
+const P = (k, o, min, max, def) => ({ k, o, min, max, def });
+/* seam — стык модулей: "h" — вдоль дома (y = 3), "v" — поперёк (x = 3, только 6×6), null — один модуль.
+   end — вариант для торцевой террасы: вход в торце, с террасы в прихожую. */
+const studio = (L, amin, amax, adef) => {
+  const params = [P("a", "v", amin, amax, adef), P("s", "h", 1.1, 1.8, 1.4)];
+  const rooms = (p) => [R("kl", 0, 0, p.a, 3), R("wc", p.a, 0, L - p.a, p.s), R("hall", p.a, p.s, L - p.a, 3 - p.s)];
+  const inner = (p) => [dc("h", p.s, (p.a + L) / 2, -1, "a"), dc("v", p.a, (p.s + 3) / 2, -1, "b")];
+  return { id: "studio", name: "Студия", seam: null, params,
+    build: (p) => ({ rooms: rooms(p), doors: [dc("h", 3, (p.a + L) / 2, -1, "b", true)].concat(inner(p)) }),
+    end: { params, build: (p) => ({ rooms: rooms(p), doors: [dc("v", L, (p.s + 3) / 2, -1, "b", true)].concat(inner(p)) }) } };
+};
+const S = P("s", "h", 1.1, 1.8, 1.4);   // стенка между санузлом и прихожей в доме 3 м
+const S0 = Object.assign({}, S, { hide: true });   // то же, но без ручки (прихожая посередине — там тесно)
+const T = P("t", "h", 4.2, 4.8, 4.4);   // стенка между прихожей и санузлом/кладовой у торца (передний модуль)
+const B_LAYOUTS = {
+  "3x6": [studio(6, 3.4, 4.6, 4.2)],
+  "3x9": [
+    studio(9, 5.6, 7.2, 6.6),
+    { id: "bed1", name: "Спальня + кухня-гостиная", seam: null,
+      params: [P("v", "v", 2.6, (p) => p.u - 1.4, 4.2), P("u", "v", (p) => p.v + 1.4, 6.6, 5.8), S0],
+      build: (p) => ({
+        rooms: [R("kl", 0, 0, p.v, 3), R("wc", p.v, 0, p.u - p.v, p.s), R("hall", p.v, p.s, p.u - p.v, 3 - p.s), R("bed", p.u, 0, 9 - p.u, 3)],
+        doors: [dc("h", 3, (p.v + p.u) / 2, -1, "b", true), dc("h", p.s, p.v + 0.55, -1, "a"), dc("v", p.v, (p.s + 3) / 2, -1, "b"), dc("v", p.u, (p.s + 3) / 2, 1, "b")] }),
+      end: {
+        params: [P("v", "v", 2.4, (p) => p.u - 2.6, 3.2), P("u", "v", (p) => p.v + 2.6, 7.6, 7.4), S],
+        build: (p) => ({
+          rooms: [R("bed", 0, 0, p.v, 3), R("kl", p.v, 0, p.u - p.v, 3), R("wc", p.u, 0, 9 - p.u, p.s), R("hall", p.u, p.s, 9 - p.u, 3 - p.s)],
+          doors: [dc("v", 9, (p.s + 3) / 2, -1, "b", true), dc("h", p.s, (p.u + 9) / 2, -1, "a"), dc("v", p.u, (p.s + 3) / 2, -1, "b"), dc("v", p.v, 2.15, -1, "b")] }) } },
+    { id: "shed", name: "С хозблоком", seam: null,
+      params: [P("v", "v", 2.6, (p) => p.u - 1.4, 4.6), P("u", "v", (p) => p.v + 1.4, 6.6, 6.2), S0],
+      build: (p) => ({
+        rooms: [R("kl", 0, 0, p.v, 3), R("wc", p.v, 0, p.u - p.v, p.s), R("hall", p.v, p.s, p.u - p.v, 3 - p.s), R("shed", p.u, 0, 9 - p.u, 3)],
+        doors: [dc("h", 3, (p.v + p.u) / 2, -1, "b", true), dc("h", p.s, p.v + 0.55, -1, "a"), dc("v", p.v, (p.s + 3) / 2, -1, "b"), dc("h", 3, (p.u + 9) / 2, -1, "b", true)] }),
+      end: {
+        params: [P("v", "v", 2.0, (p) => p.u - 2.6, 2.8), P("u", "v", (p) => p.v + 2.6, 7.6, 7.4), S],
+        build: (p) => ({
+          rooms: [R("shed", 0, 0, p.v, 3), R("kl", p.v, 0, p.u - p.v, 3), R("wc", p.u, 0, 9 - p.u, p.s), R("hall", p.u, p.s, 9 - p.u, 3 - p.s)],
+          doors: [dc("v", 9, (p.s + 3) / 2, -1, "b", true), dc("h", p.s, (p.u + 9) / 2, -1, "a"), dc("v", p.u, (p.s + 3) / 2, -1, "b"), dc("h", 3, p.v / 2, -1, "b", true)] }) } },
+    { id: "sauna", name: "С парной", seam: null,
+      params: [P("v", "v", 2.6, (p) => p.u - 1.4, 4.4), P("u", "v", (p) => p.v + 1.4, (p) => p.w - 1.2, 6.0), P("w", "v", (p) => p.u + 1.2, 7.6, 7.4), S0],
+      build: (p) => ({
+        rooms: [R("kl", 0, 0, p.v, 3), R("wc", p.v, 0, p.u - p.v, p.s), R("hall", p.v, p.s, p.u - p.v, 3 - p.s), R("wash", p.u, 0, p.w - p.u, 3), R("sauna", p.w, 0, 9 - p.w, 3)],
+        doors: [dc("h", 3, (p.v + p.u) / 2, -1, "b", true), dc("h", p.s, p.v + 0.55, -1, "a"), dc("v", p.v, (p.s + 3) / 2, -1, "b"), dc("v", p.u, (p.s + 3) / 2, 1, "b"), dc("v", p.w, 0.85, 1, "a")] }),
+      end: {
+        params: [P("a", "v", 1.4, (p) => p.b - 1.2, 1.6), P("b", "v", (p) => p.a + 1.2, (p) => p.u - 2.6, 3.0), P("u", "v", (p) => p.b + 2.6, 7.6, 7.4), S],
+        build: (p) => ({
+          rooms: [R("sauna", 0, 0, p.a, 3), R("wash", p.a, 0, p.b - p.a, 3), R("kl", p.b, 0, p.u - p.b, 3), R("wc", p.u, 0, 9 - p.u, p.s), R("hall", p.u, p.s, 9 - p.u, 3 - p.s)],
+          doors: [dc("v", 9, (p.s + 3) / 2, -1, "b", true), dc("h", p.s, (p.u + 9) / 2, -1, "a"), dc("v", p.u, (p.s + 3) / 2, -1, "b"), dc("v", p.b, 2.15, -1, "b"), dc("v", p.a, 0.85, -1, "a")] }) } }
+  ],
+  "6x6": [
+    /* 6×6, 1 спальня: модули вдоль (стык y = 3). Задний модуль — спальня и санузел, передний — кухня-гостиная и прихожая.
+       В спальню — из кухни-гостиной, в санузел и кухню — из прихожей */
+    { id: "bed1", name: "1 спальня", seam: "h",
+      params: [P("a", "v", 3.0, 4.8, 4.2), P("b", "v", 2.8, 4.6, 4.0)],
+      build: (p) => ({
+        rooms: [R("bed", 0, 0, p.a, 3), R("wc", p.a, 0, 6 - p.a, 3), R("kl", 0, 3, p.b, 3), R("hall", p.b, 3, 6 - p.b, 3)],
+        doors: [dc("h", 6, (p.b + 6) / 2, -1, "b", true), dc("h", 3, (Math.max(p.a, p.b) + 6) / 2, -1, "a"), dc("h", 3, Math.max(0.6, Math.min(p.a, p.b) - 1.5), -1, "b"), dc("v", p.b, 4.5, -1, "b")] }),
+      end: {
+        params: [P("a", "v", 3.0, 4.8, 4.2), P("b", "v", 2.8, 4.6, 4.0)],
+        build: (p) => ({
+          rooms: [R("bed", 0, 0, p.a, 3), R("wc", p.a, 0, 6 - p.a, 3), R("kl", 0, 3, p.b, 3), R("hall", p.b, 3, 6 - p.b, 3)],
+          doors: [dc("v", 6, 4.5, -1, "a", true), dc("h", 3, (Math.max(p.a, p.b) + 6) / 2, -1, "a"), dc("h", 3, Math.max(0.6, Math.min(p.a, p.b) - 1.5), -1, "b"), dc("v", p.b, 4.5, -1, "b")] }) } },
+    /* а здесь стык вдоль (y = 3): обе спальни в заднем модуле */
+    { id: "bed2", name: "2 спальни", seam: "h",
+      params: [P("v", "v", 2.4, (p) => Math.min(3.6, p.b - 1.1), 3.2), P("a", "v", 2.6, (p) => p.b - 1.2, 3.4), P("b", "v", (p) => Math.max(p.a + 1.2, p.v + 1.1), 4.8, 4.6)],
+      build: (p) => ({
+        rooms: [R("bed", 0, 0, p.v, 3), R("bed", p.v, 0, 6 - p.v, 3), R("kl", 0, 3, p.a, 3), R("hall", p.a, 3, p.b - p.a, 3), R("wc", p.b, 3, 6 - p.b, 3)],
+        doors: [dc("h", 6, (p.a + p.b) / 2, -1, "b", true), dc("h", 3, (Math.max(p.a, p.v) + p.b) / 2, -1, "a"), dc("h", 3, Math.min(p.v, p.a) / 2, -1, "a"), dc("v", p.b, 4.15, 1, "a"), dc("v", p.a, 4.8, -1, "b")] }),
+      end: {
+        params: [P("v", "v", 2.4, 3.6, 3.2), P("a", "v", 2.6, 4.0, 3.4), T],
+        build: (p) => ({
+          rooms: [R("bed", 0, 0, p.v, 3), R("bed", p.v, 0, 6 - p.v, 3), R("kl", 0, 3, p.a, 3), R("hall", p.a, 3, 6 - p.a, p.t - 3), R("wc", p.a, p.t, 6 - p.a, 6 - p.t)],
+          doors: [dc("v", 6, (3 + p.t) / 2, -1, "a", true), dc("h", 3, (Math.max(p.a, p.v) + 6) / 2, -1, "a"), dc("h", 3, Math.min(p.v, p.a) / 2, -1, "a"), dc("h", p.t, p.a + 0.65, 1, "a"), dc("v", p.a, (3 + p.t) / 2, -1, "b")] }) } }
+  ],
+  /* 6×8 и 6×9 — два модуля 3 м, стык вдоль дома посередине (y = 3): стену по стыку не двигаем */
+  "6x8": [
+    { id: "bed1", name: "1 спальня", seam: "h",
+      params: [P("a", "v", 1.8, 2.6, 2.2), P("v", "v", (p) => p.a + 2.4, 5.6, 5.4)],
+      build: (p) => ({
+        rooms: [R("wc", 0, 0, p.a, 3), R("hall", 0, 3, p.a, 3), R("kl", p.a, 0, p.v - p.a, 6), R("bed", p.v, 0, 8 - p.v, 6)],
+        doors: [dc("h", 6, p.a / 2, -1, "b", true), dc("h", 3, p.a / 2, -1, "a"), dc("v", p.a, 4.1, 1, "b"), dc("v", p.v, 1.6, 1, "a")] }),
+      endDoor: dc("v", 0, 5.15, 1, "b", true) },
+    { id: "bed2", name: "2 спальни", seam: "h",
+      params: [P("a", "v", 1.8, 2.6, 2.2), P("x", "v", (p) => p.a + 2.4, 5.6, 5.4)],
+      build: (p) => ({
+        rooms: [R("wc", 0, 0, p.a, 3), R("hall", 0, 3, p.a, 3), R("kl", p.a, 0, p.x - p.a, 6), R("bed", p.x, 0, 8 - p.x, 3), R("bed", p.x, 3, 8 - p.x, 3)],
+        doors: [dc("h", 6, p.a / 2, -1, "b", true), dc("h", 3, p.a / 2, -1, "a"), dc("v", p.a, 4.1, 1, "b"), dc("v", p.x, 2.0, 1, "a"), dc("v", p.x, 4.0, 1, "b")] }),
+      endDoor: dc("v", 0, 5.15, 1, "b", true) },
+    { id: "sauna", name: "1 спальня + парная", seam: "h",
+      params: [P("a", "v", 1.8, 2.6, 2.2), P("b", "v", (p) => p.a + 1.4, (p) => p.a + 2.2, 3.8)],
+      build: (p) => ({
+        rooms: [R("wc", 0, 0, p.a, 3), R("hall", 0, 3, p.a, 3), R("sauna", p.a, 0, p.b - p.a, 3), R("bed", p.b, 0, 8 - p.b, 3), R("kl", p.a, 3, 8 - p.a, 3)],
+        doors: [dc("h", 6, p.a / 2, -1, "b", true), dc("h", 3, p.a / 2, -1, "a"), dc("v", p.a, 0.95, 1, "a"), dc("v", p.a, 4.1, 1, "b"), dc("h", 3, (p.b + 8) / 2, -1, "a")] }),
+      endDoor: dc("v", 0, 5.15, 1, "b", true) }
+  ],
+  "6x9": [
+    { id: "bed2", name: "2 спальни", seam: "h",
+      params: [P("a", "v", 1.8, 2.6, 2.2), P("x", "v", (p) => p.a + 2.4, 6.4, 5.4)],
+      build: (p) => ({
+        rooms: [R("wc", 0, 0, p.a, 3), R("hall", 0, 3, p.a, 3), R("kl", p.a, 0, p.x - p.a, 6), R("bed", p.x, 0, 9 - p.x, 3), R("bed", p.x, 3, 9 - p.x, 3)],
+        doors: [dc("h", 6, p.a / 2, -1, "b", true), dc("h", 3, p.a / 2, -1, "a"), dc("v", p.a, 4.1, 1, "b"), dc("v", p.x, 2.0, 1, "a"), dc("v", p.x, 4.0, 1, "b")] }),
+      endDoor: dc("v", 0, 5.15, 1, "b", true) },
+    { id: "bed3", name: "3 спальни", seam: "h",
+      params: [P("x", "v", 2.6, 3.6, 3), P("y", "v", (p) => p.x + 2.4, 6.6, 6), P("w", "v", (p) => p.y + 1.2, 7.8, 7.4)],
+      build: (p) => ({
+        rooms: [R("bed", 0, 0, p.x, 3), R("bed", 0, 3, p.x, 3), R("kl", p.x, 0, p.y - p.x, 6), R("bed", p.y, 0, 9 - p.y, 3), R("hall", p.y, 3, p.w - p.y, 3), R("wc", p.w, 3, 9 - p.w, 3)],
+        doors: [dc("h", 6, (p.y + p.w) / 2, -1, "b", true), dc("v", p.w, 3.95, 1, "a"), dc("v", p.y, 4.2, -1, "b"), dc("h", 3, (p.y + p.w) / 2, -1, "a"), dc("v", p.x, 2.0, -1, "a"), dc("v", p.x, 4.0, -1, "b")] }),
+      end: {
+        params: [P("x", "v", 2.6, 3.6, 3), P("y", "v", (p) => p.x + 2.4, 6.6, 6), T],
+        build: (p) => ({
+          rooms: [R("bed", 0, 0, p.x, 3), R("bed", 0, 3, p.x, 3), R("kl", p.x, 0, p.y - p.x, 6), R("bed", p.y, 0, 9 - p.y, 3), R("hall", p.y, 3, 9 - p.y, p.t - 3), R("wc", p.y, p.t, 9 - p.y, 6 - p.t)],
+          doors: [dc("v", 9, (3 + p.t) / 2, -1, "a", true), dc("v", p.y, (3 + p.t) / 2, -1, "b"), dc("h", 3, p.y + 1.0, -1, "a"), dc("h", p.t, p.y + 0.75, 1, "a"), dc("v", p.x, 2.0, -1, "a"), dc("v", p.x, 4.0, -1, "b")] }) } },
+    { id: "sauna", name: "2 спальни + парная", seam: "h",
+      params: [P("x", "v", 2.6, 3.6, 3), P("y", "v", (p) => p.x + 2.4, 6.6, 6), P("w", "v", (p) => p.y + 1.2, 7.6, 7.4)],
+      build: (p) => ({
+        rooms: [R("bed", 0, 0, p.x, 3), R("bed", 0, 3, p.x, 3), R("kl", p.x, 0, p.y - p.x, 6), R("ward", p.y, 0, p.w - p.y, 3), R("sauna", p.w, 0, 9 - p.w, 3), R("hall", p.y, 3, p.w - p.y, 3), R("wc", p.w, 3, 9 - p.w, 3)],
+        doors: [dc("h", 6, (p.y + p.w) / 2, -1, "b", true), dc("v", p.w, 3.95, 1, "a"), dc("v", p.y, 4.2, -1, "b"), dc("h", 3, (p.y + p.w) / 2, -1, "a"), dc("h", 3, (p.w + 9) / 2, -1, "b"), dc("v", p.x, 2.0, -1, "a"), dc("v", p.x, 4.0, -1, "b")] }),
+      end: {
+        params: [P("x", "v", 2.6, 3.6, 3), P("y", "v", (p) => p.x + 2.4, 6.6, 6), P("w", "v", (p) => p.y + 1.2, 7.6, 7.4), T],
+        build: (p) => ({
+          rooms: [R("bed", 0, 0, p.x, 3), R("bed", 0, 3, p.x, 3), R("kl", p.x, 0, p.y - p.x, 6), R("wc", p.y, 0, p.w - p.y, 3), R("sauna", p.w, 0, 9 - p.w, 3), R("hall", p.y, 3, 9 - p.y, p.t - 3), R("ward", p.y, p.t, 9 - p.y, 6 - p.t)],
+          doors: [dc("v", 9, (3 + p.t) / 2, -1, "a", true), dc("v", p.y, (3 + p.t) / 2, -1, "b"), dc("h", 3, (p.y + p.w) / 2, -1, "a"), dc("v", p.w, 0.95, 1, "a"), dc("h", p.t, p.y + 1.0, 1, "a"), dc("v", p.x, 2.0, -1, "a"), dc("v", p.x, 4.0, -1, "b")] }) } }
+  ]
+};
+/* Если у планировки задана только дверь в торце — вариант с торцевой террасой = те же комнаты, вход в торце */
+for (const list of Object.values(B_LAYOUTS)) for (const l of list) {
+  if (l.endDoor && !l.end) { const ed = l.endDoor, b = l.build; l.end = { params: l.params, build: (p) => { const r = b(p); return { rooms: r.rooms, doors: [ed].concat(r.doors.slice(1)) }; } }; }
+}
+
+const ROOM = {
+  kl: { n: "Кухня-гостиная", tone: 0 }, living: { n: "Гостиная", tone: 0 }, k: { n: "Кухня", tone: 0 },
+  bed: { n: "Спальня", tone: 1 }, wc: { n: "Санузел", tone: 2 }, hall: { n: "Прихожая", tone: 3 },
+  ward: { n: "Кладовая", tone: 3 }, shed: { n: "Хозблок", tone: 4 }, wash: { n: "Моечная", tone: 2 }, sauna: { n: "Парная", tone: 5 }
+};
+const WALLS = {
+  wood: { n: "Рыжее дерево", c: "#B5693A", line: "#9A5830" },
+  graphite: { n: "Графит", c: "#454C52", line: "#3A4046" },
+  light: { n: "Светлый", c: "#D8DBD6", line: "#C4C8C2" },
+  darkwood: { n: "Тёмное дерево", c: "#5E4737", line: "#4C392C" }
+};
+const ACCENTS = {
+  graphite: { n: "Графит", c: "#2E3337" },
+  black: { n: "Чёрный", c: "#151719" },
+  white: { n: "Белый", c: "#F1F1EE" }
+};
+const INNER = {
+  light: { n: "Светлая вагонка", pal: ["#F1E4CF", "#ECDFCB", "#E1E7EA", "#EEE7DB", "#E5E0D6", "#E6CBA7"] },
+  white: { n: "Белёная вагонка", pal: ["#F7F6F2", "#F1F0EB", "#E5EAED", "#F0EFEA", "#E7E5E0", "#EBD6BA"] },
+  dark: { n: "Тёмная вагонка", pal: ["#CDBFAE", "#C6BBAD", "#C0C8CC", "#D0C7BA", "#C8C1B6", "#C5A47E"] }
+};
+const TERR = { none: { n: "Без террасы" }, along: { n: "Вдоль дома" }, end: { n: "Торцевая" } };
+const T_DEPTH = 2.5;
+const EXTRAS = [
+  ["stove", "Дровяная печь"],
+  ["pano", "Панорамное окно в гостиной"],
+  ["exit2", "Второй выход на террасу"],
+  ["porch", "Крыльцо со ступенями"],
+  ["ins150", "Утепление 150 мм"],
+  ["gutter", "Водосток"]
+];
+/* «Свой цвет»: наружная отделка, углы/окна/кровля, внутренняя отделка */
+WALLS.custom = { n: "Свой цвет", c: "#8A6E5A", line: "#755D4C" };
+ACCENTS.custom = { n: "Свой цвет", c: "#3E4A56" };
+INNER.custom = { n: "Свой цвет", c: "#E8D9C3", pal: [] };
+const CC_KEY = { wall: "wallC", accent: "accentC", inner: "innerC" };
+function applyCustom(c) {
+  const w = c.wallC || WALLS.custom.c, a = c.accentC || ACCENTS.custom.c, i = c.innerC || INNER.custom.c;
+  WALLS.custom.c = w; WALLS.custom.line = shade(w, -0.15);
+  ACCENTS.custom.c = a;
+  INNER.custom.c = i; INNER.custom.pal = [i, shade(i, -0.04), shade(i, 0.25), shade(i, 0.1), shade(i, -0.08), shade(i, -0.18)];
+}
+const colorName = (obj, k, c) => obj[c[k]].n + (c[k] === "custom" && c[CC_KEY[k]] ? ` (${c[CC_KEY[k]]})` : "");
+const B_DEFAULT = { size: "6x8", layout: "bed2", terrace: "end", tLen: 0, tSide: "right", adjv: null, adjKey: "", wall: "wood", accent: "graphite", inner: "light", stove: true, pano: false, exit2: false, porch: true, ins150: false, gutter: true };
+const B_KEY = "modul-build-v1";
+let bcfg = (() => {
+  let v = null;
+  try { v = JSON.parse(localStorage.getItem(B_KEY) || "null"); } catch (e) {}
+  const c = Object.assign({}, B_DEFAULT, v && B_LAYOUTS[v.size] ? v : {});
+  if (c.terrace === "corner") c.terrace = "end";
+  for (const k of ["pv", "dpos", "dw", "win", "spos", "tsp"]) c[k] = c[k] && typeof c[k] === "object" ? c[k] : {};
+  return c;
+})();
+function bSave() { try { localStorage.setItem(B_KEY, JSON.stringify(bcfg)); } catch (e) {} }
+
+const fmt = (v) => (Math.round(v * 10) / 10).toString().replace(".", ",");
+let svgUid = 0;
+const sizeOf = (c) => B_SIZES.find((s) => s.id === c.size) || B_SIZES[3];
+/* Толщины стен (м): наружная — от обвязки внутрь (стойка 10 + внутренняя отделка 4), перегородка 18,
+   по стыку модулей — две стенки модулей по 14 */
+const T_OUT = 0.14, T_PART = 0.18, T_SEAM = 0.28;
+const DOOR_H = 2.07, DOOR_H_EXT = 2.12, DOOR_EXT = 0.90, DOOR_OPT = [0.69, 0.79, 0.89];
+const fmt2 = (v) => (Math.round(v * 100) / 100).toFixed(2).replace(".", ",");
+const cm = (v) => Math.round(v * 100);
+const valOf = (x, p) => (typeof x === "function" ? x(p) : x);
+/* Вариант планировки: обычный или с торцевой террасой; key — под ним хранятся правки заказчика */
+function variantOf(c) {
+  const list = B_LAYOUTS[c.size] || B_LAYOUTS["6x8"], l = list.find((x) => x.id === c.layout) || list[0];
+  const e = c.terrace === "end" && l.end ? l.end : null, v = e || l;
+  return { l, v, key: c.size + ":" + l.id + (e ? ":end" : "") };
+}
+function paramsOf(c) {
+  const { v, key } = variantOf(c), saved = (c.pv && c.pv[key]) || {}, p = {};
+  for (const q of v.params) p[q.k] = typeof saved[q.k] === "number" ? saved[q.k] : q.def;
+  for (let it = 0; it < 3; it++) for (const q of v.params) p[q.k] = Math.max(valOf(q.min, p), Math.min(valOf(q.max, p), p[q.k]));
+  return p;
+}
+/* Отступ чистой стены от оси: наружная — 14 см, по стыку — 14, перегородка — 9 */
+function wallIns(lay, v, axis, L, W) {
+  const near = (a, b) => Math.abs(a - b) < 0.01;
+  if (near(v, 0) || near(v, axis === "x" ? L : W)) return T_OUT;
+  if (lay.seam === (axis === "x" ? "v" : "h") && near(v, 3)) return T_SEAM / 2;
+  return T_PART / 2;
+}
+function clearOf(lay, r, L, W) {
+  const x0 = r.x + wallIns(lay, r.x, "x", L, W), x1 = r.x + r.w - wallIns(lay, r.x + r.w, "x", L, W);
+  const y0 = r.y + wallIns(lay, r.y, "y", L, W), y1 = r.y + r.h - wallIns(lay, r.y + r.h, "y", L, W);
+  return { x0, y0, x1, y1, w: x1 - x0, h: y1 - y0, a: (x1 - x0) * (y1 - y0) };
+}
+/* Отрезок стены, общий для двух комнат у двери (по нему дверь можно двигать) */
+function doorSeg(rooms, d) {
+  const m0 = (d.a + d.b) / 2, near = (a, b) => Math.abs(a - b) < 0.01;
+  const along = (r) => (d.o === "v" ? [r.y, r.y + r.h] : [r.x, r.x + r.w]);
+  const touch = (r) => (d.o === "v" ? near(r.x, d.c) || near(r.x + r.w, d.c) : near(r.y, d.c) || near(r.y + r.h, d.c));
+  const rs = rooms.filter((r) => touch(r) && along(r)[0] < m0 && along(r)[1] > m0);
+  let lo = -1e9, hi = 1e9;
+  for (const r of rs) { const [a, b] = along(r); lo = Math.max(lo, a); hi = Math.min(hi, b); }
+  return { lo, hi, rs };
+}
+function doorDefW(d, rs) {
+  if (d.ext) return DOOR_EXT;
+  const t = rs.map((r) => r.t);
+  if (t.some((x) => x === "wc" || x === "sauna" || x === "wash")) return 0.69;
+  if (t.some((x) => x === "bed" || x === "ward" || x === "shed")) return 0.79;
+  return 0.89;
+}
+function doorRange(d, w) { return [d.lo + 0.12 + w / 2, d.hi - 0.12 - w / 2]; }
+function layoutOf(c) {
+  const { l, v, key } = variantOf(c), p = paramsOf(c), b = v.build(p);
+  const pos = (c.dpos && c.dpos[key]) || {}, wid = (c.dw && c.dw[key]) || {};
+  const doors = b.doors.map((d0, i) => {
+    const sg = doorSeg(b.rooms, d0);
+    const w = d0.ext ? DOOR_EXT : (DOOR_OPT.includes(wid[i]) ? wid[i] : doorDefW(d0, sg.rs));
+    const d = Object.assign({}, d0, { i, w, lo: sg.lo, hi: sg.hi, rs: sg.rs });
+    const [mn, mx] = doorRange(d, w);
+    let m = typeof pos[i] === "number" ? pos[i] : (d0.a + d0.b) / 2;
+    m = mn > mx ? (sg.lo + sg.hi) / 2 : Math.max(mn, Math.min(mx, m));
+    d.a = m - w / 2; d.b = m + w / 2;
+    return d;
+  });
+  return { id: l.id, name: l.name, seam: l.seam, params: v.params, p, key, rooms: b.rooms, doors };
+}
+/* Главная входная дверь — наружная дверь в прихожую (на фасаде или в торце) */
+function mainDoor(c) {
+  const lay = layoutOf(c);
+  const inHall = (d) => {
+    const m = (d.a + d.b) / 2, px = d.o === "h" ? m : d.c + d.side * 0.2, py = d.o === "h" ? d.c + d.side * 0.2 : m;
+    return lay.rooms.some((r) => r.t === "hall" && px > r.x && px < r.x + r.w && py > r.y && py < r.y + r.h);
+  };
+  return (lay.doors || []).find((d) => d.ext && inHall(d)) || null;
+}
+/* Положение входа на длинной (передней) стене, м от левого края; null — вход не на фасаде */
+function entranceOf(c) {
+  const d = mainDoor(c), W = sizeOf(c).W;
+  return d && d.o === "h" && Math.abs(d.c - W) < 0.01 ? (d.a + d.b) / 2 : null;
+}
+/* Второй выход на террасу — дверь из кухни-гостиной на фасаде (ближе ко входу). Центр двери, м, или null */
+function exit2Pos(c) {
+  if (!c.exit2 || c.terrace !== "along") return null;
+  const lay = layoutOf(c), W = sizeOf(c).W, e = entranceOf(c);
+  const r = lay.rooms.filter((r) => (r.t === "kl" || r.t === "living") && Math.abs(r.y + r.h - W) < 0.01).sort((a, b) => a.x - b.x)[0];
+  if (!r || r.w < 2.4) return null;
+  const cands = [r.x + r.w - 0.75, r.x + 0.75].filter((m) => e === null || Math.abs(m - e) > 1.3);
+  if (!cands.length) return null;
+  return e === null ? cands[0] : cands.sort((p, q) => Math.abs(p - e) - Math.abs(q - e))[0];
+}
+/* Самая короткая терраса вдоль дома: 2 м, а со вторым выходом — чтобы на ней были обе двери */
+function alongMin(c) {
+  const m = exit2Pos(c), e = entranceOf(c);
+  if (m === null || e === null) return 2;
+  return Math.min(sizeOf(c).L, Math.max(2, Math.ceil((Math.abs(m - e) + 1.1) * 2) / 2));
+}
+function alongLen(c) { const L = sizeOf(c).L; return Math.max(alongMin(c), Math.min(L, c.tLen > 0 ? c.tLen : L)); }
+/* Терраса вдоль дома всегда напротив входной двери (и второго выхода, если он есть) */
+function alongSpan(c) {
+  const L = sizeOf(c).L, len = alongLen(c), e0 = entranceOf(c), e = e0 === null ? L / 2 : e0, m = exit2Pos(c);
+  const lo = m === null ? e : Math.min(e, m), hi = m === null ? e : Math.max(e, m);
+  const us = c.tsp && c.tsp[variantOf(c).key];
+  // край террасы не должен упираться в окно: от окна минимум 10 см
+  const ws = winsOf(c, layoutOf(c)).filter((q) => q.wall === "S").map((q) => [q.m - q.w / 2 - 0.1, q.m + q.w / 2 + 0.1]);
+  const a0 = us ? 0 : Math.max(0, Math.min(L - len, (lo + hi) / 2 - len / 2));
+  const fixEnd = (x, isStart) => {
+    const hit = ws.find(([u, v]) => x > u && x < v && x > 0.01 && x < L - 0.01);
+    if (!hit) return x;
+    const opts = hit.map((v) => Math.max(0, Math.min(L, v))).filter((v) => (isStart ? v <= lo - 0.55 + 0.001 : v >= hi + 0.55 - 0.001));
+    return opts.length ? opts.sort((p, q) => Math.abs(p - x) - Math.abs(q - x))[0] : x;
+  };
+  const okEnd = (x) => x < 0.01 || x > L - 0.01 || !ws.some(([u, v]) => x > u && x < v);
+  const okA = (a) => a >= -0.001 && a + len <= L + 0.001 && a <= lo - 0.55 + 0.001 && a + len >= hi + 0.55 - 0.001 && okEnd(a) && okEnd(a + len);
+  if (us) {   // края, которые человек сам вытянул в редакторе
+    let b0 = Math.max(0, Math.min(us[0], lo - 0.55)), b1 = Math.min(L, Math.max(us[1], hi + 0.55));
+    if (b1 - b0 < 2) { b1 = Math.min(L, b0 + 2); b0 = Math.max(0, b1 - 2); }
+    if (!ws.length) return [b0, b1];
+    return [fixEnd(b0, true), fixEnd(b1, false)];
+  }
+  if (okA(a0) || !ws.length) return [a0, a0 + len];
+  for (let d = 0.05; d <= L; d += 0.05) for (const a of [a0 - d, a0 + d]) if (okA(a)) return [a, a + len];
+  // сдвигом не вышло — подрезаем или удлиняем край до окна/после окна
+  return [fixEnd(a0, true), fixEnd(a0 + len, false)];
+}
+function exit2At(c) {
+  const m = exit2Pos(c); if (m === null) return null;
+  const [a0, a1] = alongSpan(c);
+  return m - 0.45 >= a0 + 0.05 && m + 0.45 <= a1 - 0.05 ? m : null;
+}
+/* Торцевая терраса — там, где вход в торце */
+function endSide(c) {
+  const d = mainDoor(Object.assign({}, c, { terrace: "end" }));
+  return d && d.o === "v" && d.c < 0.01 ? "left" : "right";
+}
+/* Печь 0,6×0,6 м: по умолчанию в углу кухни-гостиной, в редакторе тянется в любую комнату, кроме санузла */
+const STOVE_MOVE = false; // перенос печи пальцем — пока выключен
+function stoveAt(c, lay) {
+  const { L, W } = sizeOf(c), { key } = variantOf(c), h = 0.3;
+  const ok = lay.rooms.map((r, i) => [r, clearOf(lay, r, L, W)]).filter(([r]) => r.t !== "wc" && r.t !== "hall");
+  const st = STOVE_MOVE && c.spos && c.spos[key];
+  const clampIn = (q, x, y) => ({ x: Math.max(q.x0 + h, Math.min(q.x1 - h, x)), y: Math.max(q.y0 + h, Math.min(q.y1 - h, y)) });
+  if (st) {
+    const inside = ok.find(([, q]) => st.x > q.x0 && st.x < q.x1 && st.y > q.y0 && st.y < q.y1);
+    if (inside) return clampIn(inside[1], st.x, st.y);
+    let best = null;
+    for (const [, q] of ok) { const v = clampIn(q, st.x, st.y), d = Math.hypot(v.x - st.x, v.y - st.y); if (!best || d < best.d) best = Object.assign(v, { d }); }
+    if (best) return { x: best.x, y: best.y };
+  }
+  const k = ok.find(([r]) => r.t === "kl" || r.t === "living") || ok[0];
+  if (!k) return null;
+  // не в дверях: перед каждой дверью свободная зона 1 м в обе стороны
+  const q = k[1], zones = lay.doors.map((d) => d.o === "h" ? [d.a - 0.15, d.b + 0.15, d.c - 1.0, d.c + 1.0] : [d.c - 1.0, d.c + 1.0, d.a - 0.15, d.b + 0.15]);
+  const x2 = exit2At(c); if (x2 !== null) zones.push([x2 - 0.6, x2 + 0.6, W - 1.0, W + 1.0]);
+  const free = (x, y) => !zones.some(([x0, x1, y0, y1]) => x + h > x0 && x - h < x1 && y + h > y0 && y - h < y1);
+  const cands = [[q.x1 - 0.4, q.y0 + 0.4], [q.x0 + 0.4, q.y0 + 0.4], [q.x1 - 0.4, q.y1 - 0.4], [q.x0 + 0.4, q.y1 - 0.4]];
+  for (let t = 0.6; t < Math.max(q.x1 - q.x0, q.y1 - q.y0); t += 0.2) cands.push([q.x1 - 0.4 - t, q.y0 + 0.4], [q.x0 + 0.4 + t, q.y0 + 0.4], [q.x1 - 0.4, q.y0 + 0.4 + t], [q.x0 + 0.4, q.y0 + 0.4 + t]);
+  const f = cands.find(([x, y]) => x - h >= q.x0 - 0.01 && x + h <= q.x1 + 0.01 && y - h >= q.y0 - 0.01 && y + h <= q.y1 + 0.01 && free(x, y)) || cands[0];
+  return { x: f[0], y: f[1] };
+}
+function terraceArea(c) {
+  const s = sizeOf(c);
+  if (c.terrace === "along") { const [a0, a1] = alongSpan(c); return (a1 - a0) * T_DEPTH; }
+  if (c.terrace === "end") return T_DEPTH * s.W;
+  return 0;
+}
+function shade(hex, k) {
+  const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  const f = (v) => Math.max(0, Math.min(255, Math.round(k < 0 ? v * (1 + k) : v + (255 - v) * k)));
+  return "#" + [f(r), f(g), f(b)].map((v) => v.toString(16).padStart(2, "0")).join("");
+}
+const rect = (x, y, w, h, fill, extra = "") => `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(0, w).toFixed(1)}" height="${Math.max(0, h).toFixed(1)}" fill="${fill}" ${extra}/>`;
+const line = (x1, y1, x2, y2, stroke, w = 1, extra = "") => `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${stroke}" stroke-width="${w}" ${extra}/>`;
+
+/* Рисунок фасада (вид спереди). Координаты: m — метры от левого края дома; торцевая терраса может стоять слева. */
+function facadeSVG(c, view = "front") {
+  applyCustom(c);
+  const u = "f" + (++svgUid);
+  const size = sizeOf(c), lay = layoutOf(c);
+  const L = size.L, W = size.W, back = view === "back";
+  const tc = c.terrace === "end" ? T_DEPTH : 0;
+  const tLeft = tc && ((endSide(c) === "left") !== back);   // сзади торцевая терраса — с другой стороны
+  const ho = tLeft ? tc : 0;                 // сдвиг дома вправо, если терраса слева
+  const tStart = tLeft ? 0 : L;              // начало торцевой террасы в общих метрах
+  const total = L + tc;
+  const [a0, a1] = c.terrace === "along" && !back ? alongSpan(c) : [0, 0];
+  const VW = 360, VH = 210, ground = 180;
+  const s = Math.min((VW - 70) / (total + 0.6), 34);
+  const x0 = (VW - total * s) / 2;
+  const X = (m) => x0 + ((back ? L - m : m) + ho) * s;   // метры дома → пиксели (сзади — зеркально)
+  const T = (m) => x0 + m * s;               // общие метры (дом + терраса) → пиксели
+  const pile = 0.55 * s, wallH = 2.6 * s, fasc = 0.34 * s, over = 0.32 * s;
+  const floorY = ground - pile, roofY = floorY - wallH;
+  const wall = WALLS[c.wall], acc = ACCENTS[c.accent];
+  const frame = c.accent === "white" ? "#F1F1EE" : acc.c;
+  const railC = c.accent === "white" ? "#F1F1EE" : acc.c;
+  const p = [];
+  p.push(`<defs><linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFE0EA"/><stop offset="1" stop-color="#F1F0E8"/></linearGradient>` +
+    `<linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A9C3D2"/><stop offset=".55" stop-color="#6F8A9A"/><stop offset="1" stop-color="#4E6371"/></linearGradient></defs>`);
+  p.push(rect(0, 0, VW, VH, `url(#${u}s)`));
+  const tree = (tx, th) => `<path d="M${tx} ${ground - th} L${tx - th * 0.32} ${ground - 4} L${tx + th * 0.32} ${ground - 4} Z" fill="#8FA58C"/><path d="M${tx} ${ground - th * 0.78} L${tx - th * 0.4} ${ground - 2} L${tx + th * 0.4} ${ground - 2} Z" fill="#7E957B" opacity=".9"/>`;
+  if (x0 > 34) { p.push(tree(x0 - 22, 78)); p.push(tree(VW - x0 + 24, 64)); }
+  else { p.push(tree(16, 60)); p.push(tree(VW - 14, 52)); }
+  p.push(rect(0, ground, VW, VH - ground, "#D3D9C6"));
+  p.push(line(0, ground, VW, ground, "#B9C1AA", 1));
+  // сваи
+  for (let m = 0.3; m <= total - 0.2; m += 1.9) p.push(rect(T(m) - 0.07 * s, floorY, 0.14 * s, pile, "#4A4F53"));
+  p.push(rect(T(total - 0.3) - 0.07 * s, floorY, 0.14 * s, pile, "#4A4F53"));
+  // стена (xl, xr — левый и правый край стены на картинке; сзади дом виден зеркально)
+  const xl = Math.min(X(0), X(L)), xr = Math.max(X(0), X(L));
+  p.push(rect(xl, roofY, L * s, wallH, wall.c));
+  for (let y = roofY + 0.2 * s; y < floorY - 0.05 * s; y += 0.2 * s) p.push(line(xl, y, xr, y, wall.line, 0.7, 'opacity=".55"'));
+  // торцевая терраса: тень под крышей
+  if (tc) {
+    // терраса открытая: сквозь неё видно небо и деревья, сверху — тень от кровли
+    p.push(rect(T(tStart), roofY, tc * s, wallH, "#1E2328", 'opacity=".07"'));
+    p.push(rect(T(tStart), roofY, tc * s, 0.3 * s, "#1E2328", 'opacity=".28"'));
+  }
+  // углы
+  p.push(rect(xl, roofY, 0.13 * s, wallH, acc.c));
+  p.push(rect(xr - 0.13 * s, roofY, 0.13 * s, wallH, acc.c));
+  // двери и окна на этой стене
+  let entranceX = null;
+  const ex2 = back ? null : exit2At(c);
+  const win = (cx, ww, hh, top) => {
+    const x = X(cx) - ww * s / 2, y = floorY - top * s;
+    let out = rect(x, y, ww * s, hh * s, frame) + rect(x + 0.07 * s, y + 0.07 * s, ww * s - 0.14 * s, hh * s - 0.14 * s, `url(#${u}g)`);
+    if (ww > 1.05) out += line(x + ww * s / 2, y + 0.07 * s, x + ww * s / 2, y + hh * s - 0.07 * s, frame, Math.max(1.2, 0.06 * s));
+    out += line(x + 0.12 * s, y + 0.16 * s, x + ww * s * 0.45, y + 0.16 * s, "#FFFFFF", 0.8, 'opacity=".35"');
+    return out;
+  };
+  const door = (cx, glass) => {
+    const dw = 0.9, x = X(cx) - dw * s / 2, y = floorY - 2.05 * s;
+    let out = rect(x, y, dw * s, 2.05 * s, glass ? frame : acc.c === "#F1F1EE" ? "#3A3F44" : acc.c);
+    if (glass) out += rect(x + 0.08 * s, y + 0.08 * s, dw * s - 0.16 * s, 2.05 * s - 0.08 * s, `url(#${u}g)`);
+    else out += `<circle cx="${(x + dw * s - 0.16 * s).toFixed(1)}" cy="${(y + 1.05 * s).toFixed(1)}" r="${(0.05 * s).toFixed(1)}" fill="#C9CDD0"/>`;
+    return out;
+  };
+  const inRoom = (m, t) => lay.rooms.some((r) => r.t === t && m > r.x && m < r.x + r.w && Math.abs(r.y + r.h - W) < 0.01);
+  if (!back) for (const d of (lay.doors || []).filter((d) => d.ext && d.o === "h" && Math.abs(d.c - W) < 0.01)) {
+    const m = (d.a + d.b) / 2;
+    p.push(door(m, false));
+    if (inRoom(m, "shed")) { for (let k = 0; k < 5; k++) p.push(line(X(m - 0.33), floorY - (1.8 - k * 0.3) * s, X(m + 0.33), floorY - (1.8 - k * 0.3) * s, "#FFFFFF", 0.6, 'opacity=".25"')); }
+    else if (entranceX === null) entranceX = m;
+  }
+  if (ex2 !== null) p.push(door(ex2, true));
+  for (const q of winsOf(c, lay).filter((q) => q.wall === (back ? "N" : "S"))) p.push(win(q.m, q.w, q.h, q.sill + q.h));
+  // цоколь
+  p.push(rect(T(0), floorY, total * s, 0.2 * s, acc.c));
+  // стойки и ограждение
+  const rail = (xa, xb) => {
+    if (xb - xa < 0.15 * s) return;
+    const top = floorY - 0.95 * s;
+    p.push(rect(xa, top, xb - xa, 0.07 * s, c.accent === "white" ? "#F1F1EE" : shade(acc.c, 0.08)));
+    for (let x = xa + 0.16 * s; x < xb - 0.05 * s; x += 0.16 * s) p.push(line(x, top + 0.07 * s, x, floorY, railC, Math.max(0.8, 0.035 * s), 'opacity=".85"'));
+  };
+  const post = (px) => p.push(rect(px - 0.08 * s, roofY, 0.16 * s, wallH, acc.c));
+  const stepsAt = (px, wide) => {
+    const sw = wide ? 1.3 : 1.1;
+    for (let k = 0; k < 3; k++) {
+      const h = pile / 3, y = floorY + k * h;
+      p.push(rect(px - (sw / 2 + k * 0.12) * s, y, (sw + k * 0.24) * s, h, k % 2 ? "#8E6C4C" : "#9C7A57"));
+    }
+  };
+  const entInSpan = c.terrace === "along" && entranceX !== null && entranceX > a0 + 0.5 && entranceX < a1 - 0.5;
+  if (c.terrace === "along") {
+    const span = a1 - a0, n = Math.max(1, Math.ceil(span / 3));
+    for (let k = 0; k <= n; k++) post(X(Math.min(a1 - 0.08, Math.max(a0 + 0.08, a0 + span * k / n))));
+    const st = entInSpan ? entranceX : (a0 + a1) / 2;
+    rail(X(a0 + 0.16), X(st - 0.6)); rail(X(st + 0.6), X(a1 - 0.16));
+    stepsAt(X(st), true);
+  }
+  if (tc) {
+    post(T(tStart + 0.1)); post(T(tStart + tc - 0.1));
+    const st = tStart + tc / 2;
+    rail(T(tStart + 0.2), T(st - 0.6)); rail(T(st + 0.6), T(tStart + tc - 0.2));
+    stepsAt(T(st), true);
+  }
+  if (entranceX === null) { /* вход в торце, с террасы — с фасада не виден */ }
+  else if (!entInSpan && c.porch) {
+    stepsAt(X(entranceX), false);
+    p.push(rect(X(entranceX - 0.85), floorY - 2.42 * s, 1.7 * s, 0.1 * s, acc.c));
+  } else if (!entInSpan) {
+    p.push(rect(X(entranceX - 0.5), floorY + 0.2 * s, 1.0 * s, pile - 0.2 * s, "#8E6C4C"));
+  }
+  // печная труба
+  if (c.stove) {
+    const sp = stoveAt(c, lay);
+    if (sp) {
+      const cx = X(sp.x);
+      p.push(rect(cx - 0.13 * s, roofY - fasc - 0.95 * s, 0.26 * s, 0.95 * s, "#2B2F33"));
+      p.push(rect(cx - 0.2 * s, roofY - fasc - 1.02 * s, 0.4 * s, 0.1 * s, "#1E2124"));
+    }
+  }
+  // кровля
+  p.push(rect(T(0) - over, roofY - fasc, total * s + over * 2, fasc, acc.c));
+  p.push(line(T(0) - over, roofY - fasc + 0.6, T(total) + over, roofY - fasc + 0.6, "#FFFFFF", 0.8, 'opacity=".22"'));
+  p.push(rect(T(0) - over, roofY, total * s + over * 2, 0.06 * s, "#000000", 'opacity=".18"'));
+  if (c.gutter) {
+    p.push(rect(T(0) - over, roofY - 0.04 * s, total * s + over * 2, 0.1 * s, "#9EA4A8"));
+    [T(0) - over + 0.12 * s, T(total) + over - 0.2 * s].forEach((gx) => p.push(rect(gx, roofY, 0.08 * s, wallH + pile - 0.1 * s, "#9EA4A8")));
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Фасад дома">${p.join("")}</svg>`;
+}
+
+/* ===== Окна ===== */
+// размер: [ключ, ширина, высота, подоконник от пола], м
+const WIN_OPT = [["50x50", 0.5, 0.5, 1.6], ["60x60", 0.6, 0.6, 1.4], ["100x60", 1.0, 0.6, 1.3], ["90x120", 0.9, 1.2, 0.9], ["120x150", 1.2, 1.5, 0.7], ["150x150", 1.5, 1.5, 0.7], ["240x210", 2.4, 2.1, 0.1]];
+const winOpt = (k) => WIN_OPT.find((o) => o[0] === k) || WIN_OPT[4];
+const winName = (k) => k.replace("x", "×");
+const winKeyFor = (t) => (t === "bed" || t === "kl" || t === "living" ? "120x150" : t === "wc" || t === "wash" || t === "sauna" ? "50x50" : "60x60");
+/* Стены дома: S — передняя (y = W), N — задняя (y = 0), W — левый торец (x = 0), E — правый торец (x = L) */
+function roomWalls(r, L, W) {
+  const n = (a, b) => Math.abs(a - b) < 0.01, out = [];
+  if (n(r.y + r.h, W)) out.push("S");
+  if (n(r.y, 0)) out.push("N");
+  if (n(r.x, 0)) out.push("W");
+  if (n(r.x + r.w, L)) out.push("E");
+  return out;
+}
+/* Окна по умолчанию: спальня — 120×150; кухня-гостиная — 120×150 в гостиной части и горизонтальное 100×60
+   на кухне (по возможности на другой стороне); санузел, моечная, парная — маленькое 50×50 для вентиляции */
+function defaultWins(lay, L, W) {
+  const out = [];
+  lay.rooms.forEach((r, ri) => {
+    const ws = roomWalls(r, L, W);
+    const add = (role, key, prefs) => { const wl = prefs.find((x) => ws.includes(x) && !out.some((o) => o.ri === ri && o.wall === x)); if (wl) out.push({ ri, wall: wl, role, key, m: null }); };
+    if (r.t === "bed") add("bed", "120x150", ["S", "N", "E", "W"]);
+    else if (r.t === "kl" || r.t === "living") { add("living", "120x150", ["S", "N", "W", "E"]); add("kitchen", "100x60", ["N", "W", "E", "S"]); }
+    else if (r.t === "wc" || r.t === "wash" || r.t === "sauna") add(r.t, "50x50", ["N", "E", "W", "S"]);
+  });
+  return out;
+}
+/* Что уже занято на наружной стене: двери и второй выход на террасу */
+function wallBlocks(c, lay, wall, L, W) {
+  const n = (a, b) => Math.abs(a - b) < 0.01, out = [];
+  for (const d of lay.doors) {
+    if ((wall === "S" && d.o === "h" && n(d.c, W)) || (wall === "N" && d.o === "h" && n(d.c, 0)) || (wall === "W" && d.o === "v" && n(d.c, 0)) || (wall === "E" && d.o === "v" && n(d.c, L))) out.push([d.a, d.b]);
+  }
+  if (wall === "S") { const e2 = exit2Pos(c); if (e2 !== null) out.push([e2 - DOOR_EXT / 2, e2 + DOOR_EXT / 2]); }
+  return out;
+}
+function roomSpan(lay, r, wall, L, W) { const q = clearOf(lay, r, L, W); return wall === "S" || wall === "N" ? [q.x0, q.x1] : [q.y0, q.y1]; }
+/* Окна с местами на стенах. Окно не залезает на двери и соседние окна и остаётся в своей комнате */
+function winsOf(c, lay) {
+  const { L, W } = sizeOf(c), { key } = variantOf(c);
+  const stored = c.win && Array.isArray(c.win[key]) ? c.win[key] : null;
+  const list = stored || defaultWins(lay, L, W), placed = [], gap = 0.15;
+  list.forEach((o, idx) => {
+    const r = lay.rooms[o.ri];
+    if (!r || !roomWalls(r, L, W).includes(o.wall)) return;
+    const [s0, s1] = roomSpan(lay, r, o.wall, L, W);
+    const blocks = wallBlocks(c, lay, o.wall, L, W).concat(placed.filter((q) => q.wall === o.wall).map((q) => [q.m - q.w / 2, q.m + q.w / 2]));
+    const want = typeof o.m === "number" ? o.m : null;
+    const fit = (k) => {
+      const w = winOpt(k)[1];
+      let segs = [[s0 + 0.12, s1 - 0.12]];
+      for (const [a, b] of blocks) segs = segs.flatMap(([x, y]) => (b + gap <= x || a - gap >= y ? [[x, y]] : [[x, a - gap], [b + gap, y]].filter(([u, v]) => v - u > 0.05)));
+      let best = null;
+      for (const [x, y] of segs.filter(([x, y]) => y - x >= w)) {
+        const lo = x + w / 2, hi = y - w / 2, m = want === null ? (lo + hi) / 2 : Math.max(lo, Math.min(hi, want));
+        const d = want === null ? -(y - x) : Math.abs(m - want);
+        if (!best || d < best.d) best = { m, d };
+      }
+      return best;
+    };
+    // панорамное окно — если помещается, иначе обычное
+    let k = o.role === "living" && !o.custom && c.pano ? "240x210" : o.key, best = fit(k);
+    if (!best && k !== o.key) { k = o.key; best = fit(k); }
+    if (!best) return;
+    const [, w, h, sill] = winOpt(k);
+    placed.push({ idx, ri: o.ri, wall: o.wall, role: o.role, key: k, m: best.m, w, h, sill, custom: !!o.custom });
+  });
+  return placed;
+}
+/* Перед первой правкой окон — сохранить текущий набор, дальше правим его */
+function winMaterialize(c) {
+  const { key } = variantOf(c);
+  if (Array.isArray(c.win[key])) return c.win[key];
+  const lay = layoutOf(c), { L, W } = sizeOf(c), pl = winsOf(c, lay);
+  c.win[key] = defaultWins(lay, L, W).map((o, i) => { const q = pl.find((x) => x.idx === i); return Object.assign({}, o, { m: q ? q.m : null }); });
+  return c.win[key];
+}
+function winsTxt(c, lay) {
+  const cnt = {};
+  winsOf(c, lay).forEach((q) => { cnt[q.key] = (cnt[q.key] || 0) + 1; });
+  const keys = Object.keys(cnt).sort((a, b) => winOpt(b)[1] * winOpt(b)[2] - winOpt(a)[1] * winOpt(a)[2]);
+  return keys.length ? keys.map((k) => `${winName(k)} — ${cnt[k]} шт.`).join(", ") : "нет";
+}
+/* Вид с торцов: слева и справа на одной картинке */
+function endsSVG(c) {
+  applyCustom(c);
+  const u = "e" + (++svgUid);
+  const size = sizeOf(c), lay = layoutOf(c), L = size.L, W = size.W;
+  const wins = winsOf(c, lay), wall = WALLS[c.wall], acc = ACCENTS[c.accent];
+  const frame = c.accent === "white" ? "#F1F1EE" : acc.c;
+  const ta = c.terrace === "along" ? T_DEPTH : 0, tc = c.terrace === "end" ? T_DEPTH : 0, side = tc ? endSide(c) : null;
+  const VW = 360, VH = 210, ground = 172, half = VW / 2;
+  const s = Math.min((half - 30) / (W + ta + 0.6), 30);
+  const pile = 0.55 * s, wallH = 2.6 * s, fasc = 0.34 * s, over = 0.32 * s;
+  const floorY = ground - pile, roofY = floorY - wallH;
+  // у каждого модуля свой скат. Два модуля по 3 м (стык y = 3) вместе дают двускатную крышу с коньком над стыком;
+  // дом из одного модуля — односкатный, высокий край у фасада
+  const ROOF_K = 0.12, gable = lay.seam === "h";
+  const H = (y) => roofY - ROOF_K * s * (gable ? 3 - Math.abs(y - 3) : y);
+  const poly = (pts, fill, extra = "") => `<polygon points="${pts.map(([x, y]) => x.toFixed(1) + "," + y.toFixed(1)).join(" ")}" fill="${fill}" ${extra}/>`;
+  const p = [];
+  p.push(`<defs><linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFE0EA"/><stop offset="1" stop-color="#F1F0E8"/></linearGradient>` +
+    `<linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A9C3D2"/><stop offset=".55" stop-color="#6F8A9A"/><stop offset="1" stop-color="#4E6371"/></linearGradient></defs>`);
+  p.push(rect(0, 0, VW, VH, `url(#${u}s)`));
+  p.push(rect(0, ground, VW, VH - ground, "#D3D9C6"));
+  p.push(line(half, 14, half, ground - 4, "#FFFFFF", 1, 'opacity=".7"'));
+  const panel = (wl, ox0, title) => {
+    // слева смотрим на торец x = 0: слева задняя сторона (y = 0); справа — на x = L: слева передняя (y = W)
+    const flip = wl === "E";
+    const tot = W + ta, x0 = ox0 + (half - tot * s) / 2 + (flip && ta ? ta * s : 0);
+    const X = (y) => x0 + (flip ? W - y : y) * s;
+    const xa = Math.min(X(0), X(W)), xb = Math.max(X(0), X(W));
+    for (let y = 0.2; y <= W - 0.1; y += 1.4) p.push(rect(X(y) - 0.07 * s, floorY, 0.14 * s, pile, "#4A4F53"));
+    p.push(rect(X(W - 0.2) - 0.07 * s, floorY, 0.14 * s, pile, "#4A4F53"));
+    const wp = [[X(0), floorY], [X(0), H(0)], ...(gable ? [[X(3), H(3)]] : []), [X(W), H(W)], [X(W), floorY]];
+    p.push(`<clipPath id="${u}c${wl}">${poly(wp, "#000")}</clipPath>`);
+    p.push(poly(wp, wall.c));
+    const sl = [];
+    for (let yy = Math.min(H(0), H(3), H(W)) + 0.2 * s; yy < floorY - 0.05 * s; yy += 0.2 * s) sl.push(line(xa, yy, xb, yy, wall.line, 0.7, 'opacity=".55"'));
+    p.push(`<g clip-path="url(#${u}c${wl})">${sl.join("")}</g>`);
+    const yAt = (x) => (Math.abs(x - X(0)) < 0.5 ? 0 : W);   // сторона дома (м) у края xa / xb
+    p.push(rect(xa, H(yAt(xa)), 0.13 * s, floorY - H(yAt(xa)), acc.c)); p.push(rect(xb - 0.13 * s, H(yAt(xb)), 0.13 * s, floorY - H(yAt(xb)), acc.c));
+    for (const q of wins.filter((q) => q.wall === wl)) {
+      const x = X(q.m) - q.w * s / 2, yy = floorY - (q.sill + q.h) * s;
+      p.push(rect(x, yy, q.w * s, q.h * s, frame) + rect(x + 0.07 * s, yy + 0.07 * s, q.w * s - 0.14 * s, q.h * s - 0.14 * s, `url(#${u}g)`));
+    }
+    for (const d of lay.doors.filter((d) => d.ext && d.o === "v" && Math.abs(d.c - (wl === "W" ? 0 : L)) < 0.01)) {
+      const x = X((d.a + d.b) / 2) - 0.45 * s, yy = floorY - 2.05 * s;
+      p.push(rect(x, yy, 0.9 * s, 2.05 * s, acc.c === "#F1F1EE" ? "#3A3F44" : acc.c));
+    }
+    p.push(rect(xa, floorY, W * s, 0.2 * s, acc.c));
+    // терраса вдоль дома видна сбоку: настил и стойки выступают с передней стороны
+    let ra = xa, rb = xb;
+    if (ta) {
+      const tx0 = flip ? X(W) - ta * s : X(W), tx1 = tx0 + ta * s;
+      p.push(rect(tx0, floorY, ta * s, 0.2 * s, acc.c));
+      const px = flip ? tx0 + 0.1 * s : tx1 - 0.1 * s, pt = H(W + ta - 0.1);
+      p.push(rect(px - 0.08 * s, pt, 0.16 * s, floorY - pt, acc.c));
+      p.push(rect(Math.min(tx0, tx1), floorY + 0.2 * s, ta * s, 0.1 * s, "#8E6C4C"));
+      ra = Math.min(ra, tx0); rb = Math.max(rb, tx1);
+    }
+    // торцевая терраса перед этим торцом: стойки и ограждение спереди
+    if (tc && ((side === "left") === (wl === "W"))) {
+      p.push(rect(xa + 0.05 * s, H(yAt(xa)), 0.16 * s, floorY - H(yAt(xa)), acc.c)); p.push(rect(xb - 0.21 * s, H(yAt(xb)), 0.16 * s, floorY - H(yAt(xb)), acc.c));
+      const top = floorY - 0.95 * s, mid = (xa + xb) / 2;
+      for (const [a, b] of [[xa + 0.2 * s, mid - 0.6 * s], [mid + 0.6 * s, xb - 0.2 * s]]) {
+        p.push(rect(a, top, b - a, 0.07 * s, shade(acc.c, 0.08)));
+        for (let x = a + 0.16 * s; x < b - 0.05 * s; x += 0.16 * s) p.push(line(x, top + 0.07 * s, x, floorY, acc.c, Math.max(0.8, 0.035 * s), 'opacity=".85"'));
+      }
+      for (let k = 0; k < 3; k++) p.push(rect(mid - (0.65 + k * 0.12) * s, floorY + k * pile / 3, (1.3 + k * 0.24) * s, pile / 3, k % 2 ? "#8E6C4C" : "#9C7A57"));
+    }
+    // печная труба над кровлей
+    if (c.stove) {
+      const sp = stoveAt(c, lay);
+      // труба видна с обоих торцов — стоит там, где печь на плане
+      if (sp) { const cx = X(sp.y), base = H(sp.y) - fasc; p.push(rect(cx - 0.13 * s, base - 0.95 * s, 0.26 * s, 0.95 * s + fasc * 0.5, "#2B2F33")); p.push(rect(cx - 0.2 * s, base - 1.02 * s, 0.4 * s, 0.1 * s, "#1E2124")); }
+    }
+    // кровля с уклоном
+    const yl = -over / s, yr = W + ta + over / s;
+    const ys = gable ? [yl, 3, yr] : [yl, yr];
+    p.push(poly([...ys.map((y) => [X(y), H(y) - fasc]), ...ys.slice().reverse().map((y) => [X(y), H(y)])], acc.c));
+    p.push(poly([...ys.map((y) => [X(y), H(y)]), ...ys.slice().reverse().map((y) => [X(y), H(y) + 0.06 * s])], "#000000", 'opacity=".18"'));
+    if (c.gutter) for (const y of gable ? [yl, yr] : [yl]) p.push(rect(X(y) - 0.06 * s, H(y) - 0.04 * s, 0.12 * s, 0.12 * s, "#9EA4A8"));
+    p.push(`<text x="${(ox0 + half / 2).toFixed(1)}" y="${(VH - 10).toFixed(1)}" text-anchor="middle" font-size="11" fill="#5E666C" font-family="Onest, Segoe UI, Arial, sans-serif">${title}</text>`);
+  };
+  panel("W", 0, "Торец слева");
+  panel("E", half, "Торец справа");
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Вид с торцов">${p.join("")}</svg>`;
+}
+
+/* Схема планировки. opt.edit — режим «Редактировать план» (крупно, с ручками стен и меню дверей),
+   opt.sel — выбранная дверь, opt.drag — стена, которую сейчас тянут */
+let planGeo = null;
+function wallHandle(lay, q, L, W) {
+  const val = lay.p[q.k], near = (a, b) => Math.abs(a - b) < 0.01, iv = [];
+  for (const r1 of lay.rooms) for (const r2 of lay.rooms) {
+    if (q.o === "v" && near(r1.x + r1.w, val) && near(r2.x, val)) { const a = Math.max(r1.y, r2.y), b = Math.min(r1.y + r1.h, r2.y + r2.h); if (b - a > 0.05) iv.push([a, b]); }
+    if (q.o === "h" && near(r1.y + r1.h, val) && near(r2.y, val)) { const a = Math.max(r1.x, r2.x), b = Math.min(r1.x + r1.w, r2.x + r2.w); if (b - a > 0.05) iv.push([a, b]); }
+  }
+  const lim = q.o === "v" ? W : L;
+  // ручка-язычок снаружи дома у того конца стены, который выходит к наружной стене
+  if (iv.some(([a]) => a < 0.01)) return { side: -1, x: q.o === "v" ? val : 0, y: q.o === "v" ? 0 : val, iv };
+  if (iv.some(([, b]) => b > lim - 0.01)) return { side: 1, x: q.o === "v" ? val : L, y: q.o === "v" ? W : val, iv };
+  // иначе — на самой стене, на участке без дверей
+  const ds = lay.doors.filter((d) => d.o === q.o && near(d.c, val)).map((d) => [d.a - 0.12, d.b + 0.12]);
+  let best = null;
+  for (const [a, b] of iv) {
+    let segs = [[a + 0.15, b - 0.15]];
+    for (const [da, db] of ds) segs = segs.flatMap(([s0, e]) => (db <= s0 || da >= e ? [[s0, e]] : [[s0, da], [db, e]].filter(([x, y]) => y - x > 0.05)));
+    for (const sg of segs) if (!best || sg[1] - sg[0] > best[1] - best[0]) best = sg;
+  }
+  if (!best) best = iv[0] || [0, lim];
+  const m = (best[0] + best[1]) / 2;
+  return { side: 0, x: q.o === "v" ? val : m, y: q.o === "v" ? m : val, iv };
+}
+function planSVG(c, opt = {}) {
+  applyCustom(c);
+  const ed = !!opt.edit;
+  const u = "p" + (++svgUid);
+  const size = sizeOf(c), lay = layoutOf(c), pal = INNER[c.inner].pal;
+  const L = size.L, W = size.W;
+  const ta = c.terrace === "along" ? T_DEPTH : 0, tc = c.terrace === "end" ? T_DEPTH : 0;
+  const tL = L + tc, tW = W + ta;
+  const tLeft = tc && endSide(c) === "left";
+  const VW = 360;
+  let VH, s, ox, oy;
+  if (ed) {   // масштаб дома как без террасы; торцевая терраса видна краем у границы экрана
+    s = Math.min((VW - 96) / L, 50); VH = Math.round((W + ta) * s + 110);
+    ox = !tc ? (VW - L * s) / 2 : tLeft ? VW - 44 - L * s : 44; oy = 62; planGeo = { ox, oy, s };
+  }
+  else { VH = 210; s = Math.min((VW - 56) / tL, (VH - 44) / tW, 40); ox = (VW - tL * s) / 2 + 8 + (tLeft ? tc * s : 0); oy = 26 + ((VH - 44) - tW * s) / 2; }
+  const k = ed ? 1.15 : 1;   // крупнее шрифты в редакторе
+  const F = 'font-family="Onest, Segoe UI, Arial, sans-serif"';
+  const M = 'font-family="JetBrains Mono, Consolas, monospace"';
+  const X = (m) => ox + m * s, Y = (m) => oy + m * s;
+  const p = [];
+  p.push(`<defs><pattern id="${u}d" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#E3CFB3"/><line x1="0" y1="3" x2="6" y2="3" stroke="#CDB28E" stroke-width="1"/></pattern></defs>`);
+  p.push(rect(0, 0, VW, VH, "#F7F5F0"));
+  // терраса
+  if (ta || tc) {
+    let tr;
+    if (ta) { const [a0, a1] = alongSpan(c); tr = { x: a0, y: W, w: a1 - a0, h: ta }; }
+    else tr = { x: tLeft ? -tc : L, y: 0, w: tc, h: W };
+    p.push(rect(X(tr.x), Y(tr.y), tr.w * s, tr.h * s, `url(#${u}d)`, 'stroke="#B89B7A" stroke-width="1"'));
+    const ar = ed && ta ? `${fmt(tr.w)} м · ${fmt(tr.w * tr.h)} м²` : `${fmt(tr.w * tr.h)} м²`, lbl = `Терраса ${ar}`, tcx = X(tr.x + tr.w / 2), tcy = Y(tr.y + tr.h / 2);
+    const twp = tr.w * s, thp = tr.h * s, tt = (x, y, t, extra = "") => `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="10" fill="#6B5236" ${F} ${extra}>${t}</text>`;
+    if (ed && tc) {   // в редакторе видна только часть торцевой террасы — подпись по центру видимой части
+      const vx = tLeft ? X(0) / 2 : (X(L) + VW) / 2;
+      p.push(tt(vx, tcy - 2, "Терраса", `transform="rotate(-90 ${vx.toFixed(1)} ${tcy.toFixed(1)})"`));
+      p.push(tt(vx + 13, tcy + 2, ar, `transform="rotate(-90 ${(vx + 13).toFixed(1)} ${tcy.toFixed(1)})"`));
+    } else if (twp >= lbl.length * 5.3 + 6) p.push(tt(tcx, tcy + 4, lbl));
+    else if (twp >= 46 && thp >= 30) { p.push(tt(tcx, tcy - 1, "Терраса")); p.push(tt(tcx, tcy + 11, ar)); }
+    else if (thp >= lbl.length * 5.3 + 6) p.push(tt(tcx, tcy + 4, lbl, `transform="rotate(-90 ${tcx.toFixed(1)} ${tcy.toFixed(1)})"`));
+    else p.push(tt(tcx, tcy + 4, ar));
+    if (ed && ta) {   // ручки на краях террасы
+      const hy = Y(W + ta / 2), on = opt.sel === "ter";
+      [tr.x, tr.x + tr.w].forEach((x, i) => p.push(`<g data-tend="${i}"><circle cx="${X(x).toFixed(1)}" cy="${hy.toFixed(1)}" r="18" fill="transparent"/><circle cx="${X(x).toFixed(1)}" cy="${hy.toFixed(1)}" r="${on ? 9 : 7.5}" fill="#E07A2E" stroke="#fff" stroke-width="2"/></g>`));
+    }
+  }
+  // стены (заливка) и комнаты «в чистоте»
+  p.push(rect(X(0), Y(0), L * s, W * s, "#4A4F54"));
+  const cl = lay.rooms.map((r) => clearOf(lay, r, L, W));
+  lay.rooms.forEach((r, i) => { const q = cl[i]; p.push(rect(X(q.x0), Y(q.y0), q.w * s, q.h * s, pal[ROOM[r.t].tone])); });
+  if (ed && lay.seam) {
+    const sx = lay.seam === "h";
+    p.push(`<line x1="${X(sx ? 0 : 3).toFixed(1)}" y1="${Y(sx ? 3 : 0).toFixed(1)}" x2="${X(sx ? L : 3).toFixed(1)}" y2="${Y(sx ? 3 : W).toFixed(1)}" stroke="#7FA7C9" stroke-width="1.2" stroke-dasharray="5 4"/>`);
+  }
+  // печь
+  const stv = c.stove ? stoveAt(c, lay) : null;
+  if (stv) {
+    const sx = X(stv.x - 0.3), sy = Y(stv.y - 0.3), sel = ed && opt.sel === "stove";
+    p.push(`<g${ed && STOVE_MOVE ? ' data-stove="1"' : ""}>${rect(sx, sy, 0.6 * s, 0.6 * s, "#3A3F44", `rx="2"${sel ? ' stroke="#E07A2E" stroke-width="2.5"' : ""}`)}<circle cx="${(sx + 0.3 * s).toFixed(1)}" cy="${(sy + 0.3 * s).toFixed(1)}" r="${(0.16 * s).toFixed(1)}" fill="#D8743A"/>${ed ? `<rect x="${(sx - 6).toFixed(1)}" y="${(sy - 6).toFixed(1)}" width="${(0.6 * s + 12).toFixed(1)}" height="${(0.6 * s + 12).toFixed(1)}" fill="transparent"/>` : ""}</g>`);
+  }
+  // окна в наружных стенах
+  const wins = winsOf(c, lay), winPx = [];
+  if (ed) {   // зоны наружных стен: нажал — добавил окно
+    const z = 15;
+    p.push(`<rect data-owall="N" x="${X(0).toFixed(1)}" y="${(Y(0) - z).toFixed(1)}" width="${(L * s).toFixed(1)}" height="${(z + T_OUT * s).toFixed(1)}" fill="transparent"/>`);
+    p.push(`<rect data-owall="S" x="${X(0).toFixed(1)}" y="${(Y(W) - T_OUT * s).toFixed(1)}" width="${(L * s).toFixed(1)}" height="${(z + T_OUT * s).toFixed(1)}" fill="transparent"/>`);
+    p.push(`<rect data-owall="W" x="${(X(0) - z).toFixed(1)}" y="${Y(0).toFixed(1)}" width="${(z + T_OUT * s).toFixed(1)}" height="${(W * s).toFixed(1)}" fill="transparent"/>`);
+    p.push(`<rect data-owall="E" x="${(X(L) - T_OUT * s).toFixed(1)}" y="${Y(0).toFixed(1)}" width="${(z + T_OUT * s).toFixed(1)}" height="${(W * s).toFixed(1)}" fill="transparent"/>`);
+  }
+  for (const q of wins) {
+    const hz = q.wall === "S" || q.wall === "N", a = q.m - q.w / 2, sel = ed && opt.sel === "w" + q.idx;
+    let x, y, w, h;
+    if (hz) { x = X(a); w = q.w * s; h = T_OUT * s + 1; y = q.wall === "N" ? Y(0) - 0.5 : Y(W - T_OUT) - 0.5; }
+    else { y = Y(a); h = q.w * s; w = T_OUT * s + 1; x = q.wall === "W" ? X(0) - 0.5 : X(L - T_OUT) - 0.5; }
+    p.push(rect(x, y, w, h, "#E4F0F6"));
+    const st = sel ? "#E07A2E" : "#5B7F95";
+    if (hz) { p.push(line(x, y + h * 0.35, x + w, y + h * 0.35, st, 0.9) + line(x, y + h * 0.65, x + w, y + h * 0.65, st, 0.9) + line(x, y, x, y + h, st, 1.2) + line(x + w, y, x + w, y + h, st, 1.2)); }
+    else { p.push(line(x + w * 0.35, y, x + w * 0.35, y + h, st, 0.9) + line(x + w * 0.65, y, x + w * 0.65, y + h, st, 0.9) + line(x, y, x + w, y, st, 1.2) + line(x, y + h, x + w, y + h, st, 1.2)); }
+    if (sel) p.push(rect(x - 3, y - 3, w + 6, h + 6, "none", 'rx="3" stroke="#E07A2E" stroke-width="2"'));
+    winPx.push({ q, cx: x + w / 2, cy: y + h / 2, box: [x, y, w, h] });
+  }
+  // двери: проём во всю толщину стены, полотно, дуга, подпись проёма (см)
+  const roomAt = (mx, my) => lay.rooms.find((r) => mx > r.x && mx < r.x + r.w && my > r.y && my < r.y + r.h);
+  const ex2 = exit2At(c);
+  const allDoors = lay.doors.concat(ex2 !== null ? [Object.assign(D("h", W, ex2 - DOOR_EXT / 2, ex2 + DOOR_EXT / 2, 1, "a", true), { i: "x2", w: DOOR_EXT })] : []);
+  const thick = (d) => {   // толщина стены по обе стороны от оси двери
+    const lim = d.o === "v" ? L : W, near = (a, b) => Math.abs(a - b) < 0.01;
+    if (near(d.c, 0)) return [0, T_OUT];
+    if (near(d.c, lim)) return [T_OUT, 0];
+    const t = lay.seam === d.o && near(d.c, 3) ? T_SEAM / 2 : T_PART / 2;
+    return [t, t];
+  };
+  const doorPx = [];
+  for (const d of allDoors) {
+    const [tn, tp] = thick(d), sel = ed && opt.sel === d.i;
+    const mid = (d.a + d.b) / 2, len = (d.b - d.a) * s;
+    const inside = d.o === "h" ? roomAt(mid, d.c + d.side * 0.2) : roomAt(d.c + d.side * 0.2, mid);
+    const fill = inside ? pal[ROOM[inside.t].tone] : (d.ext ? "#F7F5F0" : "#EEE7DB");
+    const face = d.c + d.side * (d.side > 0 ? tp : tn), back = d.c - d.side * (d.side > 0 ? tn : tp);
+    const leaf = (d.w - 0.09) * s, st = sel ? "#E07A2E" : "#B4672C";
+    const h0 = d.hinge === "a" ? d.a + 0.045 : d.b - 0.045, f0 = d.hinge === "a" ? h0 + (d.w - 0.09) : h0 - (d.w - 0.09);
+    if (d.o === "h") {
+      p.push(rect(X(d.a), Y(d.c - tn), len, (tn + tp) * s + 0.5, fill));
+      const y = Y(face), hx = X(h0), fx = X(f0), ly = y + d.side * leaf;
+      p.push(line(hx, y, hx, ly, st, sel ? 2.4 : 1.6));
+      const sweep = (d.side > 0) === (d.hinge === "a") ? 0 : 1;
+      p.push(`<path d="M${hx.toFixed(1)} ${ly.toFixed(1)} A${leaf.toFixed(1)} ${leaf.toFixed(1)} 0 0 ${sweep} ${fx.toFixed(1)} ${y.toFixed(1)}" fill="none" stroke="${st}" stroke-width="0.9" stroke-dasharray="2.5 2"/>`);
+      doorPx.push({ d, lx: X(mid), ly: Y(d.c), box: [X(d.a), Y(Math.min(d.c - tn, face)) - (d.side < 0 ? leaf : 0), len, (tn + tp) * s + leaf] });
+    } else {
+      p.push(rect(X(d.c - tn), Y(d.a), (tn + tp) * s + 0.5, len, fill));
+      const x = X(face), hy = Y(h0), fy = Y(f0), lx = x + d.side * leaf;
+      p.push(line(x, hy, lx, hy, st, sel ? 2.4 : 1.6));
+      const sweep = (d.side > 0) === (d.hinge === "a") ? 1 : 0;
+      p.push(`<path d="M${lx.toFixed(1)} ${hy.toFixed(1)} A${leaf.toFixed(1)} ${leaf.toFixed(1)} 0 0 ${sweep} ${x.toFixed(1)} ${fy.toFixed(1)}" fill="none" stroke="${st}" stroke-width="0.9" stroke-dasharray="2.5 2"/>`);
+      doorPx.push({ d, lx: X(d.c), ly: Y(mid), box: [X(Math.min(d.c - tn, face)) - (d.side < 0 ? leaf : 0), Y(d.a), (tn + tp) * s + leaf, len] });
+    }
+    if (sel) p.push(`<rect x="${(d.o === "h" ? X(d.a) - 2 : X(d.c - tn) - 3).toFixed(1)}" y="${(d.o === "h" ? Y(d.c - tn) - 3 : Y(d.a) - 2).toFixed(1)}" width="${(d.o === "h" ? len + 4 : (tn + tp) * s + 6).toFixed(1)}" height="${(d.o === "h" ? (tn + tp) * s + 6 : len + 4).toFixed(1)}" rx="3" fill="none" stroke="#E07A2E" stroke-width="2"/>`);
+  }
+  // отметка входа у главной двери
+  const ent = !ed ? mainDoor(c) : null;
+  if (ent && ent.o === "h") {
+    const hx = X((ent.a + ent.b) / 2), hy = Y(ent.c);
+    p.push(`<path d="M${hx.toFixed(1)} ${(hy + 4).toFixed(1)} l-4 7 h8 z" fill="#B4672C"/>`);
+  } else if (ent) {
+    const hx = X(ent.c), hy = Y((ent.a + ent.b) / 2), kk = ent.c < 0.01 ? -1 : 1;
+    p.push(`<path d="M${(hx + kk * 4).toFixed(1)} ${hy.toFixed(1)} l${kk * 7} -4 v8 z" fill="#B4672C"/>`);
+  }
+  // подписи комнат: название, размеры в чистоте, площадь
+  lay.rooms.forEach((r, ri) => {
+    const q = cl[ri];
+    let cx = X((q.x0 + q.x1) / 2), cy = Y((q.y0 + q.y1) / 2);
+    const name = ROOM[r.t].n, area = fmt(q.a) + " м²", dims = `${fmt2(q.w)}×${fmt2(q.h)}`;
+    const wpx = q.w * s, hpx = q.h * s, need = name.length * 5.6 * k;
+    const showDims = ed ? wpx >= dims.length * 6.2 + 4 : wpx >= dims.length * 5.6 + 8 && hpx >= 50;
+    const lines = 2 + (showDims ? 1 : 0), bandH = lines * 11 * k;
+    // подпись не должна лежать на дуге двери: сдвигаем её в свободную часть комнаты
+    const near = (a, b) => Math.abs(a - b) < 0.01;
+    for (const d of allDoors) {
+      const dl = d.w + 0.05;
+      if (d.o === "v" && ((near(d.c, r.x) && d.side > 0) || (near(d.c, r.x + r.w) && d.side < 0)) && d.a < r.y + r.h && d.b > r.y) {
+        if (Y(d.a) < cy + bandH / 2 + 4 && Y(d.b) > cy - bandH / 2 - 4) {
+          const fa = near(d.c, r.x) ? q.x0 + dl : q.x0, fb = near(d.c, r.x) ? q.x1 : q.x1 - dl;
+          if ((fb - fa) * s >= Math.min(need, 76) + 4) cx = X((fa + fb) / 2);
+          else {
+            const up = d.a - q.y0, dn = q.y1 - d.b;
+            if (Math.max(up, dn) * s >= bandH + 4) cy = up >= dn ? Y(q.y0 + up / 2) : Y(d.b + dn / 2);
+          }
+        }
+      } else if (d.o === "h" && ((near(d.c, r.y) && d.side > 0) || (near(d.c, r.y + r.h) && d.side < 0)) && d.a < r.x + r.w && d.b > r.x) {
+        if (X(d.a) < cx + need / 2 && X(d.b) > cx - need / 2) {
+          const fa = near(d.c, r.y) ? q.y0 + dl : q.y0, fb = near(d.c, r.y) ? q.y1 : q.y1 - dl;
+          if ((fb - fa) * s >= bandH + 4) cy = Y((fa + fb) / 2);
+        }
+      }
+    }
+    const t1 = (x, y, t, fs, fw, col, fam, extra = "") => `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="${(fs * k).toFixed(1)}"${fw ? ` font-weight="${fw}"` : ""} fill="${col}" ${fam} ${extra}>${t}</text>`;
+    const sub = showDims ? [[dims, "#4E5458"], [area, "#6A6F73"]] : [[area, "#6A6F73"]];
+    if (wpx >= need + 6) {
+      let y = cy - (sub.length * 11 * k) / 2 + 3;
+      p.push(t1(cx, y, name, 10.5, 600, "#2A2E31", F));
+      sub.forEach(([t, col]) => { y += 11.5 * k; p.push(t1(cx, y, t, 9.5, 0, col, M)); });
+    } else if (name.includes("-") && wpx >= Math.max(...name.split("-").map((x) => x.length)) * 5.6 * k + 8 && hpx >= (44 + sub.length * 6) * k) {
+      const [n1, n2] = name.split("-");
+      let y = cy - (sub.length * 11 * k) / 2 - 3;
+      p.push(t1(cx, y, n1 + "-", 10.5, 600, "#2A2E31", F)); y += 12 * k;
+      p.push(t1(cx, y, n2, 10.5, 600, "#2A2E31", F));
+      sub.forEach(([t, col]) => { y += 11.5 * k; p.push(t1(cx, y, t, 9.5, 0, col, M)); });
+    } else if (hpx >= need + 4) {
+      p.push(t1(cx, cy + 3.5, name, 10, 600, "#2A2E31", F, `transform="rotate(-90 ${cx.toFixed(1)} ${cy.toFixed(1)})"`));
+      if (ed && wpx >= 40) p.push(t1(cx + 13 * k, cy + 3.5, `${fmt2(q.w)}×${fmt2(q.h)}`, 8.5, 0, "#4E5458", M, `transform="rotate(-90 ${(cx + 13 * k).toFixed(1)} ${cy.toFixed(1)})"`));
+    } else {
+      const short = { "Санузел": "С/у", "Прихожая": "Прих.", "Кладовая": "Клад.", "Моечная": "Моеч.", "Хозблок": "Хоз.", "Парная": "Парн." }[name] || name;
+      p.push(t1(cx, cy + 3.5, short, 9, 600, "#2A2E31", F));
+      if (ed) p.push(t1(cx, cy + 15, fmt2(q.w), 8.5, 0, "#4E5458", M));
+    }
+  });
+  // размеры: в редакторе при перетаскивании — цепочка размеров в чистоте
+  const dimLine = (x1, y1, x2, y2, txt, col, vert) => {
+    let out = line(x1, y1, x2, y2, col, 0.9);
+    if (vert) { out += line(x1 - 3, y1, x1 + 3, y1, col, 0.9) + line(x2 - 3, y2, x2 + 3, y2, col, 0.9); const ty = (y1 + y2) / 2, tx = x1 - 4; out += `<text transform="rotate(-90 ${tx.toFixed(1)} ${ty.toFixed(1)})" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" font-size="${(10 * k).toFixed(1)}" font-weight="${ed ? 700 : 400}" fill="${col}" ${M}>${txt}</text>`; }
+    else { out += line(x1, y1 - 3, x1, y1 + 3, col, 0.9) + line(x2, y2 - 3, x2, y2 + 3, col, 0.9); out += `<text x="${((x1 + x2) / 2).toFixed(1)}" y="${(y1 - 4).toFixed(1)}" text-anchor="middle" font-size="${(10 * k).toFixed(1)}" font-weight="${ed ? 700 : 400}" fill="${col}" ${M}>${txt}</text>`; }
+    return out;
+  };
+  const dq = ed && opt.drag ? lay.params.find((q) => q.k === opt.drag) : null;
+  if (dq) {
+    const hd = wallHandle(lay, dq, L, W), col = "#C2621F";
+    if (dq.o === "v") {
+      const ys = hd.side < 0 ? 0.6 : hd.side > 0 ? W - 0.6 : hd.y;
+      const row = lay.rooms.map((r, i) => [r, cl[i]]).filter(([r]) => ys > r.y && ys < r.y + r.h).sort((a, b) => a[0].x - b[0].x);
+      for (const [, q] of row) p.push(dimLine(X(q.x0), oy - 34, X(q.x1), oy - 34, fmt2(q.w), col, false));
+      for (const [a, b] of hd.iv) p.push(rect(X(lay.p[dq.k]) - 3, Y(a), 6, (b - a) * s, "#E07A2E", 'opacity=".35"'));
+    } else {
+      const xs = hd.side < 0 ? 0.6 : hd.side > 0 ? L - 0.6 : hd.x;
+      const colR = lay.rooms.map((r, i) => [r, cl[i]]).filter(([r]) => xs > r.x && xs < r.x + r.w).sort((a, b) => a[0].y - b[0].y);
+      const cx = hd.side < 0 ? ox + L * s + 30 : ox - 30;
+      for (const [, q] of colR) p.push(dimLine(cx, Y(q.y0), cx, Y(q.y1), fmt2(q.h), col, true));
+      for (const [a, b] of hd.iv) p.push(rect(X(a), Y(lay.p[dq.k]) - 3, (b - a) * s, 6, "#E07A2E", 'opacity=".35"'));
+    }
+  } else if (!ed) {
+    const dy = oy - 10;
+    p.push(dimLine(ox, dy, ox + L * s, dy, `${fmt(L)} м`, "#8A8F92", false));
+    const dx = tLeft ? ox + L * s + 10 : ox - 10;
+    if (tLeft) {
+      p.push(line(dx, oy, dx, oy + W * s, "#8A8F92", 0.8) + line(dx - 3, oy, dx + 3, oy, "#8A8F92", 0.8) + line(dx - 3, oy + W * s, dx + 3, oy + W * s, "#8A8F92", 0.8));
+      p.push(`<text transform="rotate(-90 ${(dx + 11).toFixed(1)} ${(oy + W * s / 2).toFixed(1)})" x="${(dx + 11).toFixed(1)}" y="${(oy + W * s / 2).toFixed(1)}" text-anchor="middle" font-size="10" fill="#5E666C" ${M}>${fmt(W)} м</text>`);
+    } else p.push(dimLine(dx, oy, dx, oy + W * s, `${fmt(W)} м`, "#8A8F92", true));
+  } else {
+    p.push(`<text x="${(VW / 2).toFixed(1)}" y="${(oy - 34).toFixed(1)}" text-anchor="middle" font-size="11" fill="#8A8F92" ${M}>${fmt(L)} × ${fmt(W)} м по обвязке</text>`);
+  }
+  // подписи проёмов (см); в редакторе — кнопка «⋯» у каждой межкомнатной двери
+  for (const { d, lx, ly } of doorPx) {
+    const txt = String(d.ext ? cm(d.w) : cm(d.w) - 9), sel = ed && opt.sel === d.i;
+    if (ed) {
+      const menu = !d.ext, wpx = Math.round(txt.length * 6.2 + (menu ? 11 : 0) + 9);
+      p.push(`<g data-door="${d.i}"><rect x="${(lx - wpx / 2).toFixed(1)}" y="${(ly - 8).toFixed(1)}" width="${wpx}" height="16" rx="8" fill="${sel ? "#E07A2E" : "#FFFFFF"}" stroke="#E07A2E" stroke-width="1"/>` +
+        `<text x="${lx.toFixed(1)}" y="${(ly + 3.5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="${sel ? "#FFFFFF" : "#B4672C"}" ${F}>${txt}${menu ? "⋯" : ""}</text></g>`);
+    } else if (s >= 22) {
+      p.push(`<text x="${lx.toFixed(1)}" y="${(ly + 3).toFixed(1)}" text-anchor="middle" font-size="7.5" font-weight="700" fill="#B4672C" ${F} paint-order="stroke" stroke="#FFFFFF" stroke-width="2.5">${txt}</text>`);
+    }
+  }
+  if (ed) for (const { q, cx, cy, box } of winPx) {
+    const sel = opt.sel === "w" + q.idx, txt = winName(q.key) + "⋯", wpx = Math.round(txt.length * 5.9 + 10);
+    p.push(`<rect data-win="${q.idx}" x="${(box[0] - 5).toFixed(1)}" y="${(box[1] - 5).toFixed(1)}" width="${(box[2] + 10).toFixed(1)}" height="${(box[3] + 10).toFixed(1)}" fill="transparent"/>`);
+    p.push(`<g data-win="${q.idx}"><rect x="${(cx - wpx / 2).toFixed(1)}" y="${(cy - 8).toFixed(1)}" width="${wpx}" height="16" rx="8" fill="${sel ? "#3F7FA6" : "#FFFFFF"}" stroke="#3F7FA6" stroke-width="1"/>` +
+      `<text x="${cx.toFixed(1)}" y="${(cy + 3.5).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${sel ? "#FFFFFF" : "#2F6488"}" ${F}>${txt}</text></g>`);
+  }
+  // в редакторе: невидимые зоны дверей (чтобы попасть пальцем), поверх — ручки стен
+  if (ed) {
+    for (const { d, box } of doorPx) p.push(`<rect data-door="${d.i}" x="${(box[0] - 4).toFixed(1)}" y="${(box[1] - 4).toFixed(1)}" width="${(box[2] + 8).toFixed(1)}" height="${(box[3] + 8).toFixed(1)}" fill="transparent"/>`);
+    for (const q of lay.params.filter((x) => !x.hide)) {
+      const hd = wallHandle(lay, q, L, W), act = opt.drag === q.k, off = 17;
+      let hx = X(hd.x), hy = Y(hd.y);
+      if (hd.side) { if (q.o === "v") hy += hd.side * off; else hx += hd.side * off; }
+      const arr = q.o === "v" ? `M${hx - 6.5} ${hy} l4.5 -4 v8 z M${hx + 6.5} ${hy} l-4.5 -4 v8 z` : `M${hx} ${hy - 6.5} l-4 4.5 h8 z M${hx} ${hy + 6.5} l-4 -4.5 h8 z`;
+      const stem = hd.side ? (q.o === "v" ? line(hx, hy - hd.side * 11, hx, Y(hd.y), "#E07A2E", 2) : line(hx - hd.side * 11, hy, X(hd.x), hy, "#E07A2E", 2)) : "";
+      p.push(`<g data-wall="${q.k}">${stem}<circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="22" fill="transparent"/><circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="${act ? 12.5 : 11}" fill="#E07A2E" stroke="#FFFFFF" stroke-width="2"/><path d="${arr}" fill="#FFFFFF"/></g>`);
+  }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Планировка дома">${p.join("")}</svg>`;
+}
+
+function bSummary(c) {
+  const size = sizeOf(c), lay = layoutOf(c);
+  const houseA = size.L * size.W, terA = terraceArea(c);
+  const cl = lay.rooms.map((r) => clearOf(lay, r, size.L, size.W)), clearA = cl.reduce((t, q) => t + q.a, 0);
+  const extras = EXTRAS.filter(([k]) => c[k] && !(k === "exit2" && exit2At(c) === null) && !(k === "porch" && c.terrace !== "none")).map(([, n]) => n);
+  const terTxt = c.terrace === "along" ? `вдоль дома, ${fmt(terA / T_DEPTH)} м, ${fmt(terA)} м²`
+    : c.terrace === "end" ? `торцевая, ${endSide(c) === "left" ? "слева" : "справа"}, вход с террасы, ${fmt(terA)} м²` : "нет";
+  const main = lay.rooms.map((r, i) => [r, cl[i]]).filter(([r]) => r.t === "bed" || r.t === "kl").sort((a, b) => (a[0].t === "kl") - (b[0].t === "kl"));
+  const roomsTxt = main.map(([r, q]) => `${ROOM[r.t].n.toLowerCase()} ${fmt2(q.w)}×${fmt2(q.h)} м, ${fmt(q.a)} м²`).join("; ");
+  // проёмы дверей: межкомнатные по ширине, наружные — отдельно
+  const inner = {}, extN = lay.doors.filter((d) => d.ext).length + (exit2At(c) !== null ? 1 : 0);
+  lay.doors.filter((d) => !d.ext).forEach((d) => { inner[cm(d.w) - 9] = (inner[cm(d.w) - 9] || 0) + 1; });
+  const innerTxt = Object.keys(inner).sort().map((w) => `${w} см — ${inner[w]} шт.`).join(", ");
+  const doorsTxt = `межкомнатные двери: ${innerTxt || "нет"} (проёмы на 9 см шире, высота ${cm(DOOR_H)}); наружные — проём ${cm(DOOR_EXT)} × ${cm(DOOR_H_EXT)} см — ${extN} шт.`;
+  const rows = [
+    ["Размер", `${size.name} м`],
+    ["Площадь дома", `${fmt(houseA)} м² по обвязке, в чистоте ${fmt(clearA)} м²`],
+    ["Габариты", gabTxt(c)],
+    ["Терраса", terTxt],
+    ["Планировка", lay.name],
+    ["Комнаты", roomsTxt.charAt(0).toUpperCase() + roomsTxt.slice(1)],
+    ["Двери", doorsTxt],
+    ["Окна", winsTxt(c, lay)],
+    ["Стены", colorName(WALLS, "wall", c)],
+    ["Углы, окна, кровля", colorName(ACCENTS, "accent", c)],
+    ["Внутри", colorName(INNER, "inner", c)],
+    ["Дополнительно", extras.length ? extras.join(", ") : "нет"]
+  ];
+  const rooms = lay.rooms.map((r, i) => `${ROOM[r.t].n} ${fmt2(cl[i].w)}×${fmt2(cl[i].h)} м, ${fmt(cl[i].a)} м²`).join("; ");
+  const text = "Мой модульный дом\n" + rows.map(([k, v]) => `${k}: ${v}`).join("\n") +
+    `\nПомещения (в чистоте): ${rooms}` + (terA ? `\nОбщая площадь с террасой: ${fmt(houseA + terA)} м²` : "");
+  return { rows, text, houseA, terA, size, lay };
+}
+
+let bView = "facade";
+let bBound = false;
+function renderBuild() {
+  current = null;
+  const c = bcfg;
+  const chips = (k, items, sel) => items.map(([id, n]) => `<button type="button" class="chip" data-k="${k}" data-v="${id}" aria-pressed="${id === sel}">${esc(n)}</button>`).join("");
+  applyCustom(c);
+  const pick = (k, cur) => `<input type="color" class="sw-pick" data-cc="${k}" value="${cur}" aria-label="Выбрать свой цвет">`;
+  const sw = (k, obj, sel) => Object.entries(obj).map(([id, o]) => `<button type="button" class="swatch${id === "custom" ? " sw-custom" : ""}" data-k="${k}" data-v="${id}" aria-pressed="${id === sel}"><i style="background:${o.c}"></i><span>${esc(o.n)}</span>${id === "custom" ? pick(k, o.c) : ""}</button>`).join("");
+  app.innerHTML = `
+    <div class="topbar"${inTG ? " hidden" : ""}><button class="back" type="button" id="back">← Все дома</button></div>
+    <header class="b-head"><h1>Собрать свой дом</h1><p>Выберите размер, планировку и цвета — картинка меняется сразу.</p></header>
+    <div class="b-top">
+    <div class="b-preview">
+      <div class="b-canvas" id="b-canvas"></div>
+      <div class="b-bar">
+        <div class="b-seg" role="group" aria-label="Вид">
+          <button type="button" data-view="facade" aria-pressed="${bView === "facade"}">Спереди</button>
+          <button type="button" data-view="back" aria-pressed="${bView === "back"}">Сзади</button>
+          <button type="button" data-view="ends" aria-pressed="${bView === "ends"}">Торцы</button>
+          <button type="button" data-view="plan" aria-pressed="${bView === "plan"}">План</button>
+        </div>
+        <div class="b-meta" id="b-meta"></div>
+      </div>
+    </div>
+    <section class="b-group"><h2>Размер</h2><div class="chips">${chips("size", B_SIZES.map((s) => [s.id, `${s.name} · ${fmt(s.L * s.W)} м²`]), c.size)}</div></section>
+    <section class="b-group"><h2>Планировка</h2><div class="chips" id="b-layouts"></div><div id="b-adj"></div></section>
+    <section class="b-group"><h2>Терраса</h2><div class="chips">${chips("terrace", Object.entries(TERR).map(([id, o]) => [id, o.n]), c.terrace)}</div><div id="b-tx"></div></section>
+    <section class="b-group"><h2>Цвет стен</h2><div class="swatches">${sw("wall", WALLS, c.wall)}</div></section>
+    <section class="b-group"><h2>Углы, окна и кровля</h2><div class="swatches">${sw("accent", ACCENTS, c.accent)}</div></section>
+    <section class="b-group"><h2>Отделка внутри</h2><div class="swatches">${sw("inner", Object.fromEntries(Object.entries(INNER).map(([id, o]) => [id, { n: o.n, c: o.c || o.pal[0] }])), c.inner)}</div></section>
+    <section class="b-group"><h2>Дополнительно</h2><div class="toggles">${EXTRAS.map(([k, n]) => `<label class="toggle"><input type="checkbox" data-x="${k}"${c[k] ? " checked" : ""}><span class="sw" aria-hidden="true"></span><span class="t">${esc(n)}</span></label>`).join("")}</div></section>
+    </div>
+    <section class="block b-summary" id="b-summary">
+      <h2>Ваш дом</h2>
+      <div class="b-specs" id="b-specs"></div>
+      <p class="block-note">Изготовление 4–5 недель «под ключ», установка на участке — 1–2 дня. Точную стоимость считают под ваш проект.</p>
+      <button type="button" class="b-lead" id="b-lead">Оставить заявку на этот дом</button>
+      <div class="b-actions">
+        <button type="button" class="ghost" id="b-share">Поделиться</button>
+        <button type="button" class="ghost" id="b-img">Картинка дома</button>
+        <button type="button" class="ghost" id="b-copy">Скопировать описание</button>
+        <button type="button" class="ghost" id="b-mat">🧮 Рассчитать материалы</button>
+      </div>
+    </section>`;
+  app.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => { bView = b.dataset.view; bUpdate(); }));
+  if (!bBound) { app.addEventListener("click", bClick); bBound = true; }
+  app.querySelectorAll("[data-x]").forEach((i) => i.addEventListener("change", () => { bcfg[i.dataset.x] = i.checked; bChanged(); }));
+  document.getElementById("b-img").addEventListener("click", bImage);
+  app.querySelectorAll(".sw-pick").forEach((inp) => {
+    inp.addEventListener("click", (e) => e.stopPropagation());
+    inp.addEventListener("input", () => {
+      const k = inp.dataset.cc;
+      bcfg[k] = "custom"; bcfg[CC_KEY[k]] = inp.value; applyCustom(bcfg);
+      const b = inp.closest(".swatch"); if (b) b.querySelector("i").style.background = inp.value;
+      app.querySelectorAll(`.swatch[data-k="${k}"]`).forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.v === "custom")));
+      bSave(); bUpdate();
+    });
+  });
+  document.getElementById("b-lead").addEventListener("click", bLead);
+  document.getElementById("b-share").addEventListener("click", bShare);
+  document.getElementById("b-copy").addEventListener("click", bCopy);
+  document.getElementById("b-mat").addEventListener("click", () => bToast("Расчёт материалов — в разработке"));
+  const back = document.getElementById("back");
+  if (back) back.addEventListener("click", () => go("#/"));
+  bMain();
+  document.getElementById("b-canvas").addEventListener("click", () => { if (bView === "plan") peOpen(); });
+  bControls();
+  bUpdate();
+  window.scrollTo(0, 0);
+}
+function bClick(e) {
+  const b = e.target.closest("button[data-k]");
+  if (!b || !location.hash.startsWith("#/build")) return;
+  bcfg[b.dataset.k] = b.dataset.v;
+  if (b.dataset.k === "size" && !B_LAYOUTS[bcfg.size].some((l) => l.id === bcfg.layout)) bcfg.layout = B_LAYOUTS[bcfg.size][0].id;
+  if (["size", "layout", "terrace"].includes(b.dataset.k)) bControls();
+  bChanged();
+}
+/* Ползунки: размер спален и длина террасы, переключатель стороны торцевой террасы */
+function bControls() {
+  const c = bcfg, L = sizeOf(c).L;
+  const adjBox = document.getElementById("b-adj"), txBox = document.getElementById("b-tx");
+  const { key } = variantOf(c), edited = !!(c.pv[key] || c.dpos[key] || c.dw[key] || c.win[key] || (c.spos && c.spos[key]) || (c.tsp && c.tsp[key]));
+  adjBox.innerHTML = `<button type="button" class="ghost b-edit" id="b-edit">✎ Редактировать проект</button>
+    <p class="sl-note">План откроется на весь экран: стены, двери, окна${c.terrace === "along" ? " и терраса" : ""} — всё двигается пальцем.${edited ? " Ваши правки сохранены." : ""}</p>`;
+  document.getElementById("b-edit").addEventListener("click", peOpen);
+  if (c.terrace === "along") {
+    txBox.innerHTML = `<div class="slider"><div class="sl-lbl"><span>Длина террасы</span><b id="tlen-v"></b></div>
+      <input type="range" id="tlen" min="${alongMin(c)}" max="${L}" step="0.5" value="${alongLen(c)}" aria-label="Длина террасы"><div class="sl-lbl sl-ends"><span id="tlen-min">${fmt(alongMin(c))} м</span><span>${fmt(L)} м — вся длина</span></div></div>`;
+    document.getElementById("tlen").addEventListener("input", (e) => { bcfg.tLen = parseFloat(e.target.value); delete bcfg.tsp[variantOf(bcfg).key]; bSave(); bUpdate(); });
+  } else if (c.terrace === "end") {
+    txBox.innerHTML = `<p class="sl-note">Терраса ${endSide(c) === "left" ? "слева" : "справа"}, на всю ширину дома. Вход в дом — с террасы, через прихожую.</p>`;
+  } else txBox.innerHTML = "";
+}
+function bChanged() {
+  bSave();
+  if (inTG) { try { tg.HapticFeedback.selectionChanged(); } catch (e) {} }
+  bUpdate();
+}
+function bUpdate() {
+  const c = bcfg, sum = bSummary(c);
+  document.getElementById("b-canvas").innerHTML = bView === "plan" ? planSVG(c) : bView === "back" ? facadeSVG(c, "back") : bView === "ends" ? endsSVG(c) : facadeSVG(c);
+  app.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === bView)));
+  document.getElementById("b-meta").textContent = `${sum.size.name} · ${fmt(sum.houseA)} м²` + (sum.terA ? ` + терраса ${fmt(sum.terA)} м²` : "") + ` · ${sum.lay.name.toLowerCase()}`;
+  document.getElementById("b-layouts").innerHTML = B_LAYOUTS[c.size].map((l) => `<button type="button" class="chip" data-k="layout" data-v="${l.id}" aria-pressed="${l.id === layoutOf(c).id}">${esc(l.name)}</button>`).join("");
+  app.querySelectorAll("button[data-k]").forEach((b) => { if (b.dataset.k !== "layout") b.setAttribute("aria-pressed", String(c[b.dataset.k] === b.dataset.v)); });
+  const ex = app.querySelector('[data-x="exit2"]');
+  if (ex) { ex.disabled = c.terrace !== "along"; ex.closest(".toggle").classList.toggle("off", c.terrace !== "along"); }
+  const po = app.querySelector('[data-x="porch"]');
+  if (po) { po.disabled = c.terrace !== "none"; po.closest(".toggle").classList.toggle("off", c.terrace !== "none"); }
+  const lay = sum.lay;
+  const tl = document.getElementById("tlen");
+  if (tl) {
+    const mn = alongMin(c); tl.min = mn; { const [s0, s1] = alongSpan(c); tl.value = Math.round((s1 - s0) * 2) / 2; }
+    const tm = document.getElementById("tlen-min"); if (tm) tm.textContent = `${fmt(mn)} м` + (mn > 2 ? " — с двумя дверями" : "");
+  }
+  const tv = document.getElementById("tlen-v");
+  if (tv) tv.textContent = `${fmt(sum.terA / T_DEPTH)} м · ${fmt(sum.terA)} м²`;
+  document.getElementById("b-specs").innerHTML = sum.rows.map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("");
+}
+function bToast(msg) {
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2200);
+}
+function bCopy() {
+  const text = bSummary(bcfg).text;
+  const done = () => bToast("Описание скопировано");
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, () => fallback()); return; }
+  } catch (e) {}
+  fallback();
+  function fallback() {
+    const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); done(); } catch (e) { bToast("Не получилось скопировать"); }
+    ta.remove();
+  }
+}
+function svgToImg(svg) {
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.onload = () => res(im); im.onerror = rej;
+    im.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  });
+}
+async function bImage() {
+  const c = bcfg, sum = bSummary(c);
+  try {
+    const [fa, fb, en, pl] = await Promise.all([svgToImg(facadeSVG(c)), svgToImg(facadeSVG(c, "back")), svgToImg(endsSVG(c)), svgToImg(planSVG(c))]);
+    const Wd = 1080, pad = 48, picH = Math.round(Wd * 210 / 360);
+    const lines = sum.rows;
+    const H = pad + 70 + (picH + 24) * 4 + 30 + lines.length * 46 + 14 * 40 + 90;
+    const cv = document.createElement("canvas"); cv.width = Wd; cv.height = H;
+    const g = cv.getContext("2d");
+    g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, Wd, H);
+    g.fillStyle = "#1D2125"; g.font = "600 44px Arial, sans-serif"; g.fillText("Мой модульный дом", pad, pad + 40);
+    let y = pad + 70;
+    for (const im of [fa, fb, en]) { g.drawImage(im, 0, y, Wd, picH); y += picH + 24; }
+    g.drawImage(pl, 0, y, Wd, picH); y += picH + 46;
+    const vx = 380, maxW = Wd - vx - pad;
+    const wrap = (txt) => {
+      g.font = "600 30px Arial, sans-serif";
+      const words = txt.split(" "), out = []; let cur = "";
+      for (const w of words) { const t = cur ? cur + " " + w : w; if (g.measureText(t).width > maxW && cur) { out.push(cur); cur = w; } else cur = t; }
+      if (cur) out.push(cur); return out;
+    };
+    for (const [k, v] of lines) {
+      g.font = "30px Arial, sans-serif"; g.fillStyle = "#6A7075"; g.fillText(k, pad, y);
+      const ls = wrap(v); g.fillStyle = "#1D2125"; g.font = "600 30px Arial, sans-serif";
+      ls.forEach((t, i) => g.fillText(t, vx, y + i * 40));
+      y += 46 + (ls.length - 1) * 40;
+    }
+    g.fillStyle = "#8A9095"; g.font = "26px Arial, sans-serif";
+    g.fillText("Изготовление 4–5 недель «под ключ», установка — 1–2 дня", pad, y + 30);
+    const outCv = document.createElement("canvas"); outCv.width = Wd; outCv.height = Math.min(H, Math.round(y + 70));
+    outCv.getContext("2d").drawImage(cv, 0, 0);
+    const url = outCv.toDataURL("image/png");
+    openViewerUrl(url, inTG ? "Нажмите на картинку и удерживайте, чтобы сохранить, или сделайте скриншот" : "Картинка скачана. Её можно сохранить и отсюда");
+    if (!inTG) { const a = document.createElement("a"); a.href = url; a.download = "moy-dom.png"; document.body.appendChild(a); a.click(); a.remove(); }
+  } catch (e) {
+    bToast("Не получилось сделать картинку");
+  }
+}
+
+/* ===== Редактор плана: стены и двери двигаются пальцем ===== */
+let pe = null;
+function bMain() { setMain("Мой дом — итог", () => { const el = document.getElementById("b-summary"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }); }
+function gabTxt(c) {
+  const s = sizeOf(c), add = 0.08 + (c.ins150 ? 0.1 : 0);
+  return `по обвязке ${fmt(s.W)} × ${fmt(s.L)} м, снаружи ${fmt2(s.W + add)} × ${fmt2(s.L + add)} м`;
+}
+function peOpen() {
+  if (pe) return;
+  pe = { sel: null, drag: null, ptr: null };
+  const ov = document.createElement("div");
+  ov.className = "pe"; ov.id = "pe";
+  ov.innerHTML = `<div class="pe-top"><button type="button" class="pe-reset" id="pe-reset">Сбросить</button><b>Редактировать план</b><button type="button" class="pe-done" id="pe-done">Готово</button></div>
+    <div class="pe-canvas" id="pe-canvas"></div><div class="pe-panel" id="pe-panel"></div>
+    <div class="pe-foot"><button type="button" class="ghost pe-mat" id="pe-mat">🧮 Рассчитать материалы</button></div>`;
+  document.body.appendChild(ov);
+  document.body.classList.add("pe-open");
+  setMain(null);
+  // в Telegram свайп вниз сворачивает приложение — на время правки плана отключаем
+  if (inTG) { try { tg.BackButton.show(); if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {} }
+  document.getElementById("pe-done").addEventListener("click", peClose);
+  document.getElementById("pe-mat").addEventListener("click", () => { pe.sel = "mat"; peRender(); });
+  document.getElementById("pe-reset").addEventListener("click", () => {
+    const { key } = variantOf(bcfg);
+    delete bcfg.pv[key]; delete bcfg.dpos[key]; delete bcfg.dw[key]; delete bcfg.win[key]; delete bcfg.spos[key]; delete bcfg.tsp[key];
+    pe.sel = null; bSave(); peRender(); bToast("План вернулся к исходному");
+  });
+  const cv = document.getElementById("pe-canvas");
+  cv.addEventListener("pointerdown", (e) => {
+    const t = e.target.closest("[data-tend],[data-stove],[data-wall],[data-door],[data-win],[data-owall]");
+    if (!t) { if (pe.sel !== null) { pe.sel = null; peRender(); } return; }
+    e.preventDefault();
+    const door = t.dataset.door != null ? (t.dataset.door === "x2" ? "x2" : +t.dataset.door) : null;
+    pe.ptr = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: false, wall: t.dataset.wall || null, door,
+      win: t.dataset.win != null ? +t.dataset.win : null, owall: t.dataset.owall || null, stove: t.dataset.stove != null, tend: t.dataset.tend != null ? +t.dataset.tend : null };
+    try { cv.setPointerCapture(e.pointerId); } catch (er) {}
+    if (pe.ptr.wall) { pe.drag = pe.ptr.wall; pe.sel = null; peRender(); }
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const q = pe && pe.ptr;
+    if (!q || e.pointerId !== q.id) return;
+    if (!q.moved && Math.hypot(e.clientX - q.x, e.clientY - q.y) < 6) return;
+    q.moved = true;
+    const m = peMeters(e.clientX, e.clientY);
+    if (!m) return;
+    if (q.tend !== null) { pe.sel = "ter"; peMoveTer(q.tend, m); }
+    else if (q.wall) peMoveWall(q.wall, m);
+    else if (typeof q.door === "number") { pe.sel = q.door; peMoveDoor(q.door, m); }
+    else if (q.win !== null) { pe.sel = "w" + q.win; peMoveWin(q.win, m); }
+    else if (q.stove) { pe.sel = "stove"; const { key } = variantOf(bcfg); bcfg.spos[key] = { x: Math.round(m.x * 100) / 100, y: Math.round(m.y * 100) / 100 }; peRender(); }
+  });
+  const up = (e) => {
+    const q = pe && pe.ptr;
+    if (!q || e.pointerId !== q.id) return;
+    pe.ptr = null;
+    if (q.tend !== null) pe.sel = "ter";
+    else if (q.door !== null) pe.sel = q.door;
+    else if (q.win !== null) pe.sel = "w" + q.win;
+    else if (q.stove) pe.sel = "stove";
+    else if (q.owall && !q.moved) { const m = peMeters(e.clientX, e.clientY); if (m) peAddWin(q.owall, m); }
+    pe.drag = null; bSave(); peRender();
+  };
+  cv.addEventListener("pointerup", up);
+  cv.addEventListener("pointercancel", up);
+  document.getElementById("pe-panel").addEventListener("click", (e) => {
+    const wb = e.target.closest("[data-wk],[data-wdel]");
+    if (wb && typeof pe.sel === "string" && pe.sel[0] === "w") {
+      const list = winMaterialize(bcfg), i = +pe.sel.slice(1);
+      if (!list[i]) return;
+      if (wb.dataset.wdel != null) { list.splice(i, 1); pe.sel = null; }
+      else { list[i] = Object.assign({}, list[i], { key: wb.dataset.wk, custom: true }); }
+      if (inTG) { try { tg.HapticFeedback.selectionChanged(); } catch (er) {} }
+      bSave(); peRender(); return;
+    }
+    const b = e.target.closest("[data-dw]");
+    if (!b || typeof pe.sel !== "number") return;
+    const { key } = variantOf(bcfg);
+    bcfg.dw[key] = Object.assign({}, bcfg.dw[key], { [pe.sel]: parseFloat(b.dataset.dw) });
+    if (inTG) { try { tg.HapticFeedback.selectionChanged(); } catch (er) {} }
+    bSave(); peRender();
+  });
+  peRender();
+}
+function peClose() {
+  const ov = document.getElementById("pe");
+  if (ov) ov.remove();
+  document.body.classList.remove("pe-open");
+  if (inTG) { try { if (tg.enableVerticalSwipes) tg.enableVerticalSwipes(); } catch (e) {} }
+  pe = null;
+  if (location.hash.startsWith("#/build") && document.getElementById("b-canvas")) { bUpdate(); bMain(); }
+}
+function peMeters(cx, cy) {
+  const svg = document.querySelector("#pe-canvas svg");
+  if (!svg || !planGeo) return null;
+  const pt = svg.createSVGPoint(); pt.x = cx; pt.y = cy;
+  const v = pt.matrixTransform(svg.getScreenCTM().inverse());
+  return { x: (v.x - planGeo.ox) / planGeo.s, y: (v.y - planGeo.oy) / planGeo.s };
+}
+function peMoveWall(k, m) {
+  const { v, key } = variantOf(bcfg), q = v.params.find((x) => x.k === k);
+  if (!q) return;
+  const p = paramsOf(bcfg);
+  let val = Math.round((q.o === "v" ? m.x : m.y) / 0.05) * 0.05;
+  val = Math.max(valOf(q.min, p), Math.min(valOf(q.max, p), val));
+  val = Math.round(val * 100) / 100;
+  if (Math.abs(val - p[k]) < 0.001) return;
+  bcfg.pv[key] = Object.assign({}, bcfg.pv[key], { [k]: val });
+  peRender();
+}
+function peMoveTer(end, m) {
+  const { key } = variantOf(bcfg), L = sizeOf(bcfg).L, cur = alongSpan(bcfg);
+  const x = Math.max(0, Math.min(L, Math.round(m.x / 0.05) * 0.05));
+  const nx = end === 0 ? [Math.min(x, cur[1] - 2), cur[1]] : [cur[0], Math.max(x, cur[0] + 2)];
+  nx[0] = Math.round(nx[0] * 100) / 100; nx[1] = Math.round(nx[1] * 100) / 100;
+  const old = bcfg.tsp[key];
+  if (old && old[0] === nx[0] && old[1] === nx[1]) return;
+  bcfg.tsp[key] = nx;
+  peRender();
+}
+function peMoveDoor(i, m) {
+  const lay = layoutOf(bcfg), d = lay.doors[i];
+  if (!d) return;
+  const [mn, mx] = doorRange(d, d.w);
+  if (mn > mx) return;
+  let c = Math.round((d.o === "v" ? m.y : m.x) * 100) / 100;
+  c = Math.max(mn, Math.min(mx, c));
+  const a = c - d.w / 2, b = c + d.w / 2;
+  const clash = lay.doors.some((o) => o !== d && o.o === d.o && Math.abs(o.c - d.c) < 0.01 && a < o.b + 0.1 && b > o.a - 0.1);
+  if (clash) return;
+  const { key } = variantOf(bcfg);
+  bcfg.dpos[key] = Object.assign({}, bcfg.dpos[key], { [i]: c });
+  peRender();
+}
+function peMoveWin(i, m) {
+  const list = winMaterialize(bcfg), o = list[i];
+  if (!o) return;
+  const v = Math.round((o.wall === "S" || o.wall === "N" ? m.x : m.y) * 100) / 100;
+  if (o.m === v) return;
+  list[i] = Object.assign({}, o, { m: v });
+  peRender();
+}
+function peAddWin(wall, m) {
+  const c = bcfg, lay = layoutOf(c), { L, W } = sizeOf(c);
+  const along = wall === "S" || wall === "N" ? m.x : m.y;
+  const ri = lay.rooms.findIndex((r) => roomWalls(r, L, W).includes(wall) && (wall === "S" || wall === "N" ? along > r.x && along < r.x + r.w : along > r.y && along < r.y + r.h));
+  if (ri < 0) return;
+  const list = winMaterialize(c), r = lay.rooms[ri];
+  list.push({ ri, wall, role: r.t === "kl" || r.t === "living" ? "kl2" : r.t, key: winKeyFor(r.t), m: Math.round(along * 100) / 100, custom: true });
+  const idx = list.length - 1;
+  if (!winsOf(c, lay).some((q) => q.idx === idx)) { list.pop(); bToast("Здесь окно не помещается"); peRender(); return; }
+  pe.sel = "w" + idx; bSave(); peRender();
+}
+function peRender() {
+  if (!pe) return;
+  const c = bcfg;
+  document.getElementById("pe-canvas").innerHTML = planSVG(c, { edit: true, sel: pe.sel, drag: pe.drag });
+  const lay = layoutOf(c), box = document.getElementById("pe-panel");
+  const d = typeof pe.sel === "number" ? lay.doors[pe.sel] : null;
+  if (d) {
+    const names = d.rs.map((r) => ROOM[r.t].n.toLowerCase());
+    const title = d.ext ? (d.rs[0] && d.rs[0].t === "shed" ? "Дверь в хозблок с улицы" : "Входная дверь") : `Дверь: ${names.join(" — ")}`;
+    box.innerHTML = d.ext
+      ? `<div class="pe-card"><b class="pe-h">${esc(title)}</b><p>Проём ${cm(d.w)} × ${cm(DOOR_H_EXT)} см. Дверь можно тянуть пальцем вдоль стены.</p></div>`
+      : `<div class="pe-card"><b class="pe-h">${esc(title)}</b><div class="chips pe-chips">${DOOR_OPT.map((w) => `<button type="button" class="chip" data-dw="${w}" aria-pressed="${Math.abs(w - d.w) < 0.001}">${cm(w) - 9} см</button>`).join("")}</div>
+        <p>Ширина двери. Проём под неё ${cm(d.w)} × ${cm(DOOR_H)} см (на 9 см шире — под установку). Дверь можно тянуть пальцем вдоль стены.</p></div>`;
+  } else if (typeof pe.sel === "string" && pe.sel[0] === "w") {
+    const q = winsOf(c, lay).find((x) => "w" + x.idx === pe.sel);
+    if (!q) { pe.sel = null; return peRender(); }
+    const room = ROOM[lay.rooms[q.ri].t].n.toLowerCase();
+    box.innerHTML = `<div class="pe-card"><b class="pe-h">Окно: ${esc(room)}</b><div class="chips pe-chips">${WIN_OPT.map(([k]) => `<button type="button" class="chip" data-wk="${k}" aria-pressed="${k === q.key}">${winName(k)}</button>`).join("")}</div>
+      <p>Ширина × высота, см. Подоконник ${cm(q.sill)} см от пола. Окно можно тянуть пальцем вдоль стены.</p>
+      <button type="button" class="ghost pe-del" data-wdel="1">Убрать окно</button></div>`;
+  } else if (pe.sel === "mat") {
+    box.innerHTML = `<div class="pe-card"><b class="pe-h">Расчёт материалов</b><p>Раздел в разработке. Скоро здесь появится расчёт материалов на ваш дом — по выбранному размеру и планировке.</p></div>`;
+  } else if (pe.sel === "ter" && c.terrace === "along") {
+    const [a0, a1] = alongSpan(c);
+    box.innerHTML = `<div class="pe-card"><b class="pe-h">Терраса: ${fmt(a1 - a0)} × ${fmt(T_DEPTH)} м, ${fmt((a1 - a0) * T_DEPTH)} м²</b><p>Тяните оранжевые точки по краям террасы. ${exit2Pos(c) !== null ? "Входная дверь и второй выход всегда остаются" : "Входная дверь всегда остаётся"} на террасе, край не встаёт ближе 10 см к окну. Самая короткая — 2 м.</p></div>`;
+  } else if (pe.sel === "stove") {
+    box.innerHTML = `<div class="pe-card"><b class="pe-h">Печь</b><p>Тяните печь пальцем в нужное место. Она ставится в любую комнату, кроме санузла и прихожей; труба на фасаде переедет вслед за ней.</p></div>`;
+  } else if (pe.sel === "x2") {
+    box.innerHTML = `<div class="pe-card"><b class="pe-h">Второй выход на террасу</b><p>Проём ${cm(DOOR_EXT)} × ${cm(DOOR_H_EXT)} см. Стоит в кухне-гостиной, ближе ко входу.</p></div>`;
+  } else {
+    box.innerHTML = `<div class="pe-card"><p><b class="pe-dot">●</b> Тяните оранжевые точки — двигаются стены. Пока тянете, сверху видны ширины комнат в чистоте.</p>
+      <p>Нажмите на дверь или на её цифру — выберите проём. Дверь можно тянуть вдоль стены.</p>
+      ${c.stove && STOVE_MOVE ? "<p>Печь (тёмный квадрат) тоже можно тянуть пальцем.</p>" : ""}
+      ${c.terrace === "along" ? "<p>Терраса — тяните точки по её краям.</p>" : ""}
+      <p>Окна — голубые. Нажмите на окно — выберите размер или уберите его. Нажмите на пустое место наружной стены — добавится окно.</p>
+      ${lay.seam ? "<p>Пунктир — стык модулей, эту стену не двигаем.</p>" : ""}
+      <p class="pe-gab">Размеры комнат — в чистоте. Дом: ${esc(gabTxt(c))}.</p></div>`;
+  }
+}
+window.addEventListener("hashchange", () => { if (pe) peClose(); });
+
+/* ===== Заявка и «Поделиться своим домом» ===== */
+const BOT_NAME = "uumoduldom_bot";
+const MANAGER = "";   // @username менеджера без «@», куда приходят заявки (пока не задан)
+/* Короткая запись дома для ссылки: только латиница, цифры, «-» и «_» (так требует Telegram, до 512 знаков) */
+const ENC = {
+  sizes: () => B_SIZES.map((s) => s.id), terr: ["none", "along", "end"],
+  walls: () => Object.keys(WALLS), acc: () => Object.keys(ACCENTS), inner: () => Object.keys(INNER),
+  flags: ["stove", "pano", "exit2", "porch", "ins150", "gutter"], wkeys: () => WIN_OPT.map((o) => o[0]), wallIds: ["S", "N", "W", "E"]
+};
+const b36 = (n) => Math.max(0, Math.round(n)).toString(36);
+const b36w = (n, w) => b36(n).padStart(w, "0").slice(-w);
+function bEncode(c) {
+  const { key, v } = variantOf(c), list = B_LAYOUTS[c.size];
+  const head = [ENC.sizes().indexOf(c.size), list.findIndex((l) => l.id === c.layout), ENC.terr.indexOf(c.terrace), (c.tLen || 0) * 2,
+    ENC.walls().indexOf(c.wall), ENC.acc().indexOf(c.accent), ENC.inner().indexOf(c.inner), ENC.flags.reduce((f, k, i) => f | (c[k] ? 1 << i : 0), 0),
+    ...["wallC", "accentC", "innerC"].map((k) => (c[k] ? parseInt(c[k].slice(1), 16) : 0))].map(b36).join("-");
+  const pv = c.pv[key] ? v.params.map((q) => (typeof c.pv[key][q.k] === "number" ? b36(c.pv[key][q.k] * 100) : "")).join("-") : "";
+  const dp = c.dpos[key] ? Object.entries(c.dpos[key]).map(([i, m]) => b36w(+i, 1) + b36w(m * 100, 2)).join("") : "";
+  const dw = c.dw[key] ? Object.entries(c.dw[key]).map(([i, w]) => b36w(+i, 1) + b36w(Math.max(0, DOOR_OPT.indexOf(w)), 1)).join("") : "";
+  const wn = Array.isArray(c.win[key]) ? c.win[key].map((o) => b36w(o.ri, 1) + b36w(ENC.wallIds.indexOf(o.wall), 1) + b36w(Math.max(0, ENC.wkeys().indexOf(o.key)), 1) +
+    (typeof o.m === "number" ? b36w(o.m * 100, 2) : "zz") + (o.custom ? "1" : "0")).join("") : "";
+  const ts = c.tsp && c.tsp[key] ? b36w(c.tsp[key][0] * 20, 2) + b36w(c.tsp[key][1] * 20, 2) : "";
+  return "d" + [head, pv, dp, dw, wn, ts].join("_").replace(/_+$/, "");
+}
+function bDecode(str) {
+  try {
+    if (!str || str[0] !== "d") return null;
+    const [h, pv, dp, dw, wn, ts] = str.slice(1).split("_");
+    const H = h.split("-").map((x) => parseInt(x, 36));
+    const c = Object.assign({}, B_DEFAULT, { pv: {}, dpos: {}, dw: {}, win: {}, spos: {}, tsp: {} });
+    c.size = ENC.sizes()[H[0]] || c.size;
+    const list = B_LAYOUTS[c.size];
+    c.layout = (list[H[1]] || list[0]).id;
+    c.terrace = ENC.terr[H[2]] || "none";
+    c.tLen = (H[3] || 0) / 2;
+    c.wall = ENC.walls()[H[4]] || c.wall; c.accent = ENC.acc()[H[5]] || c.accent; c.inner = ENC.inner()[H[6]] || c.inner;
+    ENC.flags.forEach((k, i) => { c[k] = !!((H[7] || 0) & (1 << i)); });
+    ["wallC", "accentC", "innerC"].forEach((k, i) => { if (H[8 + i]) c[k] = "#" + H[8 + i].toString(16).padStart(6, "0"); });
+    const { key, v } = variantOf(c);
+    if (pv) { const vals = pv.split("-"); c.pv[key] = {}; v.params.forEach((q, i) => { if (vals[i]) c.pv[key][q.k] = parseInt(vals[i], 36) / 100; }); }
+    if (ts && ts.length === 4) c.tsp[key] = [parseInt(ts.slice(0, 2), 36) / 20, parseInt(ts.slice(2, 4), 36) / 20];
+    if (dp) { c.dpos[key] = {}; for (let i = 0; i + 3 <= dp.length; i += 3) c.dpos[key][parseInt(dp[i], 36)] = parseInt(dp.slice(i + 1, i + 3), 36) / 100; }
+    if (dw) { c.dw[key] = {}; for (let i = 0; i + 2 <= dw.length; i += 2) c.dw[key][parseInt(dw[i], 36)] = DOOR_OPT[parseInt(dw[i + 1], 36)] || DOOR_OPT[1]; }
+    if (wn) {
+      const rooms = layoutOf(c).rooms;
+      c.win[key] = [];
+      for (let i = 0; i + 6 <= wn.length; i += 6) {
+        const s = wn.slice(i, i + 6), ri = parseInt(s[0], 36), k = ENC.wkeys()[parseInt(s[2], 36)] || "120x150", custom = s[5] === "1", t = rooms[ri] ? rooms[ri].t : "";
+        const role = t === "kl" || t === "living" ? (custom ? "kl2" : k === "100x60" ? "kitchen" : "living") : t;
+        c.win[key].push({ ri, wall: ENC.wallIds[parseInt(s[1], 36)] || "S", key: k, m: s.slice(3, 5) === "zz" ? null : parseInt(s.slice(3, 5), 36) / 100, custom, role });
+      }
+    }
+    return c;
+  } catch (e) { return null; }
+}
+const bLink = (c) => `https://t.me/${BOT_NAME}?startapp=${bEncode(c)}`;
+function tgLink(url) {
+  const T = window.Telegram && window.Telegram.WebApp;
+  try { if (T && T.platform && T.platform !== "unknown") { T.openTelegramLink(url); return; } } catch (e) {}
+  window.open(url, "_blank");
+}
+/* Оставить заявку: открывается чат с менеджером, сообщение уже написано — с описанием дома и ссылкой на него */
+function bLead() {
+  const c = bcfg, sum = bSummary(c);
+  const text = "Здравствуйте! Хочу обсудить такой дом.\n\n" + sum.rows.map(([k, v]) => `${k}: ${v}`).join("\n") + `\n\nМой вариант в приложении: ${bLink(c)}`;
+  if (MANAGER) tgLink(`https://t.me/${MANAGER}?text=${encodeURIComponent(text)}`);
+  else go("#/done/my");   // пробная версия: «Поздравляю с покупкой!» вместо заявки менеджеру
+}
+/* Поделиться: ссылка открывает приложение сразу с этим домом */
+function bShare() {
+  const c = bcfg, s = sizeOf(c), link = bLink(c);
+  const text = `Посмотри, какой дом я собрал: ${s.name}, ${layoutOf(c).name.toLowerCase()}`;
+  const T = window.Telegram && window.Telegram.WebApp;
+  if (T && T.platform && T.platform !== "unknown") { tgLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`); return; }
+  if (navigator.share) { navigator.share({ title: "Мой модульный дом", text, url: link }).catch(() => {}); return; }
+  try { navigator.clipboard.writeText(link).then(() => bToast("Ссылка скопирована")); } catch (e) { bToast(link); }
+}
+/* Открыли по ссылке «Поделиться» — загрузить этот дом и сразу открыть конструктор */
+(() => {
+  let sp = null;
+  try { sp = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.start_param; } catch (e) {}
+  if (!sp) { try { sp = new URLSearchParams(location.search).get("tgWebAppStartParam") || new URLSearchParams(location.search).get("d"); } catch (e) {} }
+  const c = bDecode(sp);
+  if (!c) return;
+  bcfg = c; bSave();
+  try { history.replaceState(null, "", location.pathname + location.search + "#/build"); } catch (e) { location.hash = "#/build"; }
+})();
+
+const ABOUT = [
+  "Собственное производство в Санкт-Петербурге: дома собирают в сухом цеху.",
+  "Изготовление 4–5 недель в комплектации «под ключ», установка и монтаж на участке — 1–2 дня.",
+  "«Под ключ» — это полная чистовая отделка, электрика, разводка труб и установка всей сантехники.",
+  "Подробные фото- и видеоотчёты по всем этапам: каркас, утепление, мембраны, электрика.",
+  "Открытый монтаж сантехнических труб — в стенах нет конденсата.",
+  "Планировку и цвета придумывает заказчик. Мебель и технику можно привезти на производство, и они приедут на участок прямо в доме."
+];
+
+const tg = window.Telegram && window.Telegram.WebApp;
+const inTG = !!(tg && tg.platform && tg.platform !== "unknown");
+if (tg) { try { tg.ready(); tg.expand(); } catch (e) {} }
+if (inTG && tg.colorScheme) document.documentElement.setAttribute("data-theme", tg.colorScheme);
+
+const app = document.getElementById("app");
+const buybar = document.getElementById("buybar");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+let current = null;
+let catalogY = 0;
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+const HOUSE_SVG = '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 15 16 6l12 9" fill="none" stroke="#D88B4C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="15" width="16" height="11" rx="1" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M14 26v-5h4v5" fill="none" stroke="#fff" stroke-width="2.4"/></svg>';
+
+function renderCatalog() {
+  current = null;
+  setBuy(false);
+  app.innerHTML = `
+    <header class="brand">
+      <div class="mark">${HOUSE_SVG}</div>
+      <div>
+        <p class="brand-name">Юлия и Юрий · дома</p>
+        <p class="brand-sub">Открыто и честно строим на собственном производстве</p>
+      </div>
+    </header>
+    <div class="facts">
+      <div class="fact"><b>4–5 нед.</b><span>изготовление под ключ</span></div>
+      <div class="fact"><b>1–2 дня</b><span>установка на участке</span></div>
+      <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div>
+    </div>
+    <button class="build-cta" type="button" id="build-cta">
+      <span class="cta-pic">${facadeSVG(B_DEFAULT)}</span>
+      <span class="cta-text"><b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span></span>
+      <span class="cta-arrow" aria-hidden="true">→</span>
+    </button>
+    <p class="section-title">Дома <span class="count">· ${HOUSES.length}</span></p>
+    <div class="list">
+      ${HOUSES.map((h, i) => `
+        <button class="card" type="button" data-id="${h.id}">
+          <div class="card-photo"><img src="${src(h.photos[0])}" alt="${esc(h.name)}"${i > 1 ? ' loading="lazy"' : ""}><span class="badge">${esc(h.badge)}</span></div>
+          <div class="card-body">
+            <h2 class="card-name">${esc(h.name)}</h2>
+            <div class="dim">${esc(h.dim)}</div>
+            <p class="card-lead">${esc(h.lead)}</p>
+            <span class="card-more">Смотреть дом →</span>
+          </div>
+        </button>`).join("")}
+    </div>
+    <section class="about">
+      <h2>Как мы работаем</h2>
+      <ul>${ABOUT.map((a) => `<li>${esc(a)}</li>`).join("")}</ul>
+    </section>
+    <p class="demo-note">Пробная версия витрины.</p>`;
+  app.querySelectorAll(".card").forEach((b) => b.addEventListener("click", () => { catalogY = window.scrollY; go("#/house/" + b.dataset.id); }));
+  document.getElementById("build-cta").addEventListener("click", () => { catalogY = window.scrollY; go("#/build"); });
+  restoreCatalogScroll();
+}
+
+/* Запоминаем, где был список, и возвращаемся туда же */
+function restoreCatalogScroll() {
+  const y = catalogY;
+  window.scrollTo(0, y);
+  requestAnimationFrame(() => window.scrollTo(0, y));
+  setTimeout(() => { if (Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y); }, 120);
+}
+
+function renderHouse(h) {
+  current = h;
+  const photos = h.photos;
+  app.innerHTML = `
+    <div class="topbar"${inTG ? " hidden" : ""}><button class="back" type="button" id="back">← Все дома</button></div>
+    <div class="gallery-wrap">
+      <div class="gallery" id="gallery">
+        ${photos.map((p, i) => `<button class="slide" type="button" data-src="${p}" aria-label="Открыть фото ${i + 1}"><img src="${src(p)}" alt="${esc(h.name)}, фото ${i + 1}" ${i > 1 ? 'loading="lazy"' : ""}></button>`).join("")}
+      </div>
+      <span class="counter" id="counter">1 / ${photos.length}</span>
+    </div>
+    <div class="thumbs" id="thumbs">
+      ${photos.map((p, i) => `<button class="thumb" type="button" data-i="${i}" aria-label="Фото ${i + 1}" aria-current="${i === 0}"><img src="${src(p)}" alt=""></button>`).join("")}
+    </div>
+    <div class="house-head">
+      <h1>${esc(h.name)}</h1>
+      <div class="dim">${esc(h.dim)}</div>
+    </div>
+    <div class="specs">${h.specs.map(([k, v]) => `<div class="spec"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>
+    <div class="text">${h.text.map((t) => `<p>${esc(t)}</p>`).join("")}</div>
+    ${h.quote ? `<div class="quote">«${esc(h.quote[0])}»<small>${esc(h.quote[1])}</small></div>` : ""}
+    ${h.inside && h.inside.length ? `<section class="block"><h2>Что в доме</h2><ul class="checks">${h.inside.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>` : ""}
+    ${h.prices ? `<section class="block"><h2>${esc(h.prices.title)}</h2><div class="prices">${h.prices.rows.map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>${h.prices.note ? `<p class="block-note">${esc(h.prices.note)}</p>` : ""}</section>` : ""}
+    ${h.plans && h.plans.length ? `<section class="block"><h2>Планировка</h2><div class="plans">${h.plans.map((p) => `<button class="plan" type="button" data-src="${p}" aria-label="Открыть планировку"><img src="${src(p)}" alt="Планировка: ${esc(h.name)}" loading="lazy"></button>`).join("")}</div></section>` : ""}`;
+
+  const gallery = document.getElementById("gallery");
+  const counter = document.getElementById("counter");
+  const thumbs = [...document.querySelectorAll(".thumb")];
+  gallery.addEventListener("scroll", () => {
+    const i = Math.round(gallery.scrollLeft / gallery.clientWidth);
+    counter.textContent = (i + 1) + " / " + photos.length;
+    thumbs.forEach((t, k) => t.setAttribute("aria-current", String(k === i)));
+  }, { passive: true });
+  thumbs.forEach((t) => t.addEventListener("click", () => gallery.scrollTo({ left: gallery.clientWidth * Number(t.dataset.i), behavior: "smooth" })));
+  app.querySelectorAll(".slide, .plan").forEach((b) => b.addEventListener("click", () => openViewer(b.dataset.src)));
+  const back = document.getElementById("back");
+  if (back) back.addEventListener("click", () => go("#/"));
+  setBuy(true);
+  window.scrollTo(0, 0);
+}
+
+function renderDone(h) {
+  current = null;
+  setBuy(false);
+  app.innerHTML = `
+    <div class="done"><div class="done-inner">
+      <div class="seal"><svg viewBox="0 0 60 60" aria-hidden="true"><path d="M15 31 26 42 46 19"/></svg></div>
+      <h1>Поздравляю с покупкой!</h1>
+      <p>Это пробная версия: настоящей оплаты не было. В рабочей версии здесь будет заявка менеджеру.</p>
+      <div class="done-house">${h.svg ? `<span class="done-pic">${h.svg}</span>` : `<img src="${src(h.photos[0])}" alt="">`}<b>${esc(h.name)}</b></div>
+      <button class="ghost" type="button" id="to-catalog">Вернуться в каталог</button>
+    </div></div>`;
+  document.getElementById("to-catalog").addEventListener("click", () => go("#/"));
+  confetti();
+  if (inTG) { try { tg.HapticFeedback.notificationOccurred("success"); } catch (e) {} }
+  window.scrollTo(0, 0);
+}
+
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const box = document.createElement("div");
+  box.className = "confetti";
+  const colors = ["#B4672C", "#D88B4C", "#1D2125", "#6C8A6E", "#E9C9A6"];
+  for (let i = 0; i < 46; i++) {
+    const p = document.createElement("i");
+    p.style.left = Math.random() * 100 + "vw";
+    p.style.background = colors[i % colors.length];
+    p.style.animationDuration = 1.6 + Math.random() * 1.6 + "s";
+    p.style.animationDelay = Math.random() * 0.5 + "s";
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 4000);
+}
+
+/* Кнопка «Купить»: в Telegram — родная кнопка внизу, в браузере — своя */
+let mainAction = null;
+function onBuy() { if (mainAction) mainAction(); }
+function setMain(text, fn) {
+  mainAction = fn || null;
+  if (inTG) {
+    try {
+      if (fn) { tg.MainButton.setText(text); tg.MainButton.show(); }
+      else tg.MainButton.hide();
+    } catch (e) {}
+    buybar.hidden = true;
+  } else {
+    buybar.hidden = !fn;
+    if (fn) document.getElementById("buy").textContent = text;
+  }
+}
+function setBuy(show) { setMain("Купить", show ? () => { if (current) go("#/done/" + current.id); } : null); }
+document.getElementById("buy").addEventListener("click", onBuy);
+if (inTG) { try { tg.MainButton.onClick(onBuy); tg.BackButton.onClick(() => { if (pe) peClose(); else go("#/"); }); } catch (e) {} }
+
+/* Просмотр фото на весь экран */
+const viewer = document.getElementById("viewer");
+function openViewer(key) { openViewerUrl(src(key), ""); }
+function openViewerUrl(url, hint) {
+  document.getElementById("viewer-img").src = url;
+  const h = document.getElementById("viewer-hint");
+  h.textContent = hint || ""; h.hidden = !hint;
+  viewer.hidden = false;
+}
+function closeViewer() { viewer.hidden = true; }
+viewer.addEventListener("click", closeViewer);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeViewer(); });
+
+/* Навигация */
+function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
+function route() {
+  closeViewer();
+  const m = location.hash.match(/^#\/(house|done)\/([\w-]+)/);
+  const h = m && (m[1] === "done" && m[2] === "my" ? { id: "my", name: `${sizeOf(bcfg).name}, ${layoutOf(bcfg).name.toLowerCase()}`, svg: facadeSVG(bcfg) } : HOUSES.find((x) => x.id === m[2]));
+  const isBuild = location.hash === "#/build";
+  if (inTG) { try { (h || isBuild ? tg.BackButton.show() : tg.BackButton.hide()); } catch (e) {} }
+  if (isBuild) renderBuild();
+  else if (h && m[1] === "house") renderHouse(h);
+  else if (h && m[1] === "done") renderDone(h);
+  else renderCatalog();
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
