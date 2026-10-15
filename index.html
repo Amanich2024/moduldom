@@ -1397,15 +1397,58 @@ function applyCustom(c) {
 const colorName = (obj, k, c) => obj[c[k]].n + (c[k] === "custom" && c[CC_KEY[k]] ? ` (${c[CC_KEY[k]]})` : "");
 const B_DEFAULT = { size: "6x8", layout: "bed2", terrace: "end", tLen: 0, tSide: "right", adjv: null, adjKey: "", wall: "wood", accent: "graphite", inner: "light", stove: true, pano: false, exit2: false, porch: true, ins150: false, gutter: true };
 const B_KEY = "modul-build-v1";
-let bcfg = (() => {
-  let v = null;
-  try { v = JSON.parse(localStorage.getItem(B_KEY) || "null"); } catch (e) {}
+function bNorm(v) {
   const c = Object.assign({}, B_DEFAULT, v && B_LAYOUTS[v.size] ? v : {});
   if (c.terrace === "corner") c.terrace = "end";
   for (const k of ["pv", "dpos", "dw", "win", "spos", "tsp"]) c[k] = c[k] && typeof c[k] === "object" ? c[k] : {};
   return c;
+}
+let bcfg = (() => {
+  let v = null;
+  try { v = JSON.parse(localStorage.getItem(B_KEY) || "null"); } catch (e) {}
+  return bNorm(v);
 })();
-function bSave() { try { localStorage.setItem(B_KEY, JSON.stringify(bcfg)); } catch (e) {} }
+function bSave(fromCloud) {
+  try { localStorage.setItem(B_KEY, JSON.stringify(bcfg)); if (!fromCloud) localStorage.setItem(B_KEY + "-t", String(Date.now())); } catch (e) {}
+  if (!fromCloud) cloudSave();
+}
+/* Облако Telegram: план дома хранится за человеком и открывается на всех его устройствах. В обычном браузере — только в этом браузере */
+var cloudTimer = 0;
+function cloudStore() { try { return inTG && tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9") ? tg.CloudStorage : null; } catch (e) { return null; } }
+function cloudSave() {
+  const cs = cloudStore(); if (!cs) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(() => {
+    try {
+      const s = JSON.stringify(bcfg), n = Math.ceil(s.length / 4000) || 1;
+      let t = String(Date.now()); try { t = localStorage.getItem(B_KEY + "-t") || t; } catch (e) {}
+      for (let i = 0; i < n; i++) cs.setItem("plan" + i, s.slice(i * 4000, (i + 1) * 4000));
+      cs.setItem("plan_n", String(n)); cs.setItem("plan_t", t);
+    } catch (e) {}
+  }, 700);
+}
+function cloudLoad() {
+  const cs = cloudStore(); if (!cs) return;
+  try {
+    cs.getItems(["plan_n", "plan_t"], (err, v) => {
+      if (err || !v) return;
+      const n = parseInt(v.plan_n, 10) || 0, t = parseInt(v.plan_t, 10) || 0;
+      let lt = 0; try { lt = parseInt(localStorage.getItem(B_KEY + "-t"), 10) || 0; } catch (e) {}
+      if (!n || t <= lt) { if (lt > t) cloudSave(); return; }
+      const keys = Array.from({ length: n }, (_, i) => "plan" + i);
+      cs.getItems(keys, (e2, parts) => {
+        if (e2 || !parts || pe) return;
+        try {
+          const v2 = JSON.parse(keys.map((k) => parts[k] || "").join(""));
+          if (!v2 || !B_LAYOUTS[v2.size]) return;
+          bcfg = bNorm(v2); bSave(true);
+          try { localStorage.setItem(B_KEY + "-t", String(t)); } catch (e) {}
+          if (location.hash.startsWith("#/build")) renderBuild();
+        } catch (e) {}
+      });
+    });
+  } catch (e) {}
+}
 
 const fmt = (v) => (Math.round(v * 10) / 10).toString().replace(".", ",");
 let svgUid = 0;
@@ -3099,6 +3142,7 @@ function route() {
 }
 window.addEventListener("hashchange", route);
 route();
+cloudLoad();
 </script>
 </body>
 </html>
