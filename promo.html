@@ -558,7 +558,7 @@ html.has-house { overflow: hidden; }
 .hero__brand p { font-size: var(--sc-t-sm); color: var(--sc-ink-soft); max-width: 30ch; }
 
 /* ===== 2 · Рейка домов ===== */
-.rail { gap: clamp(1rem, 2.4vw, 2.5rem); align-items: flex-start; padding-inline: var(--sc-gutter); padding-top: calc(var(--nav-h) + clamp(1.5rem, 6vh, 4.5rem)); height: 100%; box-sizing: border-box; }
+.rail { display: flex; will-change: transform; gap: clamp(1rem, 2.4vw, 2.5rem); align-items: flex-start; padding-inline: var(--sc-gutter); padding-top: calc(var(--nav-h) + clamp(1.5rem, 6vh, 4.5rem)); height: 100%; box-sizing: border-box; }
 .rail > * { flex: 0 0 auto; }
 .rail__lead { width: min(78vw, 22rem); padding-top: var(--sc-6); }
 .rail__lead h2 { font-size: var(--sc-t-2xl); }
@@ -2379,8 +2379,24 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
     railEl.removeAttribute('data-sc-pan'); railEl.classList.add('rail--list');
     var st = rail.querySelector('[data-sc-stage]'); if (st) st.removeAttribute('data-sc-stage');
   } else {
-    var travel = Math.max(0, railEl.scrollWidth - innerWidth);
-    rail.setAttribute('data-sc-span', (1.2 + travel / innerHeight).toFixed(2));
+    /* Компьютер: лента едет не сплошняком — каждый дом останавливается в середине экрана (стоянка), потом плавно едет следующий */
+    railEl.removeAttribute('data-sc-pan');
+    var HOLD = 0.45, MOVE = 0.4;   // в высотах экрана: стоянка у дома и переезд к следующему
+    var railStops = [0], railUnits = 1;
+    var railMeasure = function () {
+      var over = Math.max(0, railEl.scrollWidth - innerWidth), rr = railEl.getBoundingClientRect(), xs = [0];
+      railEl.querySelectorAll('.exhibit').forEach(function (ex) {
+        var r = ex.getBoundingClientRect();
+        xs.push(Math.max(0, Math.min(over, r.left + r.width / 2 - rr.left - innerWidth / 2)));
+      });
+      xs.push(over);
+      railStops = [xs[0]];
+      xs.forEach(function (x) { if (x - railStops[railStops.length - 1] > 4) railStops.push(x); });
+      railUnits = railStops.length * HOLD + (railStops.length - 1) * MOVE;
+    };
+    railMeasure();
+    rail.setAttribute('data-sc-span', (1 + railUnits).toFixed(2));
+    addEventListener('resize', railMeasure);
   }
 
   /* Лента на компьютере: дом у середины экрана крупнее и ярче, его фото приближается; пока лента едет, фото в карточках чуть сдвигаются (глубина) */
@@ -2391,6 +2407,14 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
       if (current !== null) return;
       var sr = rail.getBoundingClientRect();
       if (sr.bottom < 0 || sr.top > innerHeight) return;
+      var u = (parseFloat(rail.style.getPropertyValue('--sc-p')) || 0) * railUnits, x = railStops[railStops.length - 1];
+      for (var j = 0; j < railStops.length; j++) {
+        if (u <= HOLD || j === railStops.length - 1) { x = railStops[j]; break; }
+        u -= HOLD;
+        if (u <= MOVE) { var t = u / MOVE; t = t * t * (3 - 2 * t); x = railStops[j] + (railStops[j + 1] - railStops[j]) * t; break; }
+        u -= MOVE;
+      }
+      railEl.style.transform = 'translate3d(' + (-x).toFixed(1) + 'px,0,0)';
       var mid = innerWidth / 2, reach = innerWidth * 0.42;
       exs.forEach(function (ex) {
         var r = ex.getBoundingClientRect(), cx = r.left + r.width / 2;
