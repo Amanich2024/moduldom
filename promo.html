@@ -574,14 +574,15 @@ html.has-house { overflow: hidden; }
 .rail__end p { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-lg); line-height: 1.25; }
 .rail__end .btns { margin-top: var(--sc-4); }
 @media (prefers-reduced-motion: no-preference) {
-  .exhibit { --k: clamp(0, calc(var(--sc-p, 0) * (var(--n, 4) + 1.5) - var(--i) + 2.2), 1);
-    opacity: calc(0.55 + var(--k) * 0.45); transform: translateY(calc((1 - var(--k)) * 22px)); }
+  .exhibit { opacity: calc(0.45 + var(--e, 1) * 0.55); transform: scale(calc(0.82 + var(--e, 1) * 0.18)); transform-origin: 50% 40%; }
+  .exhibit figure img { transform: translateX(var(--px, 0%)) scale(calc(1.08 + var(--e, 1) * 0.08)); }
 }
 /* Телефон: дома списком, сверху вниз */
 .rail--list { display: grid; gap: var(--sc-7); padding: calc(var(--nav-h) + var(--sc-6)) var(--sc-gutter) var(--sc-8); height: auto; }
 .rail--list > * { width: auto; }
 .rail--list .rail__lead { padding-top: 0; width: auto; }
 .rail--list .exhibit { width: 100%; opacity: 1; transform: none; }
+.rail--list .exhibit figure img { transform: none; }
 .rail--list .exhibit figure { max-height: none; }
 .rail--list .rail__end { padding-top: 0; width: auto; }
 
@@ -2379,6 +2380,26 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   } else {
     var travel = Math.max(0, railEl.scrollWidth - innerWidth);
     rail.setAttribute('data-sc-span', (1.2 + travel / innerHeight).toFixed(2));
+  }
+
+  /* Лента на компьютере: дом у середины экрана крупнее и ярче, его фото приближается; пока лента едет, фото в карточках чуть сдвигаются (глубина) */
+  if (wide.matches && !reduce) {
+    var exs = [].slice.call(railEl.querySelectorAll('.exhibit'));
+    var railFocus = function () {
+      requestAnimationFrame(railFocus);
+      if (current !== null) return;
+      var sr = rail.getBoundingClientRect();
+      if (sr.bottom < 0 || sr.top > innerHeight) return;
+      var mid = innerWidth / 2, reach = innerWidth * 0.42;
+      exs.forEach(function (ex) {
+        var r = ex.getBoundingClientRect(), cx = r.left + r.width / 2;
+        var d = Math.max(0, Math.min(1, Math.abs(cx - mid) / reach) - 0.05) / 0.95;
+        var k = 1 - d, e = k * k * (3 - 2 * k);
+        ex.style.setProperty('--e', e.toFixed(3));
+        ex.style.setProperty('--px', (Math.max(-1, Math.min(1, (cx - mid) / mid)) * -3.5).toFixed(2) + '%');
+      });
+    };
+    requestAnimationFrame(railFocus);
   }
 
   /* Вечерняя сцена: видимая область рисунка под раскладку */
