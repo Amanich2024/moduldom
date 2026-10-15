@@ -43,6 +43,16 @@
 html, body { margin: 0; }
 body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 .app { max-width: 520px; margin: 0 auto; padding-inline: 16px; padding-block: calc(14px + env(safe-area-inset-top, 0px)) calc(104px + env(safe-area-inset-bottom, 0px)); }
+/* Фон по бокам колонки на широком экране: то же фото дома из середины экрана, сильно размытое и приглушённое */
+.amb { display: none; position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: var(--bg); }
+.amb img { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; object-fit: cover; filter: blur(46px) saturate(1.1); opacity: 0; transition: opacity 800ms ease; will-change: opacity; }
+.amb img.on { opacity: 1; }
+.amb::after { content: ""; position: absolute; inset: 0; background: rgba(238, 240, 236, 0.5); }
+@media (min-width: 700px) {
+  .amb { display: block; }
+  .app { background: var(--bg); min-height: 100vh; box-shadow: 0 0 0 1px rgba(17, 20, 22, 0.05), 0 24px 70px -24px rgba(17, 20, 22, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) { .amb img { transition: none; } }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--wood); outline-offset: 2px; }
 [hidden] { display: none !important; }
@@ -301,6 +311,7 @@ body.pe-open { overflow: hidden; }
 </style>
 </head>
 <body>
+<div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
 <div class="app" id="app"></div>
 <div class="buybar" id="buybar" hidden><div class="buybar-inner"><button class="buy" id="buy" type="button">Купить</button></div></div>
 <div class="viewer" id="viewer" hidden><div class="viewer-strip" id="viewer-strip" hidden></div><img id="viewer-img" alt=""><p id="viewer-hint" hidden></p><span class="viewer-count" id="viewer-count" hidden></span><button type="button" class="viewer-nav" id="viewer-prev" aria-label="Предыдущее фото">‹</button><button type="button" class="viewer-nav" id="viewer-next" aria-label="Следующее фото">›</button><button type="button" id="viewer-close" aria-label="Закрыть">×</button></div>
@@ -3126,6 +3137,31 @@ function ovPush(kind) { try { history.pushState({ ov: kind }, "", location.href)
 function ovPop() { if (!ovKind) return; ovKind = null; try { history.back(); } catch (e) {} }
 window.addEventListener("popstate", () => { if (!ovKind) return; const k = ovKind; ovKind = null; if (k === "pe" && pe) peClose(true); else if (k === "viewer" && !viewer.hidden) closeViewer(true); });
 /* Навигация */
+/* Фон по бокам на широком экране: каталог — дом в середине экрана, страница дома — этот дом, конструктор — без фото */
+const amb = document.getElementById("amb"), ambImgs = amb ? amb.querySelectorAll("img") : [];
+let ambCur = null, ambI = 0, ambRaf = 0;
+function ambSet(url) {
+  if (!amb || url === ambCur) return;
+  ambCur = url;
+  if (!url) { ambImgs.forEach((im) => im.classList.remove("on")); return; }
+  const next = ambImgs[ambI ^ 1], prev = ambImgs[ambI];
+  next.onload = () => { if (next.getAttribute("src") !== ambCur) return; next.classList.add("on"); prev.classList.remove("on"); ambI ^= 1; };
+  next.src = url;
+}
+function ambCheck() {
+  ambRaf = 0;
+  if (!amb || !matchMedia("(min-width: 700px)").matches) return;
+  const m = location.hash.match(/^#\/house\/([\w-]+)/);
+  if (m) { const h = HOUSES.find((x) => x.id === m[1]); ambSet(h ? src(h.cover || h.photos[0]) : ""); return; }
+  if (location.hash.startsWith("#/build") || location.hash.startsWith("#/done")) { ambSet(""); return; }
+  let best = null, bd = 1e9; const mid = innerHeight / 2;
+  app.querySelectorAll(".list > .card").forEach((c) => { const r = c.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return; const d = Math.abs(r.top + r.height / 2 - mid); if (d < bd) { bd = d; best = c; } });
+  const im = best && best.querySelector(".card-photo img");
+  ambSet(im ? im.getAttribute("src") : (app.querySelector(".list > .card .card-photo img") || { getAttribute: () => "" }).getAttribute("src"));
+}
+const ambQueue = () => { if (!ambRaf) ambRaf = requestAnimationFrame(ambCheck); };
+addEventListener("scroll", ambQueue, { passive: true });
+addEventListener("resize", ambQueue);
 function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
 function route() {
   if (ovKind === "viewer") ovKind = null;
@@ -3139,6 +3175,7 @@ function route() {
   else if (h && m[1] === "house") renderHouse(h);
   else if (h && m[1] === "done") renderDone(h);
   else renderCatalog();
+  ambQueue();
 }
 window.addEventListener("hashchange", route);
 route();
