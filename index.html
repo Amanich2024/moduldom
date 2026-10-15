@@ -126,7 +126,13 @@ button { font: inherit; color: inherit; }
 
 /* Экран покупки */
 .done { min-height: 70vh; display: grid; place-items: center; text-align: center; padding-top: 24px; }
-.done-inner { display: grid; gap: 14px; justify-items: center; }
+.done-inner { display: grid; gap: 14px; justify-items: center; width: min(100%, 560px); }
+.done-photo { position: relative; width: 100%; margin: 6px 0 0; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden; background: var(--line); box-shadow: 0 14px 34px -14px rgba(17, 20, 22, 0.45); }
+.done-photo img, .done-photo > svg { display: block; width: 100%; height: 100%; object-fit: cover; }
+.done-photo.is-svg { aspect-ratio: 360 / 210; background: var(--surface); }
+.done-photo .seal { position: absolute; right: 14px; bottom: 14px; width: 68px; height: 68px; box-shadow: 0 0 0 4px var(--bg); }
+.done-photo .seal svg { width: 36px; height: 36px; }
+.done-name { font-family: var(--f-display); font-weight: 600; font-size: 24px; line-height: 1.2; color: var(--ink) !important; max-width: none !important; text-wrap: balance; }
 .seal { width: 112px; height: 112px; border-radius: 50%; background: var(--wood); display: grid; place-items: center; }
 .seal svg { width: 60px; height: 60px; }
 .seal path { stroke: var(--wood-ink); stroke-width: 7; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 80; stroke-dashoffset: 0; animation: draw 0.6s ease-out both; }
@@ -267,6 +273,7 @@ const HOUSES = [
   "name": "Чёрный снаружи, белый внутри",
   "dim": "6×8,5 м: дом 6×6 и терраса 2,5×6",
   "lead": "Две спальни, кухня-гостиная с печью, прихожая и санузел. Сдан в сентябре 2026.",
+  "cover": "hero-1",
   "photos": [
    "h1-01",
    "h1-02",
@@ -328,6 +335,7 @@ const HOUSES = [
   "name": "Баня с жилой комнатой",
   "dim": "31,5 м² + терраса 12 м²",
   "lead": "Комната 14 м², парная, душевая и санузел, терраса в углу дома.",
+  "cover": "c2",
   "photos": [
    "h2-01",
    "h2-02",
@@ -381,6 +389,7 @@ const HOUSES = [
   "name": "Дачный дом 3×9 с хозблоком",
   "dim": "3×9 м + хозблок",
   "lead": "Кухня-гостиная с печью, санузел с душем и хозблок со своим входом.",
+  "cover": "c3",
   "photos": [
    "h3-01",
    "h3-02",
@@ -433,6 +442,7 @@ const HOUSES = [
   "name": "Баня 2,5×6",
   "dim": "2,5×6 м",
   "lead": "Комната отдыха, моечная и парная. Гарантия 5 лет.",
+  "cover": "c4",
   "photos": [
    "h4-01",
    "h4-02",
@@ -486,6 +496,7 @@ const HOUSES = [
   "name": "Дом 48 м² с угловой террасой",
   "dim": "48 м² + угловая терраса",
   "lead": "Две спальни, гостиная и кухня-столовая. Фото прислали заказчики после переезда.",
+  "cover": "c5",
   "photos": [
    "h5-01",
    "h5-02",
@@ -542,6 +553,7 @@ const HOUSES = [
   "name": "Зимний дом 69 м²",
   "dim": "54 м² + терраса 15 м²",
   "lead": "Кухня-гостиная с печью, спальни и терраса 6×2,5 м. Сдан в июне 2026.",
+  "cover": "c14",
   "photos": [
    "h14-01",
    "h14-02",
@@ -587,6 +599,7 @@ const HOUSES = [
   "name": "Дом 69 м² с террасой",
   "dim": "54 м² + терраса 15 м²",
   "lead": "Тёплая часть 6×9 м и терраса в торце дома. 4 недели под ключ.",
+  "cover": "c6",
   "photos": [
    "h6-01",
    "h6-02",
@@ -626,6 +639,7 @@ const HOUSES = [
   "name": "Дом с баней",
   "dim": "дом со своей парной",
   "lead": "Кухня-гостиная, спальня, санузел с душем и своя парная.",
+  "cover": "c7",
   "photos": [
    "h7-01",
    "h7-02",
@@ -680,6 +694,7 @@ const HOUSES = [
   "name": "Дом-студия 27 м²",
   "dim": "27 м²",
   "lead": "Зимний дом с печью: комната, спальня и санузел. 12–15 дней под ключ.",
+  "cover": "c8",
   "photos": [
    "h8-01",
    "h8-02",
@@ -726,6 +741,7 @@ const HOUSES = [
   "name": "Дом 48 м², зелёный",
   "dim": "48 м² + терраса",
   "lead": "Кухня-гостиная с печью, спальни и санузел. 3 недели, установка 1 день.",
+  "cover": "c9",
   "photos": [
    "h9-01",
    "h9-02",
@@ -777,6 +793,7 @@ const HOUSES = [
   "name": "Дом 48 м², рыжий с графитом",
   "dim": "48 м², 6×8 м",
   "lead": "Кухня-гостиная с печью, спальня и санузел. 3 недели под ключ.",
+  "cover": "c10",
   "photos": [
    "h10-01",
    "h10-02",
@@ -833,6 +850,7 @@ const HOUSES = [
   "name": "Дом 54 м², бордовый",
   "dim": "54 м² + терраса",
   "lead": "Две спальни, кухня-гостиная с печью и терраса. Планировку можно изменить бесплатно.",
+  "cover": "c11",
   "photos": [
    "h11-01",
    "h11-02",
@@ -884,6 +902,7 @@ const HOUSES = [
   "name": "Зимний минидом",
   "dim": "кухня-гостиная, спальня + терраса 14 м²",
   "lead": "Кухня-гостиная, спальня, санузел и терраса 14 м². 2 недели под ключ.",
+  "cover": "c12",
   "photos": [
    "h12-01",
    "h12-02",
@@ -938,6 +957,7 @@ const HOUSES = [
   "name": "Минидом в Карелии",
   "dim": "минидом в зимнем лесу",
   "lead": "Минидом в зимнем лесу: фото прислали заказчики.",
+  "cover": "c16",
   "photos": [
    "h16-01",
    "h16-02",
@@ -979,6 +999,7 @@ const HOUSES = [
   "name": "Зимний дом 40 м²",
   "dim": "30 м² + терраса 10 м²",
   "lead": "Тёплая часть 30 м² и крытая терраса 10 м². 3 недели, установка 1 день.",
+  "cover": "c15",
   "photos": [
    "h15-01",
    "h15-02",
@@ -1023,6 +1044,7 @@ const HOUSES = [
   "name": "Дом на вырост, 72 м²",
   "dim": "60 м² + терраса 12 м²",
   "lead": "Три модуля: 60 м² и терраса 12 м². Год назад здесь стоял один модуль 27 м².",
+  "cover": "c13",
   "photos": [
    "h13-01",
    "h13-02",
@@ -2780,10 +2802,10 @@ function renderDone(h) {
   setBuy(false);
   app.innerHTML = `
     <div class="done"><div class="done-inner">
-      <div class="seal"><svg viewBox="0 0 60 60" aria-hidden="true"><path d="M15 31 26 42 46 19"/></svg></div>
       <h1>Поздравляю с покупкой!</h1>
+      <figure class="done-photo${h.svg ? " is-svg" : ""}">${h.svg ? h.svg : `<img src="${src(h.cover || h.photos[0])}" alt="${esc(h.name)}">`}<span class="seal"><svg viewBox="0 0 60 60" aria-hidden="true"><path d="M15 31 26 42 46 19"/></svg></span></figure>
+      <p class="done-name">${esc(h.name)}</p>
       <p>Это пробная версия: настоящей оплаты не было. В рабочей версии здесь будет заявка менеджеру.</p>
-      <div class="done-house">${h.svg ? `<span class="done-pic">${h.svg}</span>` : `<img src="${src(h.photos[0])}" alt="">`}<b>${esc(h.name)}</b></div>
       <button class="ghost" type="button" id="to-catalog">Вернуться в каталог</button>
     </div></div>`;
   document.getElementById("to-catalog").addEventListener("click", () => go("#/"));
