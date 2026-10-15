@@ -197,6 +197,13 @@ button { font: inherit; color: inherit; }
 .cta-text b { display: block; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.15; }
 .cta-text span { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
 .cta-arrow { color: var(--wood); font-weight: 600; font-size: 18px; }
+/* Узкая полоска «Собрать свой дом»: появляется сверху, когда большая карточка ушла вверх, и держится, пока листают дома */
+.build-bar { position: fixed; z-index: 30; top: 0; left: 50%; width: min(100%, 520px); box-sizing: border-box; display: grid; grid-template-columns: 54px minmax(0, 1fr) 16px; gap: 10px; align-items: center; padding: calc(6px + env(safe-area-inset-top, 0px)) 16px 6px; border: 0; border-radius: 0 0 14px 14px; background: var(--surface); box-shadow: 0 8px 20px -12px rgba(17, 20, 22, 0.5); color: var(--ink); text-align: left; cursor: pointer; transform: translate(-50%, -115%); visibility: hidden; transition: transform 220ms ease, visibility 0s linear 220ms; }
+.build-bar.is-on { transform: translate(-50%, 0); visibility: visible; transition: transform 220ms ease; }
+.bar-pic { display: block; border-radius: 6px; overflow: hidden; aspect-ratio: 360 / 210; }
+.bar-pic svg { display: block; width: 100%; height: 100%; }
+.build-bar b { font-family: var(--f-display); font-weight: 600; font-size: 16px; line-height: 1.2; }
+@media (prefers-reduced-motion: reduce) { .build-bar, .build-bar.is-on { transition: none; } }
 .b-head h1 { font-family: var(--f-display); font-weight: 600; font-size: 28px; line-height: 1.1; margin: 2px 0 4px; }
 .b-head p { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
 .b-preview { position: sticky; top: 0; z-index: 3; background: var(--bg); margin: 0 -16px; padding: 8px 16px 10px; }
@@ -2810,6 +2817,14 @@ function focusCards() {
     c.querySelector(".card-photo").style.setProperty("--z", (1 + e * 0.06).toFixed(3));
   });
 }
+/* Полоска «Собрать свой дом» сверху: видна, когда большая карточка ушла за верх экрана */
+function barCheck() {
+  const bar = document.getElementById("build-bar"), cta = document.getElementById("build-cta");
+  if (!bar || !cta) return;
+  const on = cta.getBoundingClientRect().bottom < 8;
+  if (on !== bar.classList.contains("is-on")) { bar.classList.toggle("is-on", on); bar.setAttribute("aria-hidden", on ? "false" : "true"); bar.tabIndex = on ? 0 : -1; }
+}
+addEventListener("scroll", barCheck, { passive: true });
 const queueFocus = () => { if (!focusRaf) focusRaf = requestAnimationFrame(focusCards); };
 addEventListener("scroll", queueFocus, { passive: true });
 addEventListener("resize", queueFocus);
@@ -2873,6 +2888,11 @@ function renderCatalog() {
       <span class="cta-text"><b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span></span>
       <span class="cta-arrow" aria-hidden="true">→</span>
     </button>
+    <button class="build-bar" type="button" id="build-bar" aria-hidden="true" tabindex="-1">
+      <span class="bar-pic">${facadeSVG(B_DEFAULT)}</span>
+      <b>Собрать свой дом</b>
+      <span class="cta-arrow" aria-hidden="true">→</span>
+    </button>
     <p class="section-title">Дома <span class="count">· ${HOUSES.length}</span></p>
     <div class="list">
       ${HOUSES.map((h, i) => `
@@ -2899,8 +2919,9 @@ function renderCatalog() {
   app.querySelectorAll(".card").forEach((b) => b.addEventListener("click", () => { catalogY = window.scrollY; go("#/house/" + b.dataset.id); }));
   app.querySelectorAll(".voice[data-id]").forEach((v) => { const open = () => { catalogY = window.scrollY; go("#/house/" + v.dataset.id); }; v.addEventListener("click", open); v.addEventListener("keydown", (e) => { if (e.key === "Enter") open(); }); });
   document.getElementById("build-cta").addEventListener("click", () => { catalogY = window.scrollY; go("#/build"); });
+  document.getElementById("build-bar").addEventListener("click", () => { catalogY = window.scrollY; go("#/build"); });
   restoreCatalogScroll();
-  requestAnimationFrame(focusCards);
+  requestAnimationFrame(focusCards); requestAnimationFrame(barCheck);
 }
 
 /* Запоминаем, где был список, и возвращаемся туда же */
