@@ -1,0 +1,2521 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Юлия и Юрий · дома</title>
+<meta name="description" content="Модульные дома и бани с собственного производства в Петербурге: дома за последний год с фото, подписями и планами, отзывы и вечер в готовом доме.">
+<meta name="theme-color" content="#EDEFEC">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231D2125'/><path d='M7 17 16 9l9 8v8H7z' fill='%23D88B4C'/></svg>">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
+<style>
+/* ============================================================================
+   scrollcraft.css: the taste floor
+   ----------------------------------------------------------------------------
+   Two layers, and the split matters:
+
+     TOKENS   what you override per brand. Colour roles, the type ramp, the
+              spacing scale, elevation, motion. A brand is ~12 values.
+     DEVICES  what the engine drives. Do not restyle these to taste; they are
+              the mechanism. Style your own markup instead.
+
+   Nothing here draws a "component". There are no card, badge, or pill classes,
+   because a stylesheet that ships those is how every page built on it ends up
+   with the same shapes. You get a floor and a vocabulary; the composition is
+   yours.
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- tokens -- */
+:root {
+  /* --- colour roles. Override these six and the page is rebranded. -------- */
+  --sc-canvas:      #08090b;   /* the page ground. Drift interpolates this.   */
+  --sc-surface:     #101217;   /* anything raised off the ground             */
+  --sc-ink:         #f4f2ef;   /* primary text                               */
+  --sc-ink-soft:    #9a9ba1;   /* secondary text. Tinted, never flat gray.   */
+  --sc-accent:      #d8ff3e;   /* ONE accent. It owns a region, not confetti. */
+  --sc-accent-ink:  #08090b;   /* text that sits on the accent               */
+
+  --sc-hairline:    color-mix(in oklab, var(--sc-ink) 12%, transparent);
+  --sc-hairline-strong: color-mix(in oklab, var(--sc-ink) 22%, transparent);
+
+  /* --- type. Two families max. Display carries voice, text carries prose. - */
+  --sc-font-display: "Instrument Sans", "Geist", system-ui, sans-serif;
+  --sc-font-text:    "Geist", system-ui, sans-serif;
+  --sc-font-mono:    "Geist Mono", ui-monospace, monospace;
+
+  /* Fluid ramp. Tracking tightens as size grows because a face set at 6rem
+     with 0 tracking reads loose; this is optical correction, not decoration. */
+  --sc-t-xs:   clamp(0.75rem, 0.72rem + 0.15vw, 0.82rem);
+  --sc-t-sm:   clamp(0.875rem, 0.84rem + 0.18vw, 0.95rem);
+  --sc-t-base: clamp(1rem, 0.96rem + 0.22vw, 1.125rem);
+  --sc-t-lg:   clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  --sc-t-xl:   clamp(1.6rem, 1.35rem + 1.2vw, 2.25rem);
+  --sc-t-2xl:  clamp(2.1rem, 1.6rem + 2.4vw, 3.4rem);
+  --sc-t-3xl:  clamp(2.8rem, 1.9rem + 4.2vw, 5rem);
+  --sc-t-4xl:  clamp(3.4rem, 1.9rem + 6.6vw, 7.5rem);
+
+  --sc-track-tight:  -0.035em;
+  --sc-track-snug:   -0.02em;
+  --sc-track-normal: -0.005em;
+  --sc-track-wide:    0.08em;
+
+  --sc-leading-none: 0.94;
+  --sc-leading-tight: 1.06;
+  --sc-leading-body: 1.62;
+
+  --sc-measure: 62ch;
+
+  /* --- space. 4px base: the useful middle steps an 8-only scale misses. --- */
+  --sc-1: 0.25rem;  --sc-2: 0.5rem;   --sc-3: 0.75rem;  --sc-4: 1rem;
+  --sc-5: 1.5rem;   --sc-6: 2rem;     --sc-7: 3rem;     --sc-8: 4rem;
+  --sc-9: 6rem;     --sc-10: 8rem;    --sc-11: 12rem;
+
+  /* Section rhythm is fluid so a phone doesn't inherit desktop air. */
+  --sc-section: clamp(4.5rem, 9vw, 11rem);
+  --sc-gutter:  clamp(1.25rem, 5vw, 5.5rem);
+  --sc-maxw:    82rem;
+
+  /* --- radius. Pick one scale for the page and hold it. ------------------- */
+  --sc-r-sm: 6px;  --sc-r-md: 12px;  --sc-r-lg: 20px;  --sc-r-pill: 999px;
+
+  /* --- elevation. Every shadow has an offset AND a soft blur, and is tinted
+         to the canvas hue. A zero-offset coloured halo is decoration, not
+         depth, so there isn't one here. ---------------------------------- */
+  --sc-shadow-color: 220 40% 2%;
+  --sc-e1: 0 1px 2px hsl(var(--sc-shadow-color) / 0.28),
+           0 2px 6px -1px hsl(var(--sc-shadow-color) / 0.20);
+  --sc-e2: 0 2px 4px hsl(var(--sc-shadow-color) / 0.24),
+           0 8px 18px -4px hsl(var(--sc-shadow-color) / 0.30);
+  --sc-e3: 0 4px 8px hsl(var(--sc-shadow-color) / 0.22),
+           0 18px 40px -8px hsl(var(--sc-shadow-color) / 0.38),
+           0 48px 90px -24px hsl(var(--sc-shadow-color) / 0.30);
+
+  /* Edge light: a 1px top highlight sells a raised surface better than any
+     amount of blur, because real raised things catch light on their lip. */
+  --sc-edge: inset 0 1px 0 color-mix(in oklab, var(--sc-ink) 10%, transparent);
+
+  /* --- motion. Built-in CSS easings are too weak for UI. ------------------ */
+  --sc-ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --sc-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --sc-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --sc-d-fast: 160ms;  --sc-d-base: 240ms;  --sc-d-slow: 420ms;
+
+  --sc-z-stage: 1; --sc-z-copy: 20; --sc-z-chrome: 60;
+}
+
+/* --------------------------------------------------------------- reset -- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--sc-canvas);
+  color: var(--sc-ink);
+  font-family: var(--sc-font-text);
+  font-size: var(--sc-t-base);
+  line-height: var(--sc-leading-body);
+  letter-spacing: var(--sc-track-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-synthesis-weight: none;
+  overflow-x: clip;
+}
+img, video, canvas, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+/* ------------------------------------------------- the browser surfaces --
+   The parts you did not draw still carry the design. Selection, caret, focus
+   ring, scrollbar and tabular numerals all ship with defaults that belong to no
+   design system. Theming them is the cheapest signal that a page was built
+   rather than assembled, and it is the step that gets skipped most reliably. */
+::selection { background: var(--sc-accent); color: var(--sc-accent-ink); }
+:root { caret-color: var(--sc-accent); accent-color: var(--sc-accent); }
+:focus-visible {
+  outline: 2px solid var(--sc-accent);
+  outline-offset: 3px;
+  border-radius: var(--sc-r-sm);
+}
+:where(a) { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+@supports (scrollbar-color: auto) {
+  html { scrollbar-color: color-mix(in oklab, var(--sc-ink) 26%, transparent) transparent; scrollbar-width: thin; }
+}
+:where(table, .sc-nums, [data-sc-count]) { font-variant-numeric: tabular-nums; }
+
+/* ----------------------------------------------------------- typography -- */
+.sc-display {
+  font-family: var(--sc-font-display);
+  font-weight: 500;
+  line-height: var(--sc-leading-none);
+  letter-spacing: var(--sc-track-tight);
+  text-wrap: balance;
+  margin: 0;
+}
+.sc-display--xl { font-size: var(--sc-t-4xl); }
+.sc-display--lg { font-size: var(--sc-t-3xl); }
+.sc-display--md { font-size: var(--sc-t-2xl); letter-spacing: var(--sc-track-snug); }
+.sc-lede {
+  font-size: var(--sc-t-lg);
+  line-height: 1.44;
+  letter-spacing: var(--sc-track-snug);
+  color: var(--sc-ink);
+  max-width: 46ch;
+  text-wrap: pretty;
+  margin: 0;
+}
+.sc-body { max-width: var(--sc-measure); color: var(--sc-ink-soft); text-wrap: pretty; margin: 0; }
+.sc-label {
+  font-family: var(--sc-font-mono);
+  font-size: var(--sc-t-xs);
+  letter-spacing: var(--sc-track-wide);
+  text-transform: uppercase;
+  color: var(--sc-ink-soft);
+}
+
+/* ---------------------------------------------------------------- layout -- */
+.sc-wrap { width: 100%; max-width: var(--sc-maxw); margin-inline: auto; padding-inline: var(--sc-gutter); }
+.sc-section { padding-block: var(--sc-section); }
+/* More space above a heading than below it: the gap belongs to the boundary,
+   not to the pair. */
+.sc-stack > * + * { margin-top: var(--sc-4); }
+.sc-stack > :is(h1,h2,h3) { margin-top: var(--sc-7); }
+.sc-stack > :is(h1,h2,h3):first-child { margin-top: 0; }
+.sc-rule { height: 1px; border: 0; background: var(--sc-hairline); margin: 0; }
+
+/* =============================================================== DEVICES ==
+   Driven by the engine. Restyle your own markup, not these.                */
+
+.sc-act--pinned { position: relative; }
+.sc-stage {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: clip;
+  z-index: var(--sc-z-stage);
+}
+
+/* scrub / sequence media */
+.sc-stage :is(video[data-sc-scrub], canvas[data-sc-sequence], .sc-stage__poster) {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+video[data-sc-scrub] { opacity: 0; transition: opacity 380ms var(--sc-ease-out); }
+.sc-has-clip video[data-sc-scrub] { opacity: 1; }
+/* The poster is a live frame-holder, not a placeholder: it stays up until a
+   real video frame has painted, which is what stops the blank-stage flash. */
+.sc-stage__poster { z-index: 0; transition: opacity 380ms var(--sc-ease-out); }
+.sc-has-clip .sc-stage__poster { opacity: 0; }
+
+/* A scrim only where text sits. A full-frame darkening layer flattens the
+   image everywhere to fix contrast in one corner. */
+.sc-scrim {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: linear-gradient(
+    var(--sc-scrim-angle, 180deg),
+    color-mix(in oklab, var(--sc-canvas) var(--sc-scrim-a, 78%), transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+    transparent 68%);
+}
+/* Point the scrim at the copy. A scrim gradient that darkens the top while the
+   copy sits at the bottom fixes contrast nowhere and flattens the image
+   everywhere, which is the most common way text-over-video goes wrong. */
+.sc-scrim--bottom { --sc-scrim-angle: 0deg; }
+.sc-scrim--left   { --sc-scrim-angle: 90deg; }
+.sc-scrim--right  { --sc-scrim-angle: 270deg; }
+
+/* Corner scrims, for copy anchored to a corner. An edge gradient has to darken
+   a whole band across the frame to cover one corner; a corner gradient puts the
+   density where the text is and leaves the rest of the image alone. Pair with
+   .sc-copy--lead / .sc-copy--trail. */
+.sc-scrim--lead {
+  background: linear-gradient(to top right,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 72%, transparent) 30%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 52%,
+    transparent 72%);
+}
+.sc-scrim--trail {
+  background: linear-gradient(to top left,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 72%, transparent) 30%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 52%,
+    transparent 72%);
+}
+/* A band across the bottom, for copy that spans the full width of the frame.
+   That is what both corner anchors become below 860px, and it is also the right
+   shape whenever the copy block is wider than a corner. */
+.sc-scrim--band {
+  background: linear-gradient(to top,
+    color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+    color-mix(in oklab, var(--sc-canvas) 74%, transparent) 22%,
+    color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+    transparent 58%);
+}
+.sc-scrim--vignette {
+  background: radial-gradient(120% 90% at 50% 45%, transparent 40%,
+              color-mix(in oklab, var(--sc-canvas) 70%, transparent) 100%);
+}
+
+/* copy over a stage.
+   max-width is in rem, never ch. A `ch` on this container resolves against the
+   CONTAINER's font-size (body size), not the display size of the heading inside
+   it, so `max-width: 20ch` here silently produces a ~180px column and wraps a
+   hero headline to six lines. Set a ch measure on the text element itself. */
+.sc-copy {
+  position: absolute; z-index: var(--sc-z-copy);
+  inset-inline: var(--sc-gutter);
+  max-width: min(46rem, 76vw);
+  will-change: opacity, transform;
+}
+.sc-copy--lead   { left: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); }
+/* inset-inline FIRST. It is the shorthand for left+right, so declaring it after
+   `left: 50%` resets left to auto and the block drifts off the left edge. */
+.sc-copy--center { inset-inline: auto; left: 50%; top: 50%; translate: -50% -50%; text-align: center; }
+.sc-copy--trail  { inset-inline: auto; right: var(--sc-gutter); bottom: clamp(3rem, 12vh, 9rem); text-align: right; }
+
+/* cue defaults: the engine writes opacity/transform inline, these are the
+   pre-paint state so nothing flashes before the first read() */
+[data-sc-cue] { opacity: 0; will-change: opacity, transform; }
+.sc-ready [data-sc-cue] { transition: none; }
+
+/* kinetic split */
+.sc-split { display: inline-block; overflow: hidden; vertical-align: top; }
+/* Descenders live below the baseline; a line mask clipped to the line box eats
+   the tails off g, y, p, j. The padding buys them room back. */
+.sc-split--line { display: block; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.sc-split__i { display: inline-block; will-change: transform, opacity; }
+.sc-is-split { opacity: 1 !important; }
+
+/* horizontal rail */
+[data-sc-pan] { display: flex; will-change: transform; }
+
+/* reveal + parallax */
+[data-sc-reveal] { will-change: clip-path; }
+[data-sc-parallax] { will-change: transform; }
+
+/* flow reveal (fires once) */
+[data-sc-in], [data-sc-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity 620ms var(--sc-ease-out), transform 620ms var(--sc-ease-out);
+}
+[data-sc-in].sc-in, [data-sc-stagger] > .sc-in { opacity: 1; transform: none; }
+
+/* pointer devices */
+[data-sc-tilt] { transform-style: preserve-3d; will-change: transform; }
+[data-sc-magnet] { will-change: transform; }
+/* isolation always; position only if nothing more specific already set it.
+   Written with :where() (zero specificity) on purpose: a plain `position:
+   relative` here has the same weight as `.sc-stage` and, being later in the
+   file, silently wins. A stage carrying both attributes then stops being
+   sticky and the whole act scrolls away instead of pinning. */
+[data-sc-spotlight] { isolation: isolate; }
+:where([data-sc-spotlight]) { position: relative; }
+[data-sc-spotlight]::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(
+    28rem 28rem at calc(var(--sc-mx, 0.5) * 100%) calc(var(--sc-my, 0.5) * 100%),
+    color-mix(in oklab, var(--sc-accent) 16%, transparent), transparent 70%);
+  opacity: 0; transition: opacity var(--sc-d-slow) var(--sc-ease-out);
+}
+[data-sc-spotlight]:hover::after { opacity: 1; }
+
+/* =========================================================== WORLDFLIGHT ==
+   One fixed stage for the whole page. The only thing in document flow is the
+   spacer, and it is empty. If you find yourself adding a section here, you want
+   act mode instead: the moment a real block scrolls past the fixed stage, the
+   page has a seam again and the whole point is gone.                        */
+
+[data-sc-mode="worldflight"] { position: relative; }
+
+.sc-world {
+  position: fixed; inset: 0;
+  overflow: clip;
+  z-index: var(--sc-z-stage);
+  background: var(--sc-canvas);
+}
+
+/* Every leg is mounted for the life of the page and stacked in the same box.
+   The engine owns opacity, visibility and z-index here; do not set them. */
+.sc-world__seg {
+  position: absolute; inset: 0;
+  opacity: 0;
+  will-change: opacity;
+}
+.sc-world__seg > :is(video, img, canvas) {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+/* The poster is the frame-holder AND the first camera move: the engine pushes
+   it in slowly until a real decoded frame is available to replace it. */
+.sc-world__poster {
+  z-index: 0;
+  transform-origin: 50% 50%;
+  transition: opacity 420ms var(--sc-ease-out);
+}
+.sc-world__seg > video { z-index: 1; }
+.sc-world__seg.sc-has-clip .sc-world__poster { opacity: 0; }
+/* The act stylesheet lights a clip through its ancestor act. A worldflight leg
+   has no act, so match the class the engine also writes on the clip itself. */
+video[data-sc-scrub].sc-has-clip { opacity: 1; }
+
+/* The copy layer is fixed too, and inert by default: the engine hands
+   pointer-events back to a block only while it is actually legible. */
+.sc-world__copy {
+  position: fixed; inset: 0;
+  z-index: var(--sc-z-copy);
+  pointer-events: none;
+}
+.sc-world__scrim { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+[data-sc-copy] {
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+.sc-ready [data-sc-copy] { transition: none; }
+
+/* The track. Empty on purpose. */
+.sc-world__spacer { pointer-events: none; }
+
+/* scroll progress */
+[data-sc-progress] {
+  position: fixed; inset: 0 0 auto 0; height: 2px; z-index: var(--sc-z-chrome);
+  background: var(--sc-accent); transform-origin: 0 50%; transform: scaleX(0);
+  will-change: transform;
+}
+
+/* ----------------------------------------------------------- atmosphere --
+   Depth is not only shadow. Grain keeps a flat dark ground from banding, and
+   it is the difference between "a dark page" and "a lit room". */
+.sc-grain { position: fixed; inset: 0; pointer-events: none; z-index: 3; opacity: 0.045; }
+.sc-grain::before {
+  content: ""; position: absolute; inset: -50%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+}
+
+/* -------------------------------------------------------- reduced motion -- */
+@media (prefers-reduced-motion: reduce) {
+  /* Fewer and gentler, not zero. Opacity still carries the reveal so the page
+     is comprehensible; every position change is dropped. */
+  [data-sc-in], [data-sc-stagger] > * { transform: none; transition-duration: 220ms; }
+  [data-sc-parallax], [data-sc-pan], .sc-split__i { transform: none !important; }
+  /* A wipe is a position change too. Show reveal content settled. */
+  [data-sc-reveal] { clip-path: none !important; }
+  /* A rail's transform IS its navigation, not decoration. Zeroing it the way
+     parallax and kinetic type are zeroed parks the act on its first screenful
+     and makes everything past the fold unreachable: a device degrading into
+     missing content. Hand the travel back to the reader as an ordinary scroll
+     region instead, so the same items are all still gettable without motion.
+     A build that would rather re-lay the rail out as a grid can still do that;
+     this is the floor, not the ceiling. */
+  [data-sc-act="pan"] .sc-stage,
+  [data-sc-act="pan"] [data-sc-stage] {
+    overflow-x: auto; overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+  }
+  [data-sc-pan] > * { scroll-snap-align: center; }
+  [data-sc-spotlight]::after { display: none; }
+  /* A worldflight keeps its whole story here. No clip is ever fetched, so the
+     posters are the film, and they cross-dissolve through exactly the same
+     seams at exactly the same scroll positions. The push-in and the copy drift
+     are the only things that go. */
+  .sc-world__poster, [data-sc-copy] { transform: none !important; }
+}
+
+/* --------------------------------------------------------------- mobile -- */
+@media (max-width: 860px) {
+  .sc-copy { inset-inline: var(--sc-gutter); max-width: none; }
+  .sc-copy--trail { text-align: left; }
+  .sc-stage { height: 100svh; }
+  /* .sc-copy--trail re-anchors to the left and spans the full width here, so a
+     bottom-RIGHT corner gradient darkens the one corner the copy just left and
+     guarantees a contrast failure over any bright clip. Point the density at
+     the copy: the same band .sc-scrim--band paints. */
+  .sc-scrim--trail {
+    background: linear-gradient(to top,
+      color-mix(in oklab, var(--sc-canvas) 94%, transparent) 0%,
+      color-mix(in oklab, var(--sc-canvas) 74%, transparent) 22%,
+      color-mix(in oklab, var(--sc-canvas) 30%, transparent) 42%,
+      transparent 58%);
+  }
+}
+
+</style>
+<style>
+/* ===== Тема: цвета и шрифты бренда мини-приложения ===== */
+:root {
+  --sc-canvas:     #EDEFEC;
+  --sc-surface:    #FFFFFF;
+  --sc-ink:        #1D2125;
+  --sc-ink-soft:   #50585E;
+  --sc-accent:     #B4672C;
+  --sc-accent-ink: #FFFFFF;
+  --sc-font-display: "Oswald", "Arial Narrow", system-ui, sans-serif;
+  --sc-font-text:    "Onest", "Segoe UI", Roboto, system-ui, sans-serif;
+  --sc-shadow-color: 150 10% 20%;
+  --light: #D88B4C;
+  --light-ink: #1A1206;
+  --night-ink: #ECEAE4;
+  --night-soft: #B9BFC6;
+  --nav-h: 52px;
+  --chrome: #EDEFEC;
+  --chrome-ink: #1D2125;
+  color-scheme: light;
+}
+html { background: var(--sc-canvas); }
+body { background: var(--sc-canvas); }
+body {
+  margin: 0; color: var(--sc-ink); font-family: var(--sc-font-text);
+  font-size: var(--sc-t-base); line-height: var(--sc-leading-body);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+img { display: block; }
+figure { margin: 0; }
+h1, h2, h3 { font-family: var(--sc-font-display); font-weight: 600; letter-spacing: var(--sc-track-snug); line-height: var(--sc-leading-tight); margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 3px; border-radius: 4px; }
+html.has-house { overflow: hidden; }
+
+/* ===== Указатель (навигация) ===== */
+.index {
+  position: fixed; inset: env(safe-area-inset-top, 0px) 0 auto 0; z-index: var(--sc-z-chrome);
+  height: var(--nav-h); display: flex; align-items: center; gap: var(--sc-5);
+  padding-inline: var(--sc-gutter); background: var(--chrome); color: var(--chrome-ink);
+  border-bottom: 1px solid color-mix(in oklab, var(--chrome-ink) 10%, transparent);
+}
+.index__mark { font-family: var(--sc-font-display); font-weight: 600; font-size: 1.05rem; letter-spacing: 0.01em; white-space: nowrap; text-decoration: none; }
+.index__list { display: flex; gap: var(--sc-1); margin: 0 0 0 auto; padding: 0; list-style: none; overflow-x: auto; scrollbar-width: none; }
+.index__list::-webkit-scrollbar { display: none; }
+.index__list a {
+  display: block; padding: 0.55rem 0.7rem; font-size: var(--sc-t-sm); font-weight: 500; white-space: nowrap;
+  text-decoration: none; color: color-mix(in oklab, var(--chrome-ink) 72%, transparent);
+  border-radius: var(--sc-r-sm); transition: color 160ms var(--sc-ease-out), background-color 160ms var(--sc-ease-out);
+  box-shadow: inset 0 -2px 0 transparent;
+}
+.index__list a[aria-current="true"] { color: var(--chrome-ink); box-shadow: inset 0 -2px 0 var(--light); }
+@media (hover: hover) and (pointer: fine) { .index__list a:hover { color: var(--chrome-ink); background: color-mix(in oklab, var(--chrome-ink) 7%, transparent); } }
+.index__list a:active { transform: translateY(1px); }
+
+/* ===== Табличка экспоната: одна схема на всю страницу ===== */
+.tag dl, .facts-dl { display: grid; grid-template-columns: 6.2rem 1fr; margin: var(--sc-4) 0 0; font-size: var(--sc-t-sm); line-height: 1.45; }
+.tag dt, .tag dd, .facts-dl dt, .facts-dl dd { margin: 0; padding: 0.5rem 0; border-top: 1px solid var(--sc-hairline); }
+.tag dt, .facts-dl dt { color: var(--sc-ink-soft); }
+.tag dd, .facts-dl dd { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* Ссылка «Фото и план» */
+.more { display: inline-flex; gap: .4em; margin-top: var(--sc-3); padding: 0; border: 0; background: none; cursor: pointer;
+  font: 600 var(--sc-t-sm) / 1.4 var(--sc-font-text); color: var(--sc-accent); text-decoration: none; }
+.more span { transition: transform 160ms var(--sc-ease-out); }
+@media (hover: hover) and (pointer: fine) { .more:hover span, .exhibit:hover .more span { transform: translateX(3px); } }
+
+/* Кнопки */
+.cta, .cta2 {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5em;
+  min-height: 48px; padding: 0 1.4rem; border-radius: var(--sc-r-sm);
+  font: 600 var(--sc-t-base) / 1 var(--sc-font-text); text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: transform 140ms var(--sc-ease-out), background-color 160ms var(--sc-ease-out), border-color 160ms var(--sc-ease-out);
+}
+.cta { background: var(--light); color: var(--light-ink); border: 0;
+  box-shadow: 0 6px 18px -6px rgb(216 139 76 / .45), inset 0 1px 0 rgb(255 255 255 / .35); }
+.cta2 { background: transparent; color: inherit; border: 1px solid color-mix(in oklab, currentColor 34%, transparent); }
+@media (hover: hover) and (pointer: fine) { .cta:hover { background: #E39A5C; } .cta2:hover { border-color: currentColor; } }
+.cta:active, .cta2:active { transform: scale(0.97); }
+.btns { display: flex; flex-wrap: wrap; gap: var(--sc-3); margin-top: var(--sc-5); }
+
+/* ===== 1 · Первый дом ===== */
+.hero .sc-stage, .hero [data-sc-stage] { overflow: hidden; }
+.hero__photo { position: absolute; overflow: hidden; border-radius: var(--sc-r-sm); box-shadow: var(--sc-e2); background: #3a4656; }
+.hero__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+.hero__lean, .hero__move { position: absolute; inset: 0; }
+.hero__lean { transform: translate3d(calc(var(--mx, 0) * -10px), calc(var(--my, 0) * -7px), 0); }
+.hero__move { transform: scale(calc(1.03 + var(--sc-p, 0) * 0.1)) translateY(calc(var(--sc-p, 0) * -10px)); transform-origin: var(--g3x, 45%) var(--g3y, 40%); }
+.hero__warm { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen;
+  background:
+    radial-gradient(5% 9% at var(--g1x, 37%) var(--g1y, 40%), rgb(255 200 130 / .85), transparent 70%),
+    radial-gradient(5% 9% at var(--g2x, 59%) var(--g2y, 40%), rgb(255 200 130 / .8), transparent 70%),
+    radial-gradient(4% 5% at var(--g4x, 28%) var(--g4y, 28%), rgb(255 214 150 / .9), transparent 70%),
+    radial-gradient(4% 5% at var(--g5x, 51%) var(--g5y, 28%), rgb(255 214 150 / .9), transparent 70%),
+    radial-gradient(26% 20% at var(--g3x, 45%) var(--g3y, 39%), rgb(255 186 110 / .32), transparent 72%);
+  opacity: calc(0.12 + var(--sc-p, 0) * 0.8); }
+.hero__tag {
+  position: absolute; z-index: 3; background: var(--sc-surface); border-radius: var(--sc-r-sm);
+  transform: translateY(calc(var(--sc-p, 0) * -26px));
+  padding: var(--sc-5) var(--sc-5) var(--sc-4); box-shadow: var(--sc-e3), var(--sc-edge);
+}
+.hero__tag h1 { font-size: var(--sc-t-2xl); }
+.hero__note { position: absolute; z-index: 3; max-width: 30ch; font-size: var(--sc-t-sm); color: #3A4247; }
+.hero__note q { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-lg); line-height: 1.25; color: var(--sc-ink); quotes: "«" "»"; display: block; }
+.hero__note span { display: block; margin-top: var(--sc-2); }
+.hero__brand { position: absolute; z-index: 3; }
+.hero__brand p { font-size: var(--sc-t-sm); color: var(--sc-ink-soft); max-width: 30ch; }
+
+/* ===== 2 · Рейка домов ===== */
+.rail { gap: clamp(1rem, 2.4vw, 2.5rem); align-items: flex-start; padding-inline: var(--sc-gutter); padding-top: calc(var(--nav-h) + clamp(1.5rem, 6vh, 4.5rem)); height: 100%; box-sizing: border-box; }
+.rail > * { flex: 0 0 auto; }
+.rail__lead { width: min(78vw, 22rem); padding-top: var(--sc-6); }
+.rail__lead h2 { font-size: var(--sc-t-2xl); }
+.rail__lead p { margin-top: var(--sc-4); color: var(--sc-ink-soft); max-width: 28ch; }
+.exhibit { width: min(78vw, 26rem); display: block; color: inherit; text-decoration: none; border-radius: var(--sc-r-sm); cursor: pointer; }
+.exhibit figure { margin: 0; border-radius: var(--sc-r-sm); overflow: hidden; box-shadow: var(--sc-e2); background: #cfd5cf; aspect-ratio: 4 / 3; max-height: 40vh; width: 100%; transition: box-shadow 180ms var(--sc-ease-out); }
+.exhibit figure img { width: 100%; height: 100%; object-fit: cover; }
+@media (hover: hover) and (pointer: fine) { .exhibit:hover figure { box-shadow: var(--sc-e3); } }
+.exhibit:active figure { transform: scale(0.99); }
+.exhibit h3 { margin-top: var(--sc-3); font-size: var(--sc-t-xl); }
+.exhibit dl { margin-top: var(--sc-3); }
+.rail__end { width: min(74vw, 19rem); padding-top: 16vh; }
+.rail__end p { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-lg); line-height: 1.25; }
+.rail__end .btns { margin-top: var(--sc-4); }
+@media (prefers-reduced-motion: no-preference) {
+  .exhibit { --k: clamp(0, calc(var(--sc-p, 0) * (var(--n, 4) + 1.5) - var(--i) + 2.2), 1);
+    opacity: calc(0.55 + var(--k) * 0.45); transform: translateY(calc((1 - var(--k)) * 22px)); }
+}
+/* Телефон: дома списком, сверху вниз */
+.rail--list { display: grid; gap: var(--sc-7); padding: calc(var(--nav-h) + var(--sc-6)) var(--sc-gutter) var(--sc-8); height: auto; }
+.rail--list > * { width: auto; }
+.rail--list .rail__lead { padding-top: 0; width: auto; }
+.rail--list .exhibit { width: 100%; opacity: 1; transform: none; }
+.rail--list .exhibit figure { max-height: none; }
+.rail--list .rail__end { padding-top: 0; width: auto; }
+
+/* ===== 3 · Отзывы ===== */
+.voices { padding-block: clamp(4rem, 11vh, 8rem) clamp(3rem, 8vh, 6rem); }
+.voices h2, .faq h2 { font-size: var(--sc-t-2xl); }
+.voices__lead, .faq__lead { margin-top: var(--sc-3); color: var(--sc-ink-soft); max-width: 44ch; }
+.voices__grid { display: grid; gap: var(--sc-5); margin-top: var(--sc-7); }
+.voice { background: var(--sc-surface); border-radius: var(--sc-r-sm); padding: var(--sc-5); box-shadow: var(--sc-e1), var(--sc-edge); display: flex; flex-direction: column; gap: var(--sc-4); }
+.voice blockquote { margin: 0; font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-lg); line-height: 1.28; }
+.voice--big blockquote { font-size: var(--sc-t-xl); }
+.voice figcaption { margin-top: auto; font-size: var(--sc-t-xs); color: var(--sc-ink-soft); }
+.voice figcaption b { color: var(--sc-ink); font-weight: 600; }
+
+/* ===== 4 · Вопросы ===== */
+.faq { padding-block: clamp(3rem, 8vh, 6rem) clamp(5rem, 14vh, 10rem); }
+.faq__grid { display: grid; gap: var(--sc-6) var(--sc-9); }
+.faq__list { border-bottom: 1px solid var(--sc-hairline); }
+.faq details { border-top: 1px solid var(--sc-hairline); }
+.faq summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: var(--sc-4);
+  padding: 1rem 0; font-weight: 600; font-size: var(--sc-t-base); min-height: 44px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; width: 1.8rem; height: 1.8rem; display: grid; place-items: center; border-radius: 50%;
+  background: color-mix(in oklab, var(--sc-ink) 7%, transparent); font-weight: 500; transition: transform 200ms var(--sc-ease-out); }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { padding: 0 0 1.1rem; max-width: 60ch; color: var(--sc-ink); }
+.faq details p + p { margin-top: -0.5rem; }
+.faq details a { color: var(--sc-accent); font-weight: 600; }
+
+/* ===== 5 · Вечер (пик) и табличка «Ваш дом» ===== */
+.eve { --sky-top: #CFE0EA; --sky-bot: #F1F0E8; --night: 0; --w1: 0; --w2: 0; --lamps: 0; --smoke: 0; --stars: 0; --glow: 0; }
+.eve [data-sc-stage] { overflow: hidden; background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 78%); }
+.eve__stars { position: absolute; inset: 0 0 45% 0; opacity: var(--stars); pointer-events: none;
+  background-image:
+    radial-gradient(circle at 8% 22%, #fff 0 1px, transparent 1.6px),
+    radial-gradient(circle at 27% 9%, #fff 0 .8px, transparent 1.4px),
+    radial-gradient(circle at 41% 31%, #fff 0 1.1px, transparent 1.7px),
+    radial-gradient(circle at 63% 14%, #fff 0 .9px, transparent 1.5px),
+    radial-gradient(circle at 79% 27%, #fff 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 92% 8%, #fff 0 .8px, transparent 1.4px);
+  background-size: 340px 260px; }
+.eve__ground { position: absolute; left: 0; right: 0; bottom: 0; height: var(--ground-h, 40px); background: #D3D9C6; filter: brightness(calc(1 - var(--night) * 0.74)) saturate(calc(1 - var(--night) * 0.35)); }
+.eve__scene { position: absolute; bottom: 0; left: 50%; translate: -50% 0; }
+.eve__scene svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.eve__house { filter: brightness(calc(1 - var(--night) * 0.72)) saturate(calc(1 - var(--night) * 0.3)); }
+.eve__lights .w1 { opacity: var(--w1); } .eve__lights .w2 { opacity: var(--w2); }
+.eve__lights .lamps { opacity: var(--lamps); } .eve__lights .smoke { opacity: var(--smoke); }
+.eve__lights .spill { opacity: calc(var(--glow) * 0.9); }
+.smoke circle { animation: rise 7s linear infinite; transform-box: fill-box; transform-origin: center; }
+.smoke circle:nth-child(2) { animation-delay: -2.3s; } .smoke circle:nth-child(3) { animation-delay: -4.6s; }
+@keyframes rise { 0% { transform: translate(0, 0) scale(.6); opacity: 0; } 15% { opacity: .55; } 100% { transform: translate(14px, -34px) scale(1.9); opacity: 0; } }
+.eve__copy { position: absolute; z-index: 4; left: var(--sc-gutter); right: var(--sc-gutter); top: calc(var(--nav-h) + clamp(1rem, 5vh, 3.5rem)); max-width: 34rem; }
+.eve__copy > * { position: absolute; inset: 0 0 auto 0; }
+.eve__day { color: var(--sc-ink); }
+.eve__day h2 { font-size: var(--sc-t-2xl); }
+.eve__day .tag dt, .eve__day .tag dd { border-color: color-mix(in oklab, var(--sc-ink) 16%, transparent); }
+.eve__day .tag dt { color: #3E474D; }
+.eve__night { color: var(--night-ink); --sc-hairline: color-mix(in oklab, var(--night-ink) 18%, transparent); --sc-ink-soft: var(--night-soft); }
+.eve__line { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-xl); line-height: 1.22; max-width: 22ch; }
+.eve__night blockquote { margin: 0; font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-xl); line-height: 1.22; max-width: 24ch; }
+.eve__night cite { display: block; margin-top: var(--sc-3); font: 400 var(--sc-t-xs) / 1.4 var(--sc-font-text); font-style: normal; color: var(--night-soft); }
+.plate h2 { font-size: var(--sc-t-2xl); }
+.plate .tag dl, .plate dl { grid-template-columns: 7.4rem 1fr; }
+.plate dt { color: var(--night-soft) !important; }
+.plate .btns { margin-top: var(--sc-5); }
+.plate .cta:focus-visible { outline-color: var(--light); }
+.plate__foot { margin-top: var(--sc-5); font-size: var(--sc-t-xs); color: var(--night-soft); }
+.in-tg .plate .cta { display: none; }
+.tg-hint { display: none; }
+.in-tg .tg-hint { display: block; margin-top: var(--sc-4); font-size: var(--sc-t-sm); color: var(--night-soft); }
+.is-night .index { border-bottom-color: color-mix(in oklab, var(--chrome-ink) 14%, transparent); }
+
+/* ===== Окно дома: фото, подписи, план — на этой же странице ===== */
+.house { position: fixed; inset: 0; z-index: 1000; background: var(--sc-canvas); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.house[hidden] { display: none; }
+.house:focus { outline: none; }
+.only-wide { display: none; }
+.house__cta h3 { font-size: var(--sc-t-lg); margin-bottom: var(--sc-3); }
+.house__head .house__cta { margin-top: var(--sc-6); }
+.house__bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: var(--sc-3);
+  height: var(--nav-h); padding: env(safe-area-inset-top, 0px) var(--sc-gutter) 0; box-sizing: content-box;
+  background: color-mix(in oklab, var(--sc-canvas) 94%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--sc-hairline); }
+.house__back { display: inline-flex; align-items: center; gap: .45em; min-height: 44px; padding: 0 .6rem 0 .2rem; border: 0; background: none; cursor: pointer; font-weight: 600; font-size: var(--sc-t-sm); border-radius: var(--sc-r-sm); }
+.house__back span { font-size: 1.15em; transition: transform 160ms var(--sc-ease-out); }
+@media (hover: hover) and (pointer: fine) { .house__back:hover span { transform: translateX(-3px); } .house__x:hover { background: color-mix(in oklab, var(--sc-ink) 12%, transparent); } }
+.house__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--sc-font-display); font-weight: 500; font-size: 1.05rem; color: var(--sc-ink-soft); }
+.house__x { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 0; background: color-mix(in oklab, var(--sc-ink) 7%, transparent); cursor: pointer; font-size: 1.6rem; line-height: 1; display: grid; place-items: center; }
+.house__body { max-width: 88rem; margin: 0 auto; padding: var(--sc-5) var(--sc-gutter) calc(var(--sc-9) + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: var(--sc-6); }
+.house__side { display: contents; }
+.house__head { order: 1; }
+.house__photos { order: 2; }
+.house__more { order: 3; }
+.house__head h2 { font-size: var(--sc-t-2xl); }
+.house__note { margin-top: var(--sc-4); font-size: var(--sc-t-sm); color: var(--sc-ink); max-width: 46ch; }
+.house__more h3 { font-size: var(--sc-t-lg); margin-bottom: var(--sc-3); }
+.house__more > * + * { margin-top: var(--sc-6); }
+.spec { list-style: none; margin: 0; padding: 0; font-size: var(--sc-t-sm); }
+.spec li { padding: .5rem 0; border-top: 1px solid var(--sc-hairline); }
+.hq { margin: 0 0 var(--sc-4); }
+.hq blockquote { margin: 0; font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-lg); line-height: 1.28; }
+.hq figcaption { margin-top: var(--sc-2); font-size: var(--sc-t-xs); color: var(--sc-ink-soft); }
+.shot { margin: 0 0 var(--sc-7); }
+.shot img { width: 100%; height: auto; border-radius: var(--sc-r-sm); background: #d9ddd8; margin-inline: auto; }
+.shot--plan img { background: #fff; padding: clamp(.5rem, 2vw, 1.25rem); box-sizing: border-box; }
+.shot figcaption { margin: var(--sc-3) auto 0; max-width: 56ch; font-size: var(--sc-t-base); line-height: 1.45; }
+.shot__n { display: block; font-size: var(--sc-t-xs); color: var(--sc-ink-soft); font-variant-numeric: tabular-nums; margin-bottom: .15rem; }
+
+/* ===== Телефон и Telegram ===== */
+@media (max-width: 899px) {
+  :root { --nav-h: 48px; }
+  .index { gap: var(--sc-3); padding-inline: 0.75rem 0; }
+  .index__mark { display: none; }
+  .index__list { margin-left: 0; padding-right: 0.5rem; }
+  .index__list a { padding: 0.55rem 0.5rem; font-size: 0.82rem; }
+  .hero__photo { left: var(--sc-gutter); right: var(--sc-gutter); top: calc(var(--nav-h) + 0.75rem); height: 46svh; }
+  .hero__tag { left: calc(var(--sc-gutter) + 0.75rem); right: var(--sc-gutter); top: calc(var(--nav-h) + 46svh - 1.5rem); padding: var(--sc-4) var(--sc-4) var(--sc-3); }
+  .hero__tag h1 { font-size: 1.75rem; }
+  .tag dl, .facts-dl { grid-template-columns: 5.4rem 1fr; }
+  .hero__note { display: none; }
+  .hero__brand { left: var(--sc-gutter); right: var(--sc-gutter); bottom: max(1rem, env(safe-area-inset-bottom)); }
+  .hero__brand p { font-size: var(--sc-t-xs); }
+  .exhibit figure { max-height: 32svh; }
+  .voices__grid { grid-template-columns: 1fr; }
+  .eve__copy { right: var(--sc-gutter); }
+  .eve__line, .eve__night blockquote { font-size: 1.45rem; }
+  .plate h2 { font-size: 2rem; }
+  .plate .tag dl, .plate dl { grid-template-columns: 6.4rem 1fr; }
+  .plate .tag dl { margin-top: var(--sc-3); }
+  .house__body { padding-top: var(--sc-4); }
+  .shot { margin-bottom: var(--sc-6); }
+  .shot figcaption { font-size: var(--sc-t-sm); }
+}
+@media (max-width: 899px) and (max-height: 700px) {
+  .hero__photo { height: 40svh; }
+  .hero__tag { top: calc(var(--nav-h) + 40svh - 1.5rem); }
+  .hero__brand { display: none; }
+  .plate .tag dt, .plate .tag dd { padding: 0.35rem 0; }
+  .eve__day .tag dl { margin-top: var(--sc-2); }
+  .hero__tag dt, .hero__tag dd { padding: 0.38rem 0; }
+}
+
+/* ===== Компьютер ===== */
+@media (min-width: 900px) {
+  .hero__photo { left: 36vw; right: var(--sc-gutter); top: calc(var(--nav-h) + 2.5rem); bottom: 3.5rem; }
+  .hero__tag { left: var(--sc-gutter); width: min(31rem, 38vw); bottom: 22vh; }
+  .hero__note { left: var(--sc-gutter); bottom: 6vh; }
+  .hero__brand { left: var(--sc-gutter); top: calc(var(--nav-h) + 2.5rem); width: min(26rem, 30vw); }
+  .hero__brand p { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-xl); line-height: 1.2; color: var(--sc-ink); max-width: 20ch; }
+  .voices__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .voice--big { grid-column: span 2; }
+  .faq__grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+  .eve__copy { max-width: 32rem; }
+  .house__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(19rem, 25rem); gap: var(--sc-8); align-items: start; padding-top: var(--sc-6); }
+  .house__side { display: block; grid-column: 2; grid-row: 1; position: sticky; top: calc(var(--nav-h) + var(--sc-6)); max-height: calc(100vh - var(--nav-h) - 2 * var(--sc-6)); overflow-y: auto; scrollbar-width: thin; padding-right: 4px; }
+  .house__photos { grid-column: 1; grid-row: 1; }
+  .house__more { margin-top: var(--sc-7); }
+  .house__head h2 { font-size: clamp(1.7rem, 2.3vw, 2.4rem); }
+  .only-wide { display: block; }
+  .only-narrow { display: none; }
+  .shot img { width: auto; max-width: 100%; max-height: calc(100vh - var(--nav-h) - 8.5rem); }
+  .shot figcaption { text-align: center; }
+}
+@media (min-width: 900px) and (max-height: 780px) {
+  .hero__tag { bottom: 6vh; }
+  .hero__note { display: none; }
+  .hero__brand p { font-size: var(--sc-t-lg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__lean, .hero__move { transform: none; }
+  .smoke circle { animation: none; opacity: .4; }
+}
+</style>
+</head>
+<body>
+<div class="sc-grain" aria-hidden="true"></div>
+
+<nav class="index" aria-label="Разделы">
+  <a class="index__mark" href="#dom">Юлия и Юрий · дома</a>
+  <ul class="index__list">
+    <li><a href="#dom">Дом</a></li>
+    <li><a href="#doma">Дома</a></li>
+    <li><a href="#otzyvy">Отзывы</a></li>
+    <li><a href="#voprosy">Вопросы</a></li>
+    <li><a href="#vecher">Вечер</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- 1 · Первый дом: pin, фото с наездом и тёплым светом, табличка -->
+  <section id="dom" class="hero" data-sc-act="pin" data-sc-span="1.7" data-sc-drift="#EDEFEC">
+    <div data-sc-stage data-sc-verify-state="">
+      <div class="hero__brand">
+        <p>Модульные дома и бани с собственного производства в Петербурге.</p>
+      </div>
+      <figure class="hero__photo">
+        <div class="hero__lean"><div class="hero__move">
+          <img src="img/hero-1.webp" width="960" height="948" alt="Тёмный дом с террасой под общей крышей в сумерках: под навесом горит свет, светятся дверь и окно">
+          <div class="hero__warm" aria-hidden="true"></div>
+        </div></div>
+      </figure>
+      <div class="hero__tag tag">
+        <h1>Чёрный снаружи, белый внутри</h1>
+        <dl>
+          <dt>Размер</dt><dd>6×8,5 м: дом 6×6 и терраса 2,5×6</dd>
+          <dt>Внутри</dt><dd>две спальни, кухня-гостиная, печь</dd>
+          <dt>Когда</dt><dd>сентябрь 2026</dd>
+        </dl>
+        <a class="more" data-house="h1" href="#dom/h1">Фото и план <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="hero__note" data-sc-cue="0.24 1 0.22 0.2"><q>Нет слов! Красота. Стиль. Уют.</q><span>Елена, комментарий ВКонтакте</span></p>
+    </div>
+  </section>
+
+  <!-- 2 · Дома за год: pan, одинаковые таблички, клик открывает окно дома -->
+  <section id="doma" data-sc-act="pan" data-sc-span="2.8" data-sc-drift="#E9ECE8">
+    <div data-sc-stage>
+      <div class="rail" data-sc-pan="0.04">
+        <div class="rail__lead">
+          <h2>Ещё дома за этот год</h2>
+          <p>Все стоят у заказчиков. Нажмите на дом: откроются фото с подписями и план.</p>
+        </div>
+        <a class="exhibit tag" style="--i:1" data-house="h2" href="#dom/h2"><figure data-sc-tilt="5"><img src="img/c2.webp" width="760" height="570" alt="Баня с жилой комнатой: вид снаружи" loading="lazy"></figure><h3>Баня с жилой комнатой</h3><dl><dt>Размер</dt><dd>31,5 м² + терраса 12 м²</dd><dt>Внутри</dt><dd>комната, парная, душевая, санузел</dd><dt>Когда</dt><dd>октябрь 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:2" data-house="h3" href="#dom/h3"><figure data-sc-tilt="5"><img src="img/c3.webp" width="760" height="570" alt="Дачный дом 3×9 с хозблоком: вид снаружи" loading="lazy"></figure><h3>Дачный 3×9 с хозблоком</h3><dl><dt>Размер</dt><dd>3×9 м</dd><dt>Внутри</dt><dd>кухня-гостиная, печь, санузел, хозблок</dd><dt>Когда</dt><dd>сентябрь 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:3" data-house="h4" href="#dom/h4"><figure data-sc-tilt="5"><img src="img/c4.webp" width="760" height="570" alt="Баня 2,5×6: вид снаружи" loading="lazy"></figure><h3>Баня 2,5×6</h3><dl><dt>Размер</dt><dd>2,5×6 м</dd><dt>Внутри</dt><dd>комната отдыха, моечная, парная</dd><dt>Когда</dt><dd>август 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:4" data-house="h5" href="#dom/h5"><figure data-sc-tilt="5"><img src="img/c5.webp" width="760" height="570" alt="Дом 48 м² с угловой террасой: вид снаружи" loading="lazy"></figure><h3>Дом 48 м² с угловой террасой</h3><dl><dt>Размер</dt><dd>48 м² + угловая терраса</dd><dt>Внутри</dt><dd>две спальни, гостиная, кухня</dd><dt>Когда</dt><dd>август 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:5" data-house="h14" href="#dom/h14"><figure data-sc-tilt="5"><img src="img/c14.webp" width="760" height="570" alt="Зимний дом 69 м²: вид снаружи" loading="lazy"></figure><h3>Зимний дом 69 м²</h3><dl><dt>Размер</dt><dd>54 м² + терраса 15 м²</dd><dt>Внутри</dt><dd>кухня-гостиная с печью, спальни</dd><dt>Когда</dt><dd>июнь 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:6" data-house="h6" href="#dom/h6"><figure data-sc-tilt="5"><img src="img/c6.webp" width="760" height="570" alt="Дом 69 м² с террасой: вид снаружи" loading="lazy"></figure><h3>Дом 69 м² с террасой</h3><dl><dt>Размер</dt><dd>54 м² + терраса 15 м²</dd><dt>Фасад</dt><dd>рыжее дерево и графит</dd><dt>Когда</dt><dd>июнь 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:7" data-house="h7" href="#dom/h7"><figure data-sc-tilt="5"><img src="img/c7.webp" width="760" height="570" alt="Дом с баней: вид снаружи" loading="lazy"></figure><h3>Дом с баней</h3><dl><dt>Внутри</dt><dd>кухня-гостиная, спальня, парная</dd><dt>Фасад</dt><dd>рыжее дерево, широкая терраса</dd><dt>Когда</dt><dd>апрель 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:8" data-house="h8" href="#dom/h8"><figure data-sc-tilt="5"><img src="img/c8.webp" width="760" height="570" alt="Дом-студия 27 м²: вид снаружи" loading="lazy"></figure><h3>Дом-студия 27 м²</h3><dl><dt>Размер</dt><dd>27 м²</dd><dt>Внутри</dt><dd>комната с печью, спальня, санузел</dd><dt>Когда</dt><dd>апрель 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:9" data-house="h9" href="#dom/h9"><figure data-sc-tilt="5"><img src="img/c9.webp" width="760" height="570" alt="Дом 48 м², зелёный: вид снаружи" loading="lazy"></figure><h3>Дом 48 м², зелёный</h3><dl><dt>Размер</dt><dd>48 м² + терраса</dd><dt>Фасад</dt><dd>зелёный, белая терраса</dd><dt>Когда</dt><dd>март 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:10" data-house="h10" href="#dom/h10"><figure data-sc-tilt="5"><img src="img/c10.webp" width="760" height="570" alt="Дом 48 м², рыжий с графитом: вид снаружи" loading="lazy"></figure><h3>Дом 48 м², рыжий</h3><dl><dt>Размер</dt><dd>48 м², 6×8 м</dd><dt>Фасад</dt><dd>рыжее дерево и графит</dd><dt>Когда</dt><dd>март 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:11" data-house="h11" href="#dom/h11"><figure data-sc-tilt="5"><img src="img/c11.webp" width="760" height="570" alt="Дом 54 м², бордовый: вид снаружи" loading="lazy"></figure><h3>Дом 54 м², бордовый</h3><dl><dt>Размер</dt><dd>54 м² + терраса</dd><dt>Фасад</dt><dd>бордовый, белые окна</dd><dt>Когда</dt><dd>март 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:12" data-house="h12" href="#dom/h12"><figure data-sc-tilt="5"><img src="img/c12.webp" width="760" height="570" alt="Зимний минидом: вид снаружи" loading="lazy"></figure><h3>Зимний минидом</h3><dl><dt>Внутри</dt><dd>кухня-гостиная, спальня, санузел</dd><dt>Терраса</dt><dd>14 м²</dd><dt>Когда</dt><dd>март 2026</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:13" data-house="h16" href="#dom/h16"><figure data-sc-tilt="5"><img src="img/c16.webp" width="760" height="570" alt="Минидом в Карелии: вид снаружи" loading="lazy"></figure><h3>Минидом в Карелии</h3><dl><dt>Где</dt><dd>Карелия</dd><dt>Фото</dt><dd>от заказчиков</dd><dt>Когда</dt><dd>зима 2025</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:14" data-house="h15" href="#dom/h15"><figure data-sc-tilt="5"><img src="img/c15.webp" width="760" height="570" alt="Зимний дом 40 м²: вид снаружи" loading="lazy"></figure><h3>Зимний дом 40 м²</h3><dl><dt>Размер</dt><dd>30 м² + терраса 10 м²</dd><dt>Срок</dt><dd>3 недели, установка 1 день</dd><dt>Когда</dt><dd>декабрь 2025</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <a class="exhibit tag" style="--i:15" data-house="h13" href="#dom/h13"><figure data-sc-tilt="5"><img src="img/c13.webp" width="760" height="570" alt="Дом на вырост, 72 м²: вид снаружи" loading="lazy"></figure><h3>Дом на вырост, 72 м²</h3><dl><dt>Размер</dt><dd>60 м² + терраса 12 м²</dd><dt>Модули</dt><dd>три</dd><dt>Когда</dt><dd>октябрь 2025</dd></dl><p class="more">Фото и план <span aria-hidden="true">→</span></p></a>
+        <div class="rail__end">
+          <p>Свою планировку можно собрать в конструкторе.</p>
+          <div class="btns"><a class="cta2" data-build href="#">Собрать свой дом</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · Отзывы -->
+  <section id="otzyvy" class="voices" data-sc-act="flow" data-sc-drift="#E5E9E4">
+    <div class="sc-wrap">
+      <div data-sc-in>
+        <h2>Что пишут о домах</h2>
+        <p class="voices__lead">Заказчики и подписчики, из сообщений и комментариев ВКонтакте за последний год.</p>
+      </div>
+      <div class="voices__grid" data-sc-in data-sc-stagger="70">
+        <figure class="voice voice--big"><blockquote>«Юля, Юра и всей вашей команде огромное спасибо! …С вами просто замечательно работать! В доме тепло, просторно, светло… Не верится, что один модуль превратился в такую красоту.»</blockquote><figcaption><b>Олеся</b>, заказчица · дом на вырост, 72 м²</figcaption></figure>
+        <figure class="voice"><blockquote>«Какие ваши дома просторные и красивые.»</blockquote><figcaption><b>Елена</b>, о зимнем доме 69 м²</figcaption></figure>
+        <figure class="voice"><blockquote>«А главное — качественный! Как вспомню свой мини-теремок, так вздрогну.»</blockquote><figcaption><b>Нина</b>, о доме 48 м²</figcaption></figure>
+        <figure class="voice"><blockquote>«Вот оно — тихое семейное счастье и релакс!»</blockquote><figcaption><b>Алла</b>, о доме с баней</figcaption></figure>
+        <figure class="voice"><blockquote>«Сколько можно уместить в таком пространстве, обалдеть!»</blockquote><figcaption><b>Сергей</b>, о дачном доме 3×9</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Вопросы -->
+  <section id="voprosy" class="faq" data-sc-act="flow" data-sc-drift="#E3E7E2">
+    <div class="sc-wrap faq__grid">
+      <div data-sc-in>
+        <h2>Частые вопросы</h2>
+        <p class="faq__lead">Коротко о том, что спрашивают чаще всего.</p>
+      </div>
+      <div class="faq__list" data-sc-in>
+        <details><summary>Сколько стоит дом?</summary>
+          <p>Стоимость считаем под ваш дом: она зависит от размера, планировки и отделки. Уточните цену у производителя.</p>
+          <p><a data-write href="https://vk.me/zagorodnaya_studia">Написать нам</a></p></details>
+        <details><summary>Можно свою планировку?</summary>
+          <p>Да. Планировки придумывают заказчики, мы помогаем доработать и сделать удобнее. Изменить планировку можно бесплатно.</p></details>
+        <details><summary>Что входит в «под ключ»?</summary>
+          <p>Чистовая отделка, электрика, разводка и вся сантехника.</p>
+          <p>Сантехника: трубы открытым монтажом.</p></details>
+        <details><summary>Сколько ждать?</summary>
+          <p>Дом или баню делаем от 2 до 5 недель, смотря по размеру. На участке ставим за 1–2 дня.</p></details>
+        <details><summary>Какой самый большой дом?</summary>
+          <p>Обычно тёплая часть до 54 м²: это два модуля, к ним терраса. Собирали и из трёх модулей: дом на вырост, 60 м² и терраса 12 м², монтаж занял 5 дней.</p></details>
+        <details><summary>Можно привезти свою мебель и технику?</summary>
+          <p>Да. Привезите её к нам на производство: она приедет на участок прямо в доме.</p></details>
+        <details><summary>Какая высота потолков?</summary>
+          <p>245 см в коньке и 205 см в нижней точке.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Вечер: pin, самый длинный пролёт. Последний акт: табличка держится. -->
+  <section id="vecher" class="eve" data-sc-act="pin" data-sc-span="4.4" data-sc-drift="#111416">
+    <div data-sc-stage data-sc-verify-state="">
+      <div class="eve__stars" aria-hidden="true"></div>
+      <div class="eve__ground" aria-hidden="true"></div>
+      <div class="eve__scene" aria-hidden="true">
+        <svg class="eve__house" viewBox="0 0 360 210" preserveAspectRatio="xMidYMax meet"><defs><linearGradient id="f5s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFE0EA"></stop><stop offset="1" stop-color="#F1F0E8"></stop></linearGradient><linearGradient id="f5g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A9C3D2"></stop><stop offset=".55" stop-color="#6F8A9A"></stop><stop offset="1" stop-color="#4E6371"></stop></linearGradient></defs><g class="far-trees"><path d="M-150 98 L-173.0 176 L-127.0 176 Z" fill="#8FA58C"></path><path d="M-150 114 L-178.8 178 L-121.2 178 Z" fill="#7E957B" opacity=".9"></path><path d="M-108 120 L-128.0 176 L-88.0 176 Z" fill="#8FA58C"></path><path d="M-108 136 L-133.0 178 L-83.0 178 Z" fill="#7E957B" opacity=".9"></path><path d="M-62 92 L-89.0 176 L-35.0 176 Z" fill="#8FA58C"></path><path d="M-62 108 L-95.8 178 L-28.2 178 Z" fill="#7E957B" opacity=".9"></path><path d="M-20 128 L-37.0 176 L-3.0 176 Z" fill="#8FA58C"></path><path d="M-20 144 L-41.2 178 L1.2 178 Z" fill="#7E957B" opacity=".9"></path><path d="M392 104 L367.0 176 L417.0 176 Z" fill="#8FA58C"></path><path d="M392 120 L360.8 178 L423.2 178 Z" fill="#7E957B" opacity=".9"></path><path d="M436 124 L417.0 176 L455.0 176 Z" fill="#8FA58C"></path><path d="M436 140 L412.2 178 L459.8 178 Z" fill="#7E957B" opacity=".9"></path><path d="M478 94 L450.0 176 L506.0 176 Z" fill="#8FA58C"></path><path d="M478 110 L443.0 178 L513.0 178 Z" fill="#7E957B" opacity=".9"></path><path d="M520 118 L499.0 176 L541.0 176 Z" fill="#8FA58C"></path><path d="M520 134 L493.8 178 L546.2 178 Z" fill="#7E957B" opacity=".9"></path></g><path d="M22.0625 102 L-2.897500000000001 176 L47.0225 176 Z" fill="#8FA58C"></path><path d="M22.0625 119.16 L-9.137500000000003 178 L53.2625 178 Z" fill="#7E957B" opacity=".9"></path><path d="M339.9375 116 L319.4575 176 L360.4175 176 Z" fill="#8FA58C"></path><path d="M339.9375 130.07999999999998 L314.3375 178 L365.5375 178 Z" fill="#7E957B" opacity=".9"></path><rect x="-400" y="180.0" width="1160" height="40" fill="#D3D9C6"></rect><line x1="-400" y1="180.0" x2="760" y2="180.0" stroke="#B9C1AA" stroke-width="1"></line><rect x="188.5" y="43.9" width="7.9" height="28.7" fill="#2B2F33"></rect><rect x="186.3" y="41.8" width="12.1" height="3.0" fill="#1E2124"></rect><rect x="51.0" y="163.4" width="4.2" height="16.6" fill="#4A4F53"></rect><rect x="108.4" y="163.4" width="4.2" height="16.6" fill="#4A4F53"></rect><rect x="165.8" y="163.4" width="4.2" height="16.6" fill="#4A4F53"></rect><rect x="223.2" y="163.4" width="4.2" height="16.6" fill="#4A4F53"></rect><rect x="280.6" y="163.4" width="4.2" height="16.6" fill="#4A4F53"></rect><rect x="304.8" y="163.4" width="4.2" height="16.6" fill="#4A4F53"></rect><rect x="44.1" y="84.8" width="271.9" height="78.5" fill="#5E4737"></rect><line x1="44.1" y1="90.9" x2="315.9" y2="90.9" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="96.9" x2="315.9" y2="96.9" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="103.0" x2="315.9" y2="103.0" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="109.0" x2="315.9" y2="109.0" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="115.1" x2="315.9" y2="115.1" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="121.1" x2="315.9" y2="121.1" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="127.1" x2="315.9" y2="127.1" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="133.2" x2="315.9" y2="133.2" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="139.2" x2="315.9" y2="139.2" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="145.3" x2="315.9" y2="145.3" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="151.3" x2="315.9" y2="151.3" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><line x1="44.1" y1="157.3" x2="315.9" y2="157.3" stroke="#4C392C" stroke-width="0.7" opacity=".55"></line><rect x="44.1" y="84.8" width="3.9" height="78.5" fill="#2E3337"></rect><rect x="312.0" y="84.8" width="3.9" height="78.5" fill="#2E3337"></rect><rect x="63.7" y="101.5" width="27.2" height="61.9" fill="#2E3337"></rect><circle cx="86.1" cy="133.2" r="1.5" fill="#C9CDD0"></circle><rect x="140.7" y="96.9" width="36.3" height="45.3" fill="#2E3337"></rect><rect x="142.8" y="99.0" width="32.0" height="41.1" fill="url(#f5g)"></rect><line x1="158.9" y1="99.0" x2="158.9" y2="140.1" stroke="#2E3337" stroke-width="1.8125"></line><line x1="144.4" y1="101.8" x2="157.0" y2="101.8" stroke="#FFFFFF" stroke-width="0.8" opacity=".35"></line><rect x="242.7" y="96.9" width="36.3" height="45.3" fill="#2E3337"></rect><rect x="244.8" y="99.0" width="32.0" height="41.1" fill="url(#f5g)"></rect><line x1="260.8" y1="99.0" x2="260.8" y2="140.1" stroke="#2E3337" stroke-width="1.8125"></line><line x1="246.3" y1="101.8" x2="259.0" y2="101.8" stroke="#FFFFFF" stroke-width="0.8" opacity=".35"></line><rect x="44.1" y="163.4" width="271.9" height="6.0" fill="#2E3337"></rect><rect x="44.1" y="93.9" width="4.8" height="69.5" fill="#2E3337"></rect><rect x="132.3" y="93.9" width="4.8" height="69.5" fill="#2E3337"></rect><rect x="222.9" y="93.9" width="4.8" height="69.5" fill="#2E3337"></rect><rect x="311.1" y="93.9" width="4.8" height="69.5" fill="#2E3337"></rect><rect x="48.9" y="134.7" width="10.3" height="2.1" fill="#3f4347"></rect><line x1="53.7" y1="136.8" x2="53.7" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><rect x="95.4" y="134.7" width="215.7" height="2.1" fill="#3f4347"></rect><line x1="100.3" y1="136.8" x2="100.3" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="105.1" y1="136.8" x2="105.1" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="109.9" y1="136.8" x2="109.9" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="114.8" y1="136.8" x2="114.8" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="119.6" y1="136.8" x2="119.6" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="124.4" y1="136.8" x2="124.4" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="129.3" y1="136.8" x2="129.3" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="134.1" y1="136.8" x2="134.1" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="138.9" y1="136.8" x2="138.9" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="143.8" y1="136.8" x2="143.8" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="148.6" y1="136.8" x2="148.6" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="153.4" y1="136.8" x2="153.4" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="158.3" y1="136.8" x2="158.3" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="163.1" y1="136.8" x2="163.1" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="167.9" y1="136.8" x2="167.9" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="172.8" y1="136.8" x2="172.8" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="177.6" y1="136.8" x2="177.6" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="182.4" y1="136.8" x2="182.4" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="187.3" y1="136.8" x2="187.3" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="192.1" y1="136.8" x2="192.1" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="196.9" y1="136.8" x2="196.9" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="201.8" y1="136.8" x2="201.8" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="206.6" y1="136.8" x2="206.6" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="211.4" y1="136.8" x2="211.4" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="216.3" y1="136.8" x2="216.3" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="221.1" y1="136.8" x2="221.1" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="225.9" y1="136.8" x2="225.9" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="230.8" y1="136.8" x2="230.8" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="235.6" y1="136.8" x2="235.6" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="240.4" y1="136.8" x2="240.4" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="245.3" y1="136.8" x2="245.3" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="250.1" y1="136.8" x2="250.1" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="254.9" y1="136.8" x2="254.9" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="259.8" y1="136.8" x2="259.8" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="264.6" y1="136.8" x2="264.6" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="269.4" y1="136.8" x2="269.4" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="274.3" y1="136.8" x2="274.3" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="279.1" y1="136.8" x2="279.1" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="283.9" y1="136.8" x2="283.9" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="288.8" y1="136.8" x2="288.8" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="293.6" y1="136.8" x2="293.6" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="298.4" y1="136.8" x2="298.4" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="303.3" y1="136.8" x2="303.3" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><line x1="308.1" y1="136.8" x2="308.1" y2="163.4" stroke="#2E3337" stroke-width="1.0572916666666667" opacity=".85"></line><rect x="57.7" y="163.4" width="39.3" height="5.5" fill="#9C7A57"></rect><rect x="54.0" y="168.9" width="46.5" height="5.5" fill="#8E6C4C"></rect><rect x="50.4" y="174.5" width="53.8" height="5.5" fill="#9C7A57"></rect><rect x="34.4" y="63.7" width="291.2" height="10.9" fill="#4f5457"></rect><line x1="49.5" y1="65.2" x2="49.5" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="64.6" y1="65.2" x2="64.6" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="79.7" y1="65.2" x2="79.7" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="94.8" y1="65.2" x2="94.8" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="109.9" y1="65.2" x2="109.9" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="125.0" y1="65.2" x2="125.0" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="140.1" y1="65.2" x2="140.1" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="155.2" y1="65.2" x2="155.2" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="170.3" y1="65.2" x2="170.3" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="185.4" y1="65.2" x2="185.4" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="200.5" y1="65.2" x2="200.5" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="215.6" y1="65.2" x2="215.6" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="230.7" y1="65.2" x2="230.7" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="245.9" y1="65.2" x2="245.9" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="261.0" y1="65.2" x2="261.0" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="276.1" y1="65.2" x2="276.1" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="291.2" y1="65.2" x2="291.2" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="306.3" y1="65.2" x2="306.3" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="321.4" y1="65.2" x2="321.4" y2="74.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><rect x="34.4" y="63.1" width="291.2" height="2.7" fill="#2E3337"></rect><rect x="34.4" y="74.6" width="291.2" height="9.1" fill="#4f5457"></rect><line x1="49.5" y1="76.1" x2="49.5" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="64.6" y1="76.1" x2="64.6" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="79.7" y1="76.1" x2="79.7" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="94.8" y1="76.1" x2="94.8" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="109.9" y1="76.1" x2="109.9" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="125.0" y1="76.1" x2="125.0" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="140.1" y1="76.1" x2="140.1" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="155.2" y1="76.1" x2="155.2" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="170.3" y1="76.1" x2="170.3" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="185.4" y1="76.1" x2="185.4" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="200.5" y1="76.1" x2="200.5" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="215.6" y1="76.1" x2="215.6" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="230.7" y1="76.1" x2="230.7" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="245.9" y1="76.1" x2="245.9" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="261.0" y1="76.1" x2="261.0" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="276.1" y1="76.1" x2="276.1" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="291.2" y1="76.1" x2="291.2" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="306.3" y1="76.1" x2="306.3" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><line x1="321.4" y1="76.1" x2="321.4" y2="83.6" stroke="#2E3337" stroke-width="0.7" opacity=".6"></line><rect x="34.4" y="83.6" width="291.2" height="10.3" fill="#2E3337"></rect><line x1="34.4" y1="84.2" x2="325.6" y2="84.2" stroke="#FFFFFF" stroke-width="0.8" opacity=".22"></line><rect x="34.4" y="92.7" width="291.2" height="3.0" fill="#9EA4A8"></rect><line x1="36.2" y1="94.8" x2="41.6" y2="98.7" stroke="#9EA4A8" stroke-width="2.1145833333333335"></line><rect x="40.4" y="97.5" width="2.4" height="79.4" fill="#9EA4A8"></rect><line x1="323.8" y1="94.8" x2="318.4" y2="98.7" stroke="#9EA4A8" stroke-width="2.1145833333333335"></line><rect x="317.1" y="97.5" width="2.4" height="79.4" fill="#9EA4A8"></rect></svg>
+        <svg class="eve__lights" viewBox="0 0 360 210" preserveAspectRatio="xMidYMax meet">
+          <defs>
+            <linearGradient id="warm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD9A0"/><stop offset="1" stop-color="#F0A452"/></linearGradient>
+            <radialGradient id="halo"><stop offset="0" stop-color="#FFC27A" stop-opacity=".75"/><stop offset="1" stop-color="#FFC27A" stop-opacity="0"/></radialGradient>
+            <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2"/></filter>
+            <filter id="puff" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.1"/></filter>
+          </defs>
+          <g class="spill">
+            <ellipse cx="158.8" cy="166" rx="30" ry="4" fill="#FFB863" filter="url(#soft)"/>
+            <ellipse cx="260.8" cy="166" rx="30" ry="4" fill="#FFB863" filter="url(#soft)"/>
+          </g>
+          <g class="w1">
+            <rect x="136" y="92" width="45.6" height="54.3" fill="url(#halo)"/>
+            <rect x="142.8" y="99" width="32" height="41.1" fill="url(#warm)"/>
+            <path d="M146 140.1 v-9 h9 v9 z" fill="#C97F3A" opacity=".55"/>
+            <line x1="158.9" y1="99" x2="158.9" y2="140.1" stroke="#2E3337" stroke-width="1.8"/>
+          </g>
+          <g class="w2">
+            <rect x="238" y="92" width="45.6" height="54.3" fill="url(#halo)"/>
+            <rect x="244.8" y="99" width="32" height="41.1" fill="url(#warm)"/>
+            <circle cx="268.5" cy="108" r="3.2" fill="#FFF1D6" opacity=".8"/>
+            <line x1="260.8" y1="99" x2="260.8" y2="140.1" stroke="#2E3337" stroke-width="1.8"/>
+          </g>
+          <g class="lamps">
+            <g transform="translate(90 94)"><ellipse cx="0" cy="14" rx="15" ry="20" fill="url(#halo)" opacity=".55"/><rect x="-2.2" y="0" width="4.4" height="1.8" fill="#2E3337"/><circle cx="0" cy="2.6" r="1.4" fill="#FFE7BD"/></g>
+            <g transform="translate(180 94)"><ellipse cx="0" cy="14" rx="15" ry="20" fill="url(#halo)" opacity=".55"/><rect x="-2.2" y="0" width="4.4" height="1.8" fill="#2E3337"/><circle cx="0" cy="2.6" r="1.4" fill="#FFE7BD"/></g>
+            <g transform="translate(286 94)"><ellipse cx="0" cy="14" rx="15" ry="20" fill="url(#halo)" opacity=".55"/><rect x="-2.2" y="0" width="4.4" height="1.8" fill="#2E3337"/><circle cx="0" cy="2.6" r="1.4" fill="#FFE7BD"/></g>
+          </g>
+          <g class="smoke" fill="#C9CED6" filter="url(#puff)">
+            <circle cx="192.4" cy="38" r="3.4"/><circle cx="192.4" cy="38" r="3.4"/><circle cx="192.4" cy="38" r="3.4"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="eve__copy">
+        <div class="eve__day tag" data-sc-cue="0 0.2 0">
+          <h2>Дом 6×9 с террасой</h2>
+          <dl>
+            <dt>Контур</dt><dd>6×9 м, 54 м² тёплого</dd>
+            <dt>Терраса</dt><dd>2,5×9 м, вдоль всего дома</dd>
+            <dt>Рисунок</dt><dd>из нашего конструктора</dd>
+          </dl>
+        </div>
+        <p class="eve__night eve__line" data-sc-cue="0.25 0.54">Мебель и технику заказчик привёз на производство. Они приехали на участок прямо в доме.</p>
+        <blockquote class="eve__night" data-sc-cue="0.5 0.82">«Сидим на даче, топим печку и вас с благодарностью вспоминаем.»<cite>Наталья, заказчица, ВКонтакте</cite></blockquote>
+        <div class="eve__night plate tag" data-sc-cue="0.8">
+          <h2>Ваш дом</h2>
+          <dl>
+            <dt>Размер</dt><dd>от 3×6 до 6×9 м</dd>
+            <dt>Планировка</dt><dd>ваша</dd>
+            <dt>Цвета</dt><dd>ваши</dd>
+            <dt>Срок</dt><dd>4–5 недель + 1–2 дня</dd>
+          </dl>
+          <div class="btns">
+            <a class="cta" data-build href="#">Собрать свой дом</a>
+            <a class="cta2" data-write href="https://vk.me/zagorodnaya_studia">Написать нам</a>
+          </div>
+          <p class="tg-hint">Кнопка «Собрать свой дом» внизу откроет конструктор.</p>
+          <p class="plate__foot">Юлия и Юрий · дома. Собственное производство, Санкт-Петербург.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Окно дома: открывается поверх страницы, «Назад» мыши, браузера и Telegram его закрывают -->
+<div class="house" id="house" role="dialog" aria-modal="true" aria-labelledby="house-title" tabindex="-1" hidden>
+  <div class="house__bar">
+    <button class="house__back" type="button" data-close><span aria-hidden="true">←</span> Все дома</button>
+    <span class="house__name" aria-hidden="true"></span>
+    <button class="house__x" type="button" data-close aria-label="Закрыть">×</button>
+  </div>
+  <div class="house__body">
+    <div class="house__photos"></div>
+    <div class="house__side">
+      <div class="house__head"></div>
+      <div class="house__more"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   scrollcraft: a scroll-driven interaction runtime
+   ----------------------------------------------------------------------------
+   Vanilla JS. Zero dependencies. Zero DOM generation.
+
+   The engine does NOT build your page. You author real, semantic HTML and mark
+   it up with data-sc-* attributes; the engine reads them and drives them from a
+   single scroll value on a single rAF loop. That is deliberate: a runtime that
+   generates its own DOM from a config object makes every site it touches look
+   identical, which is the failure mode this replaces.
+
+   ---------------------------------------------------------------------------
+   ACTS: the unit of scroll time
+   ---------------------------------------------------------------------------
+     <section data-sc-act="pin" data-sc-span="2.5"> ... </section>
+
+     data-sc-act   scrub | pin | pan | flow   (default: flow)
+     data-sc-clip-map="travel" opts a pinned act OUT of full-life clip mapping.
+                   By DEFAULT a scrub clip is mapped across the stage's entire
+                   on-screen life, not across its pinned travel, because a pinned
+                   stage is visible for a viewport BEFORE the pin begins (sliding
+                   up into view) and a viewport AFTER it ends (sliding off the
+                   top). Mapped to pinned travel, the clip sits on its first
+                   frame through the whole entry and its last frame through the
+                   whole exit: the reader watches a still photograph while the
+                   page moves. Pair it with data-sc-dwell, which moves quickly at
+                   the edges and settles in the middle, so the fast motion lands
+                   on the two slides and the settle lands inside the pin where
+                   the copy is. data-sc-runout is accepted and ignored; it named
+                   the old opt-in for the exit half of this.
+     data-sc-span  viewport-heights of scroll this act owns. Pinned devices only
+                   (scrub/pin/pan). Default 1.5. The engine sets the outer
+                   height and sticks the first .sc-stage / [data-sc-stage] child.
+
+     Every act exposes a normalized progress p (0..1):
+       pinned  p = (y - top) / (height - vh)
+       flow    p = (y + vh - top) / (height + vh)
+     and publishes it as --sc-p on the act element, so CSS can read it too.
+
+   ---------------------------------------------------------------------------
+   DEVICES: what p drives
+   ---------------------------------------------------------------------------
+     data-sc-scrub            on <video>. p scrubs currentTime. Blob-loaded, so
+                              it seeks without needing HTTP range support.
+     data-sc-sequence="a/{i}.webp:120:1"
+                              on <canvas>. p scrubs an image sequence
+                              (path template : frameCount : startIndex).
+     data-sc-pan="0.6"        on a wide rail inside data-sc-act="pan". p drives
+                              horizontal travel. Value = extra travel multiplier.
+     data-sc-parallax="-0.2"  translateY by rate * act-progress * viewport.
+                              Negative = moves up faster than scroll (recedes).
+     data-sc-cue="0.1 0.5"    opacity/rise keyed to p. One value = enter+hold.
+                              Two = enter..leave. Add a third for the hold point.
+     data-sc-kinetic="lines"  lines | words | chars. Splits the element and
+                              staggers its reveal across the cue window.
+     data-sc-reveal="up"      up | down | left | right | iris. clip-path wipe.
+     data-sc-count="0 4200"   number bloom across the cue window. Outside any
+                              act it ticks up once on entry instead, over
+                              data-sc-count-ms (default 1400).
+     data-sc-in               flow-section reveal, fires once on entry via
+                              IntersectionObserver (cheaper, and content that
+                              re-hides on scroll-up is a defect, not an effect).
+                              data-sc-stagger="60" on the parent staggers kids.
+     data-sc-drift="#07090c"  page background interpolates toward this colour
+                              while the act is on screen.
+
+   ---------------------------------------------------------------------------
+   WORLDFLIGHT: the page mode for one continuous flight
+   ---------------------------------------------------------------------------
+     <div data-sc-mode="worldflight" data-sc-seam="0.12">
+       <div data-sc-world>
+         <div data-sc-segment data-sc-w="1.4" data-sc-linger="0.3"
+              data-sc-waypoint="Approach">
+           <img class="sc-world__poster" src="p1.webp" alt="">
+           <video data-sc-src="leg1.mp4" data-sc-src-mobile="leg1-m.mp4"></video>
+         </div>
+         ... more segments, in flight order ...
+       </div>
+       <div data-sc-world-copy>
+         <div class="sc-world__scrim sc-scrim sc-scrim--band"></div>
+         <div data-sc-copy data-sc-window="hero"> ... </div>
+         <div data-sc-copy data-sc-window="0.34 0.56"> ... </div>
+         <div data-sc-copy data-sc-window="finale"> ... </div>
+       </div>
+       <div data-sc-spacer aria-hidden="true"></div>
+     </div>
+
+   Acts cut the page into pinned blocks, which is the right shape for a page of
+   chapters and the wrong shape for one continuous camera move: the reader hits
+   the end of an act, the stage unsticks, a static page slides past, and the next
+   act starts the whole thing again. Worldflight removes the seams by removing
+   the blocks. There is ONE fixed stage for the entire page. The only element in
+   document flow is a spacer, whose height the engine sets to the sum of the
+   segment weights plus one viewport so the last flight can finish. Scroll drives
+   the film timeline and the overlay opacity. Nothing else moves.
+
+     data-sc-w        viewport-heights this segment owns. Default 1.3.
+     data-sc-linger   dwell remap for this leg only (see lingerEase). Max 0.6.
+     data-sc-seam     crossfade band, in viewport-heights of scroll. Default 0.12.
+     data-sc-waypoint label published on --sc-seg / the sc:waypoint event, so a
+                      page can draw its own route rail. The engine draws none.
+     data-sc-window   on a copy block: "hero" | "finale" | "from to [in [out]]"
+                      as fractions of the WHOLE track.
+
+   Every clip stays mounted for the life of the page. Segments crossfade by
+   opacity over the seam band; nothing ever swaps a src, because a src swap is a
+   black frame and a black frame is the cut this mode exists to avoid.
+
+   ---------------------------------------------------------------------------
+   POINTER: interactivity that isn't scroll
+   ---------------------------------------------------------------------------
+     data-sc-tilt="8"         3D tilt toward the pointer, spring-damped, degrees.
+     data-sc-magnet="0.35"    element drifts toward the pointer inside its bounds.
+     data-sc-spotlight        publishes --sc-mx/--sc-my (0..1) for a light that
+                              follows the pointer across the surface.
+   All three are gated to (hover: hover) and (pointer: fine) and disabled under
+   prefers-reduced-motion. Touch never fires them.
+
+   ---------------------------------------------------------------------------
+   REDUCED MOTION
+   ---------------------------------------------------------------------------
+   Fewer and gentler, not zero. Cues still fade (comprehension survives), but
+   translation collapses, video clips are never fetched (the poster holds), and
+   pointer devices are inert. A worldflight still tells its whole story: the
+   posters cross-dissolve through the same seams and the same copy windows.
+
+   ---------------------------------------------------------------------------
+   THE PLAYHEAD
+   ---------------------------------------------------------------------------
+   Every scrub clip on the page, act or worldflight, is driven by one smoothed
+   playhead. Scroll only ever writes a TARGET; a standalone rAF loop walks the
+   current time toward it at a fixed fraction per frame (data-sc-lerp, default
+   0.18; 1.0 under reduced motion, which is no smoothing at all). Writes are
+   gated by a deadband and skipped while the decoder is still seeking. Without
+   the smoothing a trackpad flick reads as a stutter, because wheel events do
+   not arrive at a constant rate and a 1:1 write reproduces every gap in them.
+   ========================================================================== */
+
+(function (global) {
+  'use strict';
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fineMQ = matchMedia('(hover: hover) and (pointer: fine)');
+  var smallMQ = matchMedia('(max-width: 860px)');
+  var coarse = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  var isMobile = function () { return coarse || smallMQ.matches; };
+
+  var clamp = function (x, a, b) { return x < a ? a : x > b ? b : x; };
+  var clamp01 = function (x) { return clamp(x, 0, 1); };
+  var smooth = function (x) { x = clamp01(x); return x * x * (3 - 2 * x); };
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+
+  // Monotone dwell remap. Settles the camera mid-act (where the copy peaks) and
+  // moves quicker at the edges. f(0)=0 and f(1)=1 always, so seam frames between
+  // consecutive clips are untouched and the chain stays invisible.
+  function dwell(x, L) {
+    if (!L) return x;
+    L = clamp01(L);
+    var c = x - 0.5;
+    return (1 - L) * x + L * (4 * c * c * c + 0.5);
+  }
+
+  // Same curve, capped harder, and used per worldflight segment. Above ~0.6 the
+  // derivative at the midpoint gets low enough that the camera visibly stops
+  // dead mid-leg, which reads as a stall rather than a hold. The endpoints are
+  // fixed by construction: f(0)=0, f(1)=1, so the first and last frames of every
+  // leg are still exactly the frames the seam law matched, and the chain between
+  // legs stays invisible no matter how much dwell a leg asks for.
+  function lingerEase(x, L) {
+    if (!L) return x;
+    L = clamp(L, 0, 0.6);
+    var c = x - 0.5;
+    return (1 - L) * x + L * (4 * c * c * c + 0.5);
+  }
+
+  // The lerp is a mechanism, not a taste knob. It is exposed so a page whose
+  // clips are unusually short (where 0.18 lags behind the pointer) can tighten
+  // it, and it is never read as 0: a 0 lerp is a playhead that never moves.
+  function lerpRate(el) {
+    var v = parseFloat(el && el.getAttribute && el.getAttribute('data-sc-lerp'));
+    return isNaN(v) || v <= 0 ? 0 : clamp(v, 0.02, 1);
+  }
+
+  // ---- colour -------------------------------------------------------------
+  function parseColor(str) {
+    str = (str || '').trim();
+    var m = str.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (m) {
+      var h = m[1];
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+    }
+    m = str.match(/rgba?\(([^)]+)\)/i);
+    if (m) {
+      var p = m[1].split(/[,\s/]+/).filter(Boolean).map(parseFloat);
+      return [p[0], p[1], p[2]];
+    }
+    return null;
+  }
+  function mixColor(a, b, t) {
+    return 'rgb(' + Math.round(lerp(a[0], b[0], t)) + ',' +
+                    Math.round(lerp(a[1], b[1], t)) + ',' +
+                    Math.round(lerp(a[2], b[2], t)) + ')';
+  }
+
+  // ---- text splitting -----------------------------------------------------
+  // Wraps each unit in a masked span so the reveal can slide from behind a clean
+  // edge instead of just fading. Lines are measured after layout, so this must
+  // run once fonts are ready or the line boxes are wrong.
+  function splitText(el, mode) {
+    if (el.__scSplit) return el.__scSplit;
+    var text = el.textContent;
+    var units = [];
+
+    if (mode === 'chars' || mode === 'words') {
+      var parts = mode === 'chars' ? Array.from(text) : text.split(/(\s+)/);
+      el.textContent = '';
+      parts.forEach(function (t) {
+        if (/^\s+$/.test(t)) { el.appendChild(document.createTextNode(t)); return; }
+        var mask = document.createElement('span');
+        mask.className = 'sc-split';
+        var inner = document.createElement('span');
+        inner.className = 'sc-split__i';
+        inner.textContent = t;
+        mask.appendChild(inner);
+        el.appendChild(mask);
+        units.push(inner);
+      });
+    } else {
+      // lines: wrap every word, measure offsetTop, regroup words into line spans
+      var words = text.split(/\s+/).filter(Boolean);
+      el.textContent = '';
+      var probes = words.map(function (w, i) {
+        var s = document.createElement('span');
+        s.textContent = w;
+        el.appendChild(s);
+        if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+        return s;
+      });
+      var lines = [], cur = null, lastTop = null;
+      probes.forEach(function (s) {
+        var top = s.offsetTop;
+        if (lastTop === null || Math.abs(top - lastTop) > 1) { cur = []; lines.push(cur); lastTop = top; }
+        cur.push(s.textContent);
+      });
+      el.textContent = '';
+      lines.forEach(function (words, li) {
+        var mask = document.createElement('span');
+        mask.className = 'sc-split sc-split--line';
+        var inner = document.createElement('span');
+        inner.className = 'sc-split__i';
+        inner.textContent = words.join(' ');
+        mask.appendChild(inner);
+        el.appendChild(mask);
+        // Whitespace between the line spans. Without it the line boxes abut in
+        // the text layer, so selecting and copying the heading yields
+        // "even whenbreakfast" and a screen reader hears the same.
+        if (li < lines.length - 1) el.appendChild(document.createTextNode(' '));
+        units.push(inner);
+      });
+    }
+    el.classList.add('sc-is-split');
+    el.__scSplit = units;
+    return units;
+  }
+
+  // ---- number formatting --------------------------------------------------
+  function formatNum(v, template) {
+    var decimals = 0;
+    var dot = template.indexOf('.');
+    if (dot > -1) decimals = template.length - dot - 1;
+    var s = v.toFixed(decimals);
+    if (/,/.test(template) || Math.abs(v) >= 10000) {
+      var bits = s.split('.');
+      bits[0] = bits[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      s = bits.join('.');
+    }
+    return s;
+  }
+
+  // =========================================================================
+  function mount(root, opts) {
+    root = typeof root === 'string' ? document.querySelector(root) : (root || document);
+    opts = opts || {};
+
+    // Teardown for client-side routers (issue #6). mount() registers window
+    // listeners, starts two self-rescheduling rAF loops, and pushes onto
+    // ScrollCraft.instances, so without destroy() every re-mount leaves the old
+    // instance running for the life of the tab. `on` records what it registered
+    // and the two loops keep their live handle, so destroy() can undo exactly
+    // what this mount did and nothing else: its window listeners, both rAF
+    // loops, both IntersectionObservers, and every clip blob it created. A page
+    // that never calls destroy() behaves exactly as before.
+    var scListeners = [];
+    var scDead = false;
+    var scTickFrame = 0, scPointerFrame = 0;
+    function on(type, fn, o) {
+      addEventListener(type, fn, o);
+      scListeners.push([type, fn, o]);
+    }
+
+    var acts = [];
+    var worlds = [];
+    var drifts = [];
+    var playheads = [];
+    var scrollEls = [];
+    var vh = innerHeight, vw = innerWidth;
+    var y = 0, needsLayout = true;
+    var progressBar = root.querySelector('[data-sc-progress]');
+    var docEl = document.documentElement;
+
+    // One rate for the page, overridable per clip. Read from the mount root, the
+    // document element, or the option bag, in that order.
+    var LERP = lerpRate(root.nodeType === 1 ? root : null) ||
+               lerpRate(docEl) ||
+               (opts.lerp > 0 ? clamp(opts.lerp, 0.02, 1) : 0) ||
+               0.18;
+
+    // Every scrub clip on the page lives here, whatever drives it. tick() walks
+    // this one list, so an act clip and a worldflight leg get the same playhead.
+    function makeClip(v, host) {
+      var rec = {
+        el: v, host: host || v,
+        ready: false, loading: false, painted: false,
+        cur: 0, target: 0, live: false, stuckAt: 0,
+        lerp: lerpRate(v) || LERP
+      };
+      v.muted = true; v.playsInline = true; v.preload = 'none';
+      v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+      playheads.push(rec);
+      return rec;
+    }
+
+    // ---- collect acts -----------------------------------------------------
+    Array.prototype.forEach.call(root.querySelectorAll('[data-sc-act]'), function (el) {
+      var device = el.getAttribute('data-sc-act') || 'flow';
+      var pinned = device === 'scrub' || device === 'pin' || device === 'pan';
+      var act = {
+        el: el,
+        device: device,
+        pinned: pinned,
+        span: parseFloat(el.getAttribute('data-sc-span')) || (pinned ? 1.5 : 0),
+        dwell: parseFloat(el.getAttribute('data-sc-dwell')) || 0,
+        clipTravel: pinned && el.getAttribute('data-sc-clip-map') === 'travel',
+        p: 0, raw: 0, top: 0, height: 0, live: false,
+        cues: [], parallax: [], reveals: [], counts: [],
+        video: null, seq: null, rail: null
+      };
+
+      if (pinned) {
+        act.stage = el.querySelector('[data-sc-stage]') || el.querySelector('.sc-stage');
+        if (act.stage) act.stage.classList.add('sc-stage');
+        el.classList.add('sc-act--pinned');
+      }
+
+      // scrub video
+      var v = el.querySelector('video[data-sc-scrub]');
+      if (v) act.video = makeClip(v, el);
+
+      // image sequence
+      var cv = el.querySelector('canvas[data-sc-sequence]');
+      if (cv) {
+        var spec = cv.getAttribute('data-sc-sequence').split(':');
+        act.seq = {
+          el: cv, ctx: cv.getContext('2d', { alpha: false }),
+          tpl: spec[0], count: parseInt(spec[1], 10) || 1, start: parseInt(spec[2], 10) || 0,
+          frames: [], loaded: 0, drawn: -1
+        };
+      }
+
+      // horizontal rail
+      act.rail = el.querySelector('[data-sc-pan]');
+      if (act.rail) act.railExtra = parseFloat(act.rail.getAttribute('data-sc-pan')) || 0;
+
+      // cues
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-cue]'), function (c) {
+        var nums = (c.getAttribute('data-sc-cue') || '').trim().split(/\s+/).map(parseFloat);
+        // from [to [rampIn [rampOut]]]
+        // rampIn/rampOut are fractions OF THE WINDOW, defaulting to 0.3 each.
+        // That leaves a ~40% plateau at full opacity in the middle. Without a
+        // plateau a cue is a triangle: it touches opacity 1 for a single
+        // instant, so the reader has to stop on exactly the right pixel to see
+        // the line at full strength, and every heading reads as slightly faded.
+        var cue = {
+          el: c,
+          from: isNaN(nums[0]) ? 0 : nums[0],
+          to: nums.length > 1 && !isNaN(nums[1]) ? nums[1] : null,
+          rIn: nums.length > 2 && !isNaN(nums[2]) ? clamp01(nums[2]) : 0.3,
+          rOut: nums.length > 3 && !isNaN(nums[3]) ? clamp01(nums[3]) : null,
+          rise: parseFloat(c.getAttribute('data-sc-rise')),
+          kinetic: c.getAttribute('data-sc-kinetic'),
+          units: null, state: -1
+        };
+        if (cue.rOut === null) cue.rOut = (nums.length > 2 && !isNaN(nums[2])) ? 0.3 : 0.3;
+        if (isNaN(cue.rise)) cue.rise = 1;
+        act.cues.push(cue);
+      });
+
+      // parallax
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-parallax]'), function (c) {
+        act.parallax.push({ el: c, rate: parseFloat(c.getAttribute('data-sc-parallax')) || 0 });
+      });
+
+      // reveals
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-reveal]'), function (c) {
+        var nums = (c.getAttribute('data-sc-reveal-at') || '0 0.5').trim().split(/\s+/).map(parseFloat);
+        act.reveals.push({ el: c, dir: c.getAttribute('data-sc-reveal') || 'up', from: nums[0] || 0, to: nums[1] || 0.5 });
+      });
+
+      // counters
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-count]'), function (c) {
+        var nums = (c.getAttribute('data-sc-count') || '').trim().split(/\s+/);
+        var at = (c.getAttribute('data-sc-count-at') || '0.1 0.55').trim().split(/\s+/).map(parseFloat);
+        // Strip separators before parsing so the author can write the target
+        // exactly as it should render. Without this, "0 3,500" parses the target
+        // as 3 (the comma stops parseFloat) and "0 3500" renders "3500", because
+        // formatNum only adds separators above 10,000. So any real figure between
+        // 1,000 and 9,999 could not be shown the way it is written everywhere
+        // else on the page. The template still drives the formatting.
+        var num = function (s) { return parseFloat(String(s).replace(/,/g, '')) || 0; };
+        act.counts.push({
+          el: c, a: num(nums[0]), b: num(nums[1]),
+          tpl: nums[1] || '0', from: at[0], to: at[1], last: null
+        });
+      });
+
+      acts.push(act);
+
+      var d = el.getAttribute('data-sc-drift');
+      if (d) { var rgb = parseColor(d); if (rgb) drifts.push({ act: act, rgb: rgb }); }
+    });
+
+    // ---- collect worldflights --------------------------------------------
+    Array.prototype.forEach.call(root.querySelectorAll('[data-sc-mode="worldflight"]'), function (el) {
+      var W = {
+        el: el,
+        stage: el.querySelector('[data-sc-world]') || el.querySelector('.sc-world'),
+        copyLayer: el.querySelector('[data-sc-world-copy]') || el.querySelector('.sc-world__copy'),
+        spacer: el.querySelector('[data-sc-spacer]') || el.querySelector('.sc-world__spacer'),
+        seam: 0, segs: [], copies: [], total: 0, top: 0, index: -1, checked: false
+      };
+      var seam = parseFloat(el.getAttribute('data-sc-seam'));
+      // A seam wider than the shortest leg would have three clips dissolving at
+      // once and no leg ever fully present. Cap it well under that.
+      W.seam = isNaN(seam) || seam <= 0 ? 0.12 : clamp(seam, 0.02, 0.4);
+      if (W.stage) W.stage.classList.add('sc-world');
+      if (W.copyLayer) W.copyLayer.classList.add('sc-world__copy');
+      if (W.spacer) W.spacer.classList.add('sc-world__spacer');
+
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-segment]'), function (s) {
+        var seg = {
+          el: s,
+          w: parseFloat(s.getAttribute('data-sc-w')) || 1.3,
+          linger: clamp(parseFloat(s.getAttribute('data-sc-linger')) || 0, 0, 0.6),
+          label: s.getAttribute('data-sc-waypoint') || '',
+          poster: s.querySelector('[data-sc-poster]') || s.querySelector('.sc-world__poster') || s.querySelector('img'),
+          c0: 0, c1: 0, local: 0, op: -1, z: -1, clip: null
+        };
+        s.classList.add('sc-world__seg');
+        if (seg.poster) seg.poster.classList.add('sc-world__poster');
+        var v = s.querySelector('video');
+        if (v) {
+          // Mark it as a scrub clip whether or not the author did. Everything
+          // downstream, the stylesheet and the verification harness included,
+          // finds scrub media by this attribute.
+          v.setAttribute('data-sc-scrub', '');
+          seg.clip = makeClip(v, s);
+        }
+        W.segs.push(seg);
+      });
+
+      var run = 0;
+      W.segs.forEach(function (s) { s.c0 = run; run += Math.max(s.w, 0.1); s.c1 = run; });
+      W.total = Math.max(run, 0.001);
+
+      Array.prototype.forEach.call(el.querySelectorAll('[data-sc-copy]'), function (cEl) {
+        var spec = (cEl.getAttribute('data-sc-window') || '').trim();
+        var q = { el: cEl, from: 0, to: 1, rIn: 0.3, rOut: 0.3, state: -1 };
+        var first = W.segs[0], last = W.segs[W.segs.length - 1];
+        if (spec === 'hero') {
+          // Present the instant the reader lands. A hero that fades IN has to
+          // fade in from nothing over an empty first screen, which is the one
+          // moment on the page where there is nothing else to look at.
+          q.from = 0;
+          q.to = first ? (0.62 * first.w) / W.total : 0.3;
+          q.rIn = 0; q.rOut = 0.65;
+        } else if (spec === 'finale') {
+          q.from = last ? (last.c0 + 0.4 * last.w) / W.total : 0.7;
+          q.to = 1; q.rIn = 0.55; q.rOut = 0;
+        } else {
+          var n = spec.split(/\s+/).map(parseFloat);
+          q.from = isNaN(n[0]) ? 0 : clamp01(n[0]);
+          q.to = (n.length > 1 && !isNaN(n[1])) ? clamp01(n[1]) : clamp01(q.from + 0.18);
+          if (n.length > 2 && !isNaN(n[2])) q.rIn = clamp01(n[2]);
+          if (n.length > 3 && !isNaN(n[3])) q.rOut = clamp01(n[3]);
+        }
+        if (q.to <= q.from) q.to = clamp01(q.from + 0.05);
+        W.copies.push(q);
+      });
+
+      worlds.push(W);
+    });
+
+    // ---- flow reveals (fire once) ----------------------------------------
+    // `cio` is assigned inside the counters IIFE below; it is declared here so
+    // destroy() can disconnect it. An IntersectionObserver holds a strong ref to
+    // every observed target, and unobserve only runs on first intersection, so a
+    // never-revealed element in a removed subtree is retained for the life of the
+    // tab, once per re-mount.
+    var io = null, cio = null;
+    if ('IntersectionObserver' in window) {
+      io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var el = e.target;
+          el.classList.add('sc-in');
+          var stagger = parseFloat(el.getAttribute('data-sc-stagger'));
+          if (!isNaN(stagger)) {
+            Array.prototype.forEach.call(el.children, function (kid, i) {
+              kid.style.transitionDelay = (i * stagger) + 'ms';
+              kid.classList.add('sc-in');
+            });
+          }
+          io.unobserve(el);
+        });
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-in]'), function (el) { io.observe(el); });
+    } else {
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-in]'), function (el) { el.classList.add('sc-in'); });
+    }
+
+    // ---- entry counters (fire once) --------------------------------------
+    // A [data-sc-count] outside any pinned act is not scrubbed by scroll; it
+    // ticks up once when it enters view, over data-sc-count-ms (default 1400).
+    // Same formatting rules as the act counter: write the target as it should
+    // render. Reduced motion writes the final value and never animates.
+    (function () {
+      var ease = function (t) { return 1 - Math.pow(1 - t, 3); };
+      var num = function (s) { return parseFloat(String(s).replace(/,/g, '')) || 0; };
+      var spec = function (c) { return (c.getAttribute('data-sc-count') || '').trim().split(/\s+/); };
+      var els = Array.prototype.filter.call(root.querySelectorAll('[data-sc-count]'), function (c) {
+        return !c.closest('[data-sc-act]');
+      });
+      if (!els.length) return;
+      function run(c) {
+        var nums = spec(c);
+        var a = num(nums[0]), b = num(nums[1]), tpl = nums[1] || '0';
+        var ms = parseFloat(c.getAttribute('data-sc-count-ms')) || 1400;
+        if (reduce || ms <= 0) { c.textContent = formatNum(b, tpl); return; }
+        var t0 = null, last = null;
+        function frame(now) {
+          if (scDead) return;
+          if (t0 === null) t0 = now;
+          var t = Math.min((now - t0) / ms, 1);
+          var out = formatNum(a + (b - a) * ease(t), tpl);
+          if (out !== last) { c.textContent = out; last = out; }
+          if (t < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+      els.forEach(function (c) { var n = spec(c); c.textContent = formatNum(num(n[0]), n[1] || '0'); });
+      if ('IntersectionObserver' in window) {
+        cio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            run(e.target); cio.unobserve(e.target);
+          });
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.5 });
+        els.forEach(function (c) { cio.observe(c); });
+      } else {
+        els.forEach(run);
+      }
+    })();
+
+    // ---- layout -----------------------------------------------------------
+    function layout() {
+      // layout() and read() are both on the returned api, so a framework's
+      // updated() arriving after destroyed() enters them directly.
+      if (scDead) return;
+      vh = innerHeight; vw = innerWidth;
+      acts.forEach(function (a) {
+        if (a.pinned) a.el.style.height = (a.span * 100) + 'vh';
+      });
+      // The spacer is the whole document flow of a worldflight. Its height is
+      // the sum of the leg weights plus one viewport: without that extra screen
+      // the track runs out at the moment the last leg reaches p=1, so the last
+      // leg's final second is a place the reader can never actually stop.
+      // Set in pixels, not vh, because .sc-world is sized in svh on phones and a
+      // vh/svh mismatch would put the track and the stage on different rulers.
+      worlds.forEach(function (W) {
+        if (W.spacer) W.spacer.style.height = Math.round((W.total + 1) * vh) + 'px';
+      });
+      acts.forEach(function (a) {
+        var r = a.el.getBoundingClientRect();
+        a.top = r.top + scrollY;
+        a.height = r.height;
+      });
+      if (acts.length) {
+        acts.forEach(function (a) {
+          if (a.seq && a.seq.el) {
+            var box = a.seq.el.getBoundingClientRect();
+            var dpr = Math.min(devicePixelRatio || 1, 2);
+            a.seq.el.width = Math.round(box.width * dpr);
+            a.seq.el.height = Math.round(box.height * dpr);
+            a.seq.drawn = -1;
+          }
+        });
+      }
+      // A pinned act whose stage is not actually sticky fails silently: the
+      // stage just scrolls by, the copy cues correctly against a frame nobody
+      // can see, and every automated check passes. Any author rule that sets
+      // `position` on the stage causes it. Say so.
+      acts.forEach(function (a) {
+        if (!a.pinned || !a.stage || a.stageChecked) return;
+        a.stageChecked = true;
+        var pos = getComputedStyle(a.stage).position;
+        if (pos !== 'sticky' && pos !== '-webkit-sticky') {
+          console.warn('[scrollcraft] act "' + (a.el.id || a.device) + '" will not pin: its stage computes ' +
+            'position:' + pos + ', not sticky. Something is overriding .sc-stage.', a.stage);
+        }
+      });
+
+      worlds.forEach(function (W) {
+        W.top = W.el.getBoundingClientRect().top + scrollY;
+        if (W.checked) return;
+        W.checked = true;
+        if (!W.stage) {
+          console.warn('[scrollcraft] worldflight has no [data-sc-world] stage; nothing will fly.', W.el);
+          return;
+        }
+        if (!W.spacer) {
+          console.warn('[scrollcraft] worldflight has no [data-sc-spacer]; the page has no scroll track.', W.el);
+        }
+        // The same silent failure as an unpinned act, one level worse: a stage
+        // that is not fixed scrolls away and takes the whole page with it, while
+        // every progress number still reads correctly.
+        var wp = getComputedStyle(W.stage).position;
+        if (wp !== 'fixed') {
+          console.warn('[scrollcraft] worldflight stage computes position:' + wp + ', not fixed. ' +
+            'Something is overriding .sc-world, and the flight will scroll off screen.', W.stage);
+        }
+      });
+
+      needsLayout = false;
+      read();
+    }
+
+    // ---- video ------------------------------------------------------------
+    function loadVideo(a) { loadClip(a.video); }
+    function loadClip(V) {
+      // Under reduced motion the clip is never fetched. The poster holds the
+      // frame and the copy still cues, so the page reads without the decode.
+      if (reduce || !V || V.loading) return;
+      var src = V.el.getAttribute('data-sc-src') ||
+                (isMobile() && V.el.getAttribute('data-sc-src-mobile')) ||
+                V.el.currentSrc || V.el.src;
+      if (isMobile() && V.el.getAttribute('data-sc-src-mobile')) src = V.el.getAttribute('data-sc-src-mobile');
+      if (!src) return;
+      V.loading = true;
+      fetch(src).then(function (r) { if (!r.ok) throw new Error(r.status); return r.blob(); })
+        .then(function (blob) {
+          // A fetch in flight when destroy() ran resolves anyway. Without this
+          // it attaches loadedmetadata/seeked to a detached element, calls
+          // read(), arms primeClip's 2s timer and assigns a blob URL nothing
+          // will ever revoke, all after teardown reported success.
+          if (scDead) return;   // the Blob is unreferenced from here and is collected
+          // Listeners and preload BEFORE src. Assigning src starts the load, so
+          // attaching afterwards and then calling load() restarts it and aborts
+          // the first request (visible as ERR_ABORTED on the blob URL).
+          V.el.addEventListener('loadedmetadata', function () {
+            V.ready = true;
+            // Force one seek even when the target is already 0. The reveal is
+            // gated on a 'seeked' event, and the raf loop only seeks when the
+            // time actually needs to change, so a clip sitting at the very top
+            // of its act would never seek, never fire 'seeked', and never
+            // replace its poster until the reader scrolled it off zero.
+            try { V.el.currentTime = Math.max(V.target * (V.el.duration || 1), 0.001); } catch (e) {}
+            read();
+            // Prime the decoder the moment the clip can be primed, without
+            // waiting for a gesture. A muted inline play() is allowed with no
+            // user activation on every platform except a restricted one (Low
+            // Power Mode, data saver), and there the rejection is harmless: the
+            // gesture listeners below retry on the next real touch.
+            primeClip(V);
+          });
+          // Reveal only once a real frame has painted. iOS keeps a seeked-but-
+          // never-played muted video blank, so hiding the poster on metadata
+          // alone flashes an empty stage.
+          var reveal = function () {
+            if (V.painted) return;
+            V.painted = true;
+            V.host.classList.add('sc-has-clip');
+            V.el.classList.add('sc-has-clip');
+          };
+          V.el.addEventListener('seeked', reveal, { once: true });
+          // Never let visibility depend only on an event that may not arrive.
+          // On iOS a clip that has not been played can accept a seek and never
+          // fire 'seeked', which leaves the element at opacity 0 for the life of
+          // the page: the poster stays up, the act looks frozen, and every later
+          // act is fine because by then the reader has touched the screen and
+          // the decoder is live. Reveal on a timer as well. A stage that is
+          // briefly blank is a smaller fault than one that never shows its clip.
+          setTimeout(reveal, 2500);
+          V.el.preload = 'auto';
+          V.el.muted = true;            // as a property, not only an attribute
+          V.el.playsInline = true;
+          V.objectURL = URL.createObjectURL(blob);
+          V.el.src = V.objectURL;
+        })
+        .catch(function () { V.loading = false; });
+    }
+
+    // ---- image sequence ---------------------------------------------------
+    function loadSeq(a) {
+      var S = a.seq;
+      if (!S || S.frames.length) return;
+      for (var i = 0; i < S.count; i++) {
+        (function (i) {
+          var img = new Image();
+          img.decoding = 'async';
+          img.src = S.tpl.replace('{i}', String(S.start + i))
+                         .replace('{ii}', String(S.start + i).padStart(2, '0'))
+                         .replace('{iii}', String(S.start + i).padStart(3, '0'))
+                         .replace('{iiii}', String(S.start + i).padStart(4, '0'));
+          img.onload = function () { S.loaded++; if (S.loaded === 1) S.drawn = -1; };
+          S.frames[i] = img;
+        })(i);
+      }
+    }
+    function drawSeq(a) {
+      var S = a.seq;
+      if (!S || !S.frames.length) return;
+      var idx = clamp(Math.round(a.p * (S.count - 1)), 0, S.count - 1);
+      if (idx === S.drawn) return;
+      var img = S.frames[idx];
+      if (!img || !img.complete || !img.naturalWidth) return;
+      var cw = S.el.width, ch = S.el.height;
+      // cover fit
+      var scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      var w = img.naturalWidth * scale, h = img.naturalHeight * scale;
+      S.ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+      S.drawn = idx;
+    }
+
+    // ---- worldflight ------------------------------------------------------
+    // t is the position along the flight, measured in viewport-heights of
+    // scroll, so every number here is in the same unit the author wrote the
+    // weights in. There is no per-segment geometry to read: the stage never
+    // moves, so nothing needs measuring on scroll.
+    function readWorld(W) {
+      if (!W.segs.length) return;
+      var S = W.seam;
+      var t = clamp((y - W.top) / Math.max(vh, 1), 0, W.total);
+      var pr = t / W.total;
+      var i, s;
+
+      // The current leg is the last one whose crossfade has begun.
+      var k = 0;
+      for (i = 0; i < W.segs.length; i++) if (t >= W.segs[i].c0 - S / 2) k = i;
+
+      for (i = 0; i < W.segs.length; i++) {
+        s = W.segs[i];
+        var local = clamp01((t - s.c0) / Math.max(s.w, 0.001));
+        s.local = local;
+
+        // Fetch a leg only while it is within reach. Loading the whole flight up
+        // front is tens of megabytes before the first frame paints; loading it
+        // on arrival means arriving at a poster.
+        if (s.clip && t > s.c0 - 1.6 && t < s.c1 + 1.6) loadClip(s.clip);
+
+        // Opacity. The incoming leg fades UP over the outgoing one, which holds
+        // at full strength underneath until it is completely covered. Fading
+        // both halves of a crossfade is what puts the page ground through the
+        // middle of the seam and reads as a flash.
+        var op;
+        if (i > k) op = 0;
+        else if (i === k) op = i === 0 ? 1 : smooth((t - (s.c0 - S / 2)) / S);
+        else op = t < s.c1 + S / 2 ? 1 : 0;
+
+        var z = i === k ? 120 : Math.round(100 + op * 10);
+        if (op !== s.op) {
+          s.el.style.opacity = op.toFixed(3);
+          // A leg at zero must stop compositing entirely. Six full-bleed video
+          // layers all painting at opacity 0 costs the same as painting them.
+          s.el.style.visibility = op > 0.002 ? 'visible' : 'hidden';
+          s.op = op;
+        }
+        if (z !== s.z) { s.el.style.zIndex = String(z); s.z = z; }
+
+        if (s.clip) {
+          s.clip.live = op > 0.002;
+          s.clip.target = lingerEase(local, s.linger);
+        }
+        // Until a real frame has painted, the poster carries the move. A still
+        // that sits perfectly still while the page scrolls announces itself as a
+        // placeholder; a slow push in reads as the camera already flying.
+        if (s.poster && !reduce && !(s.clip && s.clip.painted) && op > 0.002) {
+          s.poster.style.transform = 'scale(' + (1.03 + local * 0.14).toFixed(4) + ')';
+        }
+      }
+
+      for (var c = 0; c < W.copies.length; c++) {
+        var q = W.copies[c];
+        var win = Math.max(q.to - q.from, 0.001);
+        var inEnd = q.from + win * q.rIn;
+        var outStart = q.to - win * q.rOut;
+        var vis;
+        // A hero declares rIn 0, so inEnd sits exactly on `from` and the ramp
+        // branch is skipped: the block is simply present from the first pixel.
+        if (pr < q.from) vis = 0;
+        else if (pr < inEnd) vis = smooth((pr - q.from) / Math.max(inEnd - q.from, 0.001));
+        else if (pr <= outStart) vis = 1;
+        else vis = smooth(1 - (pr - outStart) / Math.max(q.to - outStart, 0.001));
+        vis = clamp01(vis);
+
+        // The ONLY transform on the copy side, and it is capped at 4vh across
+        // the whole window. Anything larger stops reading as a parallax layer
+        // over a moving world and starts reading as a second page scrolling at a
+        // different speed, which is the exact cheapness this mode replaces.
+        var wp = clamp01((pr - q.from) / win);
+        q.el.style.opacity = vis.toFixed(3);
+        q.el.style.transform = reduce ? 'none'
+          : 'translate3d(0,' + ((0.5 - wp) * 4).toFixed(2) + 'vh,0)';
+        var on = vis > 0.5;
+        if (on !== (q.state === 1)) { q.state = on ? 1 : 0; q.el.style.pointerEvents = on ? 'auto' : 'none'; }
+      }
+
+      // Publish the route, draw none of it. A gauge, a map, a leg counter and a
+      // set of chapter dots are all the same two numbers, and a runtime that
+      // ships one of them ships it to every page that uses this mode.
+      var cur = W.segs[k];
+      W.el.style.setProperty('--sc-seg', String(k));
+      W.el.style.setProperty('--sc-segp', cur.local.toFixed(4));
+      docEl.style.setProperty('--sc-seg', String(k));
+      docEl.style.setProperty('--sc-segp', cur.local.toFixed(4));
+      if (k !== W.index) {
+        W.index = k;
+        try {
+          W.el.dispatchEvent(new CustomEvent('sc:waypoint', {
+            bubbles: true,
+            detail: { index: k, count: W.segs.length, label: cur.label, el: cur.el, progress: pr }
+          }));
+        } catch (e) {}
+      }
+    }
+
+    // ---- per-frame scroll read -------------------------------------------
+    function read() {
+      if (scDead) return;
+      y = scrollY || pageYOffset;
+      var driftA = null, driftB = null, driftT = 0;
+      var maxY = Math.max((document.documentElement.scrollHeight || 0) - vh, 1);
+
+      for (var i = 0; i < acts.length; i++) {
+        var a = acts[i];
+        var raw;
+        if (a.pinned) {
+          var travel = Math.max(a.height - vh, 1);
+          raw = clamp01((y - a.top) / travel);
+        } else {
+          raw = clamp01((y + vh - a.top) / (a.height + vh));
+        }
+        a.raw = raw;
+        a.p = a.dwell ? dwell(raw, a.dwell) : raw;
+
+        // Clip time is NOT cue time. Cues belong to the pin, so they keep using
+        // `p`. The clip belongs to the stage, and the stage is on screen for one
+        // viewport before the pin starts and one after it ends. Driving the clip
+        // from `p` therefore parks it on frame one for the whole entry slide and
+        // on its last frame for the whole exit slide, which is a still
+        // photograph moving up the screen under the reader's hand.
+        //
+        // So map the clip across the stage's entire visible life instead. Both
+        // ends are clamped to scroll that actually exists: an act at the top of
+        // the document has no entry slide and must still start on frame one, and
+        // an act near the bottom must still reach its last frame while the page
+        // can still scroll.
+        a.vp = a.p;
+        if (a.pinned && !a.clipTravel) {
+          var startY = a.top - Math.min(vh, a.top);
+          var endY = Math.min(a.top + a.height, maxY);
+          var vraw = clamp01((y - startY) / Math.max(endY - startY, 1));
+          a.vp = a.dwell ? dwell(vraw, a.dwell) : vraw;
+        }
+        a.live = (y > a.top - vh * 1.25) && (y < a.top + a.height + vh * 1.25);
+        a.el.style.setProperty('--sc-p', a.p.toFixed(4));
+
+        // Fetch earlier than we drive. A 1080p clip is megabytes, and a reader
+        // who scrolls briskly will otherwise arrive at a stage that is still
+        // downloading and see a poster where the camera move should be.
+        var warm = (y > a.top - vh * 3) && (y < a.top + a.height + vh * 1.5);
+        if (warm) {
+          if (a.video) loadVideo(a);
+          if (a.seq) loadSeq(a);
+        }
+        if (a.live && a.seq) drawSeq(a);
+        if (a.video) { a.video.live = a.live; if (a.video.ready) a.video.target = a.vp; }
+
+        // horizontal rail
+        if (a.rail) {
+          var over = a.rail.scrollWidth - vw;
+          if (over > 0) {
+            var extra = over * (a.railExtra || 0);
+            a.rail.style.transform = 'translate3d(' + (-(over + extra) * a.p).toFixed(2) + 'px,0,0)';
+          }
+        }
+
+        if (!a.live) {
+          // An act that scrolls out of range must release its cues rather than
+          // freezing them at whatever they last were. A "hold" cue left at
+          // opacity 1 keeps its element hit-testable and paintable long after
+          // its act is gone, which shows up as a stray headline over a later
+          // section. Zero once, then leave it alone.
+          if (a.parked !== true) {
+            for (var z = 0; z < a.cues.length; z++) {
+              var pq = a.cues[z];
+              pq.el.style.opacity = '0';
+              pq.el.style.pointerEvents = 'none';
+              pq.state = 0;
+              if (pq.units) for (var zu = 0; zu < pq.units.length; zu++) pq.units[zu].style.opacity = '0';
+            }
+            a.parked = true;
+          }
+          continue;
+        }
+        a.parked = false;
+
+        // cues
+        for (var c = 0; c < a.cues.length; c++) {
+          var q = a.cues[c];
+          var vis;
+          if (q.to === null) {
+            vis = smooth((a.p - q.from) / 0.18);
+          } else {
+            var win = Math.max(q.to - q.from, 0.001);
+            var inEnd = q.from + win * q.rIn;        // full opacity from here
+            var outStart = q.to - win * q.rOut;      // starts leaving here
+            if (a.p < inEnd) vis = smooth((a.p - q.from) / Math.max(inEnd - q.from, 0.001));
+            else if (a.p <= outStart) vis = 1;       // the plateau
+            else vis = smooth(1 - (a.p - outStart) / Math.max(q.to - outStart, 0.001));
+          }
+          vis = clamp01(vis);
+
+          if (q.kinetic) {
+            if (!q.units) q.units = splitText(q.el, q.kinetic);
+            var n = q.units.length;
+            // Stagger across the reveal window. 0.62 spread leaves the tail of
+            // the window for the last unit to finish, so the line lands together
+            // rather than trickling.
+            for (var u = 0; u < n; u++) {
+              var uStart = (u / Math.max(n, 1)) * 0.62;
+              var uv = clamp01((vis - uStart) / (1 - 0.62 + 0.001));
+              uv = smooth(uv);
+              q.units[u].style.opacity = uv.toFixed(3);
+              q.units[u].style.transform = reduce ? 'none'
+                : 'translate3d(0,' + ((1 - uv) * 100).toFixed(2) + '%,0)';
+            }
+            q.el.style.opacity = '1';
+          } else {
+            q.el.style.opacity = vis.toFixed(3);
+            q.el.style.transform = reduce ? 'none'
+              : 'translate3d(0,' + ((1 - vis) * 2.4 * q.rise).toFixed(2) + 'vh,0)';
+          }
+          var on = vis > 0.5;
+          if (on !== (q.state === 1)) { q.state = on ? 1 : 0; q.el.style.pointerEvents = on ? 'auto' : 'none'; }
+        }
+
+        // parallax
+        if (!reduce) {
+          for (var pz = 0; pz < a.parallax.length; pz++) {
+            var pp = a.parallax[pz];
+            pp.el.style.transform = 'translate3d(0,' + (pp.rate * (a.p - 0.5) * 100).toFixed(2) + 'px,0)';
+          }
+        }
+
+        // reveals
+        for (var rv = 0; rv < a.reveals.length; rv++) {
+          var R = a.reveals[rv];
+          var t = smooth((a.p - R.from) / Math.max(R.to - R.from, 0.001));
+          var pct = ((1 - t) * 100).toFixed(2);
+          R.el.style.clipPath =
+            R.dir === 'down' ? 'inset(' + pct + '% 0 0 0)' :
+            R.dir === 'left' ? 'inset(0 ' + pct + '% 0 0)' :
+            R.dir === 'right' ? 'inset(0 0 0 ' + pct + '%)' :
+            R.dir === 'iris' ? 'circle(' + (t * 78).toFixed(2) + '% at 50% 50%)' :
+                               'inset(0 0 ' + pct + '% 0)';
+        }
+
+        // counters
+        for (var ct = 0; ct < a.counts.length; ct++) {
+          var K = a.counts[ct];
+          var kt = smooth((a.p - K.from) / Math.max(K.to - K.from, 0.001));
+          var val = lerp(K.a, K.b, kt);
+          var out = formatNum(val, K.tpl);
+          if (out !== K.last) { K.el.textContent = out; K.last = out; }
+        }
+      }
+
+      for (var w = 0; w < worlds.length; w++) readWorld(worlds[w]);
+
+      // background drift
+      for (var d = 0; d < drifts.length; d++) {
+        var D = drifts[d];
+        if (D.act.raw > 0 && D.act.raw < 1) {
+          driftA = D; driftT = smooth(D.act.raw / 0.35);
+          driftB = drifts[d - 1] || D;
+          break;
+        }
+        if (D.act.raw >= 1) { driftA = D; driftB = D; driftT = 1; }
+      }
+      if (driftA) {
+        docEl.style.setProperty('--sc-canvas', mixColor(driftB.rgb, driftA.rgb, driftT));
+      }
+
+      if (progressBar) {
+        var max = Math.max(document.body.scrollHeight - vh, 1);
+        progressBar.style.transform = 'scaleX(' + clamp01(y / max).toFixed(4) + ')';
+      }
+    }
+
+    // ---- video seek loop --------------------------------------------------
+    // Split from read() on purpose: seeking is asynchronous and rate-limited by
+    // the decoder, while read() must stay cheap enough to run on every scroll
+    // event. The lerp here is also what turns a jittery wheel into a glide.
+    function tick() {
+      if (scDead) return;
+      // Deadband. A phone decoder cannot service a seek every frame, so asking
+      // for one costs more than it shows; 20ms of clip is under a frame of
+      // footage anyway.
+      var eps = isMobile() ? 0.02 : 0.008;
+      for (var i = 0; i < playheads.length; i++) {
+        var V = playheads[i];
+        if (!V.ready) continue;
+        // Never queue a seek while the decoder is still resolving the last one.
+        // On a phone a fast flick otherwise piles seeks up and freezes the clip.
+        // But a seek that never completes would freeze the clip for the life of
+        // the page through this very guard, so a seek stuck past 700ms is
+        // re-issued rather than waited on forever.
+        if (V.el.seeking) {
+          var nw = performance.now();
+          if (!V.stuckAt) V.stuckAt = nw;
+          else if (nw - V.stuckAt > 700) {
+            V.stuckAt = nw;
+            try { V.el.currentTime = V.el.currentTime + 0.001; } catch (e) {}
+          }
+          continue;
+        }
+        V.stuckAt = 0;
+        // An offscreen clip that has already arrived stops costing anything.
+        if (!V.live && Math.abs(V.cur - V.target) < 0.002) continue;
+        V.cur += (V.target - V.cur) * (reduce ? 1 : V.lerp);
+        var dur = V.el.duration || 1;
+        var t = clamp(V.cur, 0, 0.999) * dur;
+        if (Math.abs(V.el.currentTime - t) > eps) { try { V.el.currentTime = t; } catch (e) {} }
+      }
+      scTickFrame = requestAnimationFrame(tick);
+    }
+
+    // iOS will not paint a muted video that has never been handed a user
+    // gesture, so a clip can be loaded, seeked and still show nothing.
+    //
+    // This used to fire once, on the first touch, across every playhead. That
+    // loses a race it cannot win. The first act's clip is still being fetched
+    // when the reader's first touch arrives (they touch the screen in order to
+    // scroll, and the clip is megabytes) so play() is called on a video with
+    // no source, does nothing, and the one shot is spent. Every later act loads
+    // long after that touch, with user activation already granted, and works
+    // without ever needing this. That is the exact shape of the bug: the hero
+    // frozen, everything below it fine.
+    //
+    // So: keep listening, prime each clip once it actually has a source, and
+    // stop only when they are all done. And force a seek afterwards, because a
+    // primed decoder still shows the stale frame until something asks it for a
+    // different time, and the deadband in tick() will not ask if the playhead is
+    // already where it should be.
+    var primedCount = 0;
+    function primeClip(V) {
+      // priming guards the retry: play() is a promise, and calling it again
+      // while the last one is unsettled produces "interrupted by pause" and can
+      // leave the element playing.
+      if (V.primed || V.priming || !V.el.src) return;
+      V.priming = true;
+      var done = function () {
+        V.priming = false;
+        if (!V.primed) { V.primed = true; primedCount++; }
+        try { V.el.pause(); } catch (e) {}
+        // repaint: nudge past the deadband so the next tick writes for real
+        try {
+          var dur = V.el.duration || 1;
+          V.cur = clamp(V.cur, 0, 0.999);
+          V.el.currentTime = clamp(V.cur * dur + 0.05, 0, dur * 0.999);
+        } catch (e) {}
+      };
+      var fail = function () { V.priming = false; };
+      // A play() promise is allowed to stay pending forever (iOS does this to a
+      // video it has decided not to start). If that happened here, `priming`
+      // would jam and no gesture could ever retry, so the flag is released on a
+      // timer as well. A late resolution after the release still lands in
+      // done(), which is idempotent.
+      setTimeout(function () { if (V.priming) fail(); }, 2000);
+      var pr;
+      try { pr = V.el.play(); } catch (e) { fail(); return; }
+      if (pr && pr.then) pr.then(done, fail);
+      else done();
+    }
+    function prime() {
+      for (var i = 0; i < playheads.length; i++) primeClip(playheads[i]);
+      if (playheads.length && primedCount >= playheads.length) {
+        removeEventListener('touchstart', prime);
+        removeEventListener('touchend', prime);
+        removeEventListener('pointerdown', prime);
+        removeEventListener('click', prime);
+        removeEventListener('scroll', prime);
+      }
+    }
+    // touchend and click are here because the HTML spec's list of activation-
+    // triggering events includes touchend but NOT touchstart. A restricted
+    // device (Low Power Mode) that rejects the touchstart prime for lacking
+    // activation gets a second, valid chance the moment the finger lifts.
+    on('touchstart', prime, { passive: true });
+    on('touchend', prime, { passive: true });
+    on('pointerdown', prime, { passive: true });
+    on('click', prime, { passive: true });
+    on('scroll', prime, { passive: true });
+
+    // ---- pointer devices --------------------------------------------------
+    var tilts = [], magnets = [], spots = [];
+    function initPointer() {
+      if (reduce || !fineMQ.matches) return;
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-tilt]'), function (el) {
+        tilts.push({ el: el, max: parseFloat(el.getAttribute('data-sc-tilt')) || 6, x: 0, ty: 0, tx: 0, y: 0 });
+      });
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-magnet]'), function (el) {
+        magnets.push({ el: el, k: parseFloat(el.getAttribute('data-sc-magnet')) || 0.3, x: 0, y: 0, tx: 0, ty: 0 });
+      });
+      Array.prototype.forEach.call(root.querySelectorAll('[data-sc-spotlight]'), function (el) {
+        spots.push(el);
+      });
+      if (!tilts.length && !magnets.length && !spots.length) return;
+
+      on('pointermove', function (e) {
+        if (e.pointerType !== 'mouse') return;
+        for (var i = 0; i < tilts.length; i++) {
+          var T = tilts[i], r = T.el.getBoundingClientRect();
+          if (r.bottom < -200 || r.top > vh + 200) { T.tx = 0; T.ty = 0; continue; }
+          var nx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+          var ny = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+          var inside = Math.abs(nx) < 1.6 && Math.abs(ny) < 1.6;
+          T.tx = inside ? clamp(ny, -1, 1) * -T.max : 0;
+          T.ty = inside ? clamp(nx, -1, 1) * T.max : 0;
+        }
+        for (var m = 0; m < magnets.length; m++) {
+          var M = magnets[m], mr = M.el.getBoundingClientRect();
+          var dx = e.clientX - (mr.left + mr.width / 2);
+          var dy = e.clientY - (mr.top + mr.height / 2);
+          var near = Math.abs(dx) < mr.width && Math.abs(dy) < mr.height * 2.5;
+          M.tx = near ? dx * M.k : 0;
+          M.ty = near ? dy * M.k : 0;
+        }
+        for (var s = 0; s < spots.length; s++) {
+          var sr = spots[s].getBoundingClientRect();
+          spots[s].style.setProperty('--sc-mx', clamp01((e.clientX - sr.left) / sr.width).toFixed(3));
+          spots[s].style.setProperty('--sc-my', clamp01((e.clientY - sr.top) / sr.height).toFixed(3));
+        }
+      }, { passive: true });
+
+      (function pointerTick() {
+        if (scDead) return;
+        // Interpolate toward the target rather than tracking the pointer
+        // directly. Direct tracking reads as artificial because it carries no
+        // momentum; the lerp gives it weight.
+        for (var i = 0; i < tilts.length; i++) {
+          var T = tilts[i];
+          T.x += (T.tx - T.x) * 0.09; T.y += (T.ty - T.y) * 0.09;
+          if (Math.abs(T.x) > 0.001 || Math.abs(T.y) > 0.001) {
+            T.el.style.transform = 'perspective(1100px) rotateX(' + T.x.toFixed(3) + 'deg) rotateY(' + T.y.toFixed(3) + 'deg)';
+          }
+        }
+        for (var m = 0; m < magnets.length; m++) {
+          var M = magnets[m];
+          M.x += (M.tx - M.x) * 0.12; M.y += (M.ty - M.y) * 0.12;
+          M.el.style.transform = 'translate3d(' + M.x.toFixed(2) + 'px,' + M.y.toFixed(2) + 'px,0)';
+        }
+        scPointerFrame = requestAnimationFrame(pointerTick);
+      })();
+    }
+
+    // ---- wiring -----------------------------------------------------------
+    var ticking = false;
+    on('scroll', function () {
+      if (scDead) return;
+      if (!ticking) { ticking = true; requestAnimationFrame(function () { if (!scDead) read(); ticking = false; }); }
+    }, { passive: true });
+
+    // Keyboard focus on a pinned or panning act. The browser's own
+    // scroll-into-view parks the focused element barely on screen, which is
+    // exactly the scroll position at which its cue has not opened yet, so focus
+    // lands on a control nobody can see and every automated opacity check still
+    // passes. Centring the act instead is a position where the cue is lit by
+    // definition. behavior:'instant' on purpose: scrollcraft.css sets
+    // scroll-behavior:smooth, so the default animates the jump and focus sits
+    // off screen for the whole of a multi-screen glide.
+    on('focusin', function (e) {
+      var el = e.target;
+      if (!el || !el.closest) return;
+      var act = el.closest('[data-sc-act]');
+      if (!act || !root.contains(act)) return;
+      var cue = el.closest('[data-sc-cue]');
+      if (!cue) return;
+      if (parseFloat(getComputedStyle(cue).opacity || '1') > 0.85) return;
+      el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+    });
+
+    var lastW = innerWidth;
+    on('resize', function () {
+      // Ignore URL-bar-only height changes on phones. Relaying out on those
+      // makes the page jump under the reader's thumb for no reason.
+      if (scDead) return;
+      if (innerWidth === lastW && isMobile()) { vh = innerHeight; return; }
+      lastW = innerWidth;
+      layout();
+    }, { passive: true });
+
+    if (document.fonts && document.fonts.ready) {
+      // Line splitting measures line boxes, so it has to wait for the real face.
+      document.fonts.ready.then(function () {
+        if (scDead) return;
+        acts.forEach(function (a) { a.cues.forEach(function (q) { if (q.kinetic && q.units) { q.el.__scSplit = null; q.units = null; } }); });
+        layout();
+      });
+    }
+
+    layout();
+    initPointer();
+    scTickFrame = requestAnimationFrame(tick);
+    document.documentElement.classList.add('sc-ready');
+
+    var api = { layout: layout, read: read, acts: acts, worlds: worlds, clips: playheads, lerp: LERP };
+    // Idempotent: a second call is a no-op, because a framework's teardown hook
+    // can run after the element is already gone.
+    api.destroy = function () {
+      if (scDead) return;
+      scDead = true;
+      for (var i = 0; i < scListeners.length; i++) {
+        removeEventListener(scListeners[i][0], scListeners[i][1], scListeners[i][2]);
+      }
+      scListeners.length = 0;
+      if (scTickFrame) { cancelAnimationFrame(scTickFrame); scTickFrame = 0; }
+      if (scPointerFrame) { cancelAnimationFrame(scPointerFrame); scPointerFrame = 0; }
+      // Both observers, or every element they still watch stays reachable.
+      if (io) { io.disconnect(); io = null; }
+      if (cio) { cio.disconnect(); cio = null; }
+      // A blob URL is a document-lifetime reference to a whole decoded clip, so
+      // an unreleased one is the largest thing a re-mount can leak. Detaching
+      // the source needs the removeAttribute + load() pair: revoking alone
+      // leaves the element holding the resource.
+      for (var v = 0; v < playheads.length; v++) {
+        var V = playheads[v];
+        try { V.el.pause(); } catch (e) {}
+        if (V.objectURL) {
+          try { V.el.removeAttribute('src'); V.el.load(); } catch (e) {}
+          URL.revokeObjectURL(V.objectURL);
+          V.objectURL = null;
+        }
+      }
+      var at = global.ScrollCraft.instances.indexOf(api);
+      if (at !== -1) global.ScrollCraft.instances.splice(at, 1);
+      // Document-global, while the instance is not: only the last one out drops
+      // it, or a second stage on the page loses its no-transition guard.
+      if (!global.ScrollCraft.instances.length) {
+        document.documentElement.classList.remove('sc-ready');
+      }
+    };
+    global.ScrollCraft.instances.push(api);
+    return api;
+  }
+
+  // The instance list is not an API for the page. It is how the verification
+  // harness reads the real playhead records: a screenshot taken mid-lerp is a
+  // frame the page never actually holds, so the harness has to be able to ask
+  // whether the playhead has arrived rather than guess with a timeout.
+  global.ScrollCraft = { mount: mount, reduce: reduce, instances: [] };
+})(window);
+
+</script>
+<script>
+var HOUSES = {"h1": {"title": "Чёрный снаружи, белый внутри", "facts": [["Размер", "6×8,5 м: дом 6×6 и терраса 2,5×6"], ["Внутри", "две спальни, кухня-гостиная, прихожая, санузел, дровяная печь"], ["Отделка", "стены в краске, ламинат 33 класса"], ["Когда", "сентябрь 2026"]], "note": null, "spec": null, "video": null, "reviews": [["Нет слов! Красота. Стиль. Уют.", "Елена, комментарий ВКонтакте"], ["Шикарно выглядит.", "Сергей, комментарий ВКонтакте"]], "photos": [["h1-01", "Дом 6×8,5 м: тёплый контур 6×6 и терраса 2,5×6 под общей крышей", 0], ["h1-02", "Вечером горит свет под навесом террасы", 0], ["h1-03", "Холодильник и мебель заказчика приехали на участок прямо в доме", 0], ["h1-04", "Дровяная печь греет, даже если отключат электричество", 0], ["h1-05", "Спальня с двумя окнами", 0], ["h1-06", "Прихожая, справа санузел со стиральной машиной", 0], ["h1-07", "Цвет стен выбрал заказчик", 0], ["h1-08", "Стены подготовлены под плитку: её заказчик выберет и положит позже", 0], ["h1-09", "Две спальни, кухня-гостиная, прихожая и санузел", 1]]}, "h2": {"title": "Баня с жилой комнатой", "facts": [["Размер", "31,5 м² тёплых и угловая терраса 12 м²"], ["Внутри", "комната 14 м², парная, душевая, санузел"], ["Срок", "3–4 недели"], ["Когда", "октябрь 2026"]], "note": null, "spec": null, "video": null, "reviews": [], "photos": [["h2-01", "31,5 м² тёплых и угловая терраса 12 м² под общей крышей", 0], ["h2-02", "В сумерках на террасе горит свет", 0], ["h2-03", "Комната 14 м²: по плану здесь диван и кровать, можно остаться ночевать", 0], ["h2-04", "Коридор к парной и душевой", 0], ["h2-05", "Душевая отделана панелями под тёмный камень", 0], ["h2-06", "Санузел с окном: унитаз и раковина с тумбой", 0], ["h2-07", "Парная: дровяная печь у стены из кирпича", 0], ["h2-08", "Полки буквой Г, из парной дверь в душевую", 0], ["h2-09", "Планировка: комната, санузел, душевая, парная и терраса", 1]]}, "h3": {"title": "Дачный дом 3×9 с хозблоком", "facts": [["Размер", "3×9 м"], ["Внутри", "кухня-гостиная с печью, санузел с душем, прихожая, хозблок со своим входом"], ["Срок", "3–4 недели, установка за 1 день"], ["Когда", "сентябрь 2026"]], "note": "В хозблоке стеллаж и откидной столик: для рассады и зарядки аккумуляторов. Планировку придумал заказчик.", "spec": null, "video": null, "reviews": [["Какой классный проект! Восхищаюсь вами.", "Татьяна, комментарий ВКонтакте"], ["Сколько можно уместить в таком пространстве, обалдеть! Очень круто.", "Сергей, комментарий ВКонтакте"], ["Какое роскошество и продуманность!", "Katrin, комментарий ВКонтакте"]], "photos": [["h3-01", "Два входа под одним козырьком: в дом и в хозблок", 0], ["h3-02", "Кухня вдоль окон: духовой шкаф, посудомоечная машина и холодильник", 0], ["h3-03", "Топится печь, рядом плита и столешница под окнами", 0], ["h3-04", "Прихожая: шкаф подвешен над полом, справа дверь в санузел", 0], ["h3-05", "Санузел: душ, унитаз и стиральная машина", 0], ["h3-06", "Планировка: хозблок, прихожая, санузел и кухня-гостиная", 1]]}, "h4": {"title": "Баня 2,5×6", "facts": [["Размер", "2,5×6 м"], ["Внутри", "комната отдыха, моечная, парная"], ["Срок", "2–3 недели"], ["Гарантия", "5 лет"], ["Когда", "август 2026"]], "note": null, "spec": ["Утепление: пол и потолок 150 мм, стены 100 мм", "Кровля из гибкой черепицы", "Окна двухкамерные Rehau", "Проливные полы, ламинат 33 класса, влагостойкий", "Парная и моечная из осины и лиственницы", "Входная дверь с терморазрывом, стеклянные банные двери", "Электрика с УЗО"], "video": null, "reviews": [["Банька — мечта!", "Алла, комментарий ВКонтакте"]], "photos": [["h4-01", "Баня приезжает на участок готовой: с печью, полками и электрикой", 0], ["h4-02", "Огонь в печи видно через стеклянную дверцу топки", 0], ["h4-03", "Моечная: бак для воды, лавка и проливной пол", 0], ["h4-04", "Парная: полки буквой Г и печь «Гейзер мини»", 0], ["h4-05", "Из парной дверь ведёт в моечную", 0], ["h4-06", "Планировка: комната отдыха, моечная и парная", 1]]}, "h5": {"title": "Дом 48 м² с угловой террасой", "facts": [["Размер", "48 м² и угловая терраса"], ["Внутри", "две спальни, гостиная, кухня-столовая, санузел"], ["Когда", "август 2026"]], "note": "Заказчики почти сразу переехали и живут. Всем тепло и комфортно.", "spec": null, "video": null, "reviews": [["Очень уютно получилось!", "Марина, комментарий ВКонтакте"]], "photos": [["h5-01", "Фото прислали заказчики после переезда", 0], ["h5-02", "В прихожей встречает хозяйский пёс", 0], ["h5-03", "Спальня с большим окном", 0], ["h5-04", "Вторая спальня стала детской", 0], ["h5-05", "Гостиная: угловой диван у окна", 0], ["h5-06", "Напротив дивана тумба с телевизором", 0], ["h5-07", "Санузел: водонагреватель и фильтр для воды", 0], ["h5-08", "Планировка: две спальни, гостиная, кухня-столовая, санузел и терраса", 1]]}, "h6": {"title": "Дом 69 м² с террасой", "facts": [["Размер", "тёплая часть 6×9 м и терраса 6×2,5 м"], ["Срок", "4 недели под ключ"], ["Когда", "июнь 2026"]], "note": null, "spec": null, "video": null, "reviews": [["Красивый. Интересно, как там внутри.", "комментарий ВКонтакте"]], "photos": [["h6-01", "Дом 69 м²: тёплая часть 6×9 м и терраса 6×2,5 м", 0], ["h6-02", "Терраса в торце дома, к ней ведут широкие ступени", 0], ["h6-03", "Вид сбоку: окна вдоль длинной стороны и труба от печи", 0]]}, "h14": {"title": "Зимний дом 69 м²", "facts": [["Размер", "6×11,5 м: тёплая часть 6×9 м и терраса 6×2,5 м"], ["Срок", "4–5 недель под ключ, установка 2 дня"], ["Когда", "июнь 2026"]], "note": null, "spec": null, "video": null, "reviews": [["Какие ваши дома просторные и красивые.", "Елена, комментарий ВКонтакте"], ["Какой простор!", "Katrin, комментарий ВКонтакте"]], "photos": [["h14-01", "Зимний дом 69 м²: тёмная терраса под общей крышей", 0], ["h14-02", "Терраса с перилами, под навесом светильники", 0], ["h14-03", "Кухня-гостиная: печь и стеклянная дверь на террасу", 0], ["h14-04", "Спальня с двуспальной кроватью", 0], ["h14-05", "Вторая спальня", 0], ["h14-06", "Санузел: душ и раковина с тумбой", 0]]}, "h7": {"title": "Дом с баней", "facts": [["Внутри", "кухня-гостиная, спальня, санузел с душем, парная"], ["Срок", "до 4 недель, установка 1–2 дня"], ["Когда", "апрель 2026"]], "note": null, "spec": null, "video": null, "reviews": [["Какой чудесный домик! С банькой! Вот оно — тихое семейное счастье и релакс!", "Алла, комментарий ВКонтакте"]], "photos": [["h7-01", "Рыжий фасад и широкая терраса со ступенями", 0], ["h7-02", "Кухня-гостиная, за резной перегородкой спальное место", 0], ["h7-03", "Кухня: духовой шкаф, варочная панель и стол у окна", 0], ["h7-04", "Спальня: двуспальная кровать и ещё одно спальное место", 0], ["h7-05", "Санузел: душевая со стеклянными дверями и зеркало с подсветкой", 0], ["h7-06", "Парная: дровяная печь и полки с подсветкой", 0], ["h7-07", "Печь-каменка, дверь из парной ведёт в дом", 0], ["h7-08", "Планировка дома с баней", 1]]}, "h8": {"title": "Дом-студия 27 м²", "facts": [["Размер", "27 м²"], ["Внутри", "комната с печью, спальня, санузел с душем"], ["Срок", "12–15 дней, установка за несколько часов"], ["Когда", "апрель 2026"]], "note": "Зимний дом в комплектации под ключ: привезли, поставили, заходи и живи.", "spec": null, "video": null, "reviews": [], "photos": [["h8-01", "Зимний дом-студия 27 м² с дровяной печью", 0], ["h8-02", "Комната с печью и окнами на две стороны", 0], ["h8-03", "Коридор: шкаф-купе с зеркалом, в конце печь", 0], ["h8-04", "Отдельная спальня", 0], ["h8-05", "Санузел: душ, раковина над стиральной машиной и унитаз", 0]]}, "h9": {"title": "Дом 48 м², зелёный", "facts": [["Размер", "48 м²"], ["Внутри", "кухня-гостиная с печью, спальни, санузел"], ["Срок", "3 недели, установка 1 день"], ["Когда", "март 2026"]], "note": null, "spec": null, "video": null, "reviews": [["Мне нравятся все ваши дома! Особенно в тёплых светлых тонах.", "Татьяна, комментарий ВКонтакте"], ["Очень классный. Компактный.", "комментарий ВКонтакте"]], "photos": [["h9-01", "Зелёный фасад и белая терраса на закате", 0], ["h9-02", "Терраса с белыми перилами у входа", 0], ["h9-03", "Кухня-гостиная с печью и окнами на две стороны", 0], ["h9-04", "Кухня-гостиная во всю ширину дома, в конце печь", 0], ["h9-05", "Спальня", 0], ["h9-06", "Санузел: стены под тёмный мрамор, место под душ", 0], ["h9-07", "Планировка дома 48 м²", 1]]}, "h10": {"title": "Дом 48 м², рыжий с графитом", "facts": [["Размер", "48 м², 6×8 м"], ["Внутри", "кухня-гостиная с печью, спальня, санузел, прихожая"], ["Срок", "3 недели под ключ"], ["Когда", "март 2026"]], "note": null, "spec": null, "video": null, "reviews": [["А главное — качественный! Как вспомню свой мини-теремок, так вздрогну.", "Нина, комментарий ВКонтакте"], ["Уютный домик очень! И очень симпатичный!", "Алла, комментарий ВКонтакте"]], "photos": [["h10-01", "Дом 48 м² зимой: свет у входа и в окнах", 0], ["h10-02", "Вход с фонарями по обе стороны двери", 0], ["h10-03", "Кухня-гостиная", 0], ["h10-04", "Печь у стены, отделанной под чёрный мрамор", 0], ["h10-05", "Стеклянная дверь из гостиной на улицу", 0], ["h10-06", "Прихожая: шкаф с жалюзийными дверцами", 0], ["h10-07", "Душевая: стены под тёмный камень", 0], ["h10-08", "Первый тост в новом доме, у печи", 0], ["h10-09", "Планировка типового дома 48 м², 6×8 м", 1]]}, "h11": {"title": "Дом 54 м², бордовый", "facts": [["Размер", "54 м²"], ["Внутри", "кухня-гостиная с печью, две спальни, санузел"], ["Срок", "3 недели под ключ, установка 1 день"], ["Когда", "март 2026"]], "note": "Планировку можно изменить бесплатно.", "spec": null, "video": null, "reviews": [["Цвет дома просто отличный! Планировка замечательная!", "Олеся, комментарий ВКонтакте"], ["Классный дом! Цвет потрясающий.", "Елена, комментарий ВКонтакте"]], "photos": [["h11-01", "Бордовый фасад, белые окна и терраса", 0], ["h11-02", "Кухня-гостиная с дровяной печью", 0], ["h11-03", "Коридор к спальням", 0], ["h11-04", "Санузел: душ, стены под светлый мрамор", 0], ["h11-05", "Прихожая", 0], ["h11-06", "Планировка: две спальни, кухня-гостиная, санузел", 1]]}, "h12": {"title": "Зимний минидом", "facts": [["Внутри", "кухня-гостиная 11,4 м², спальня 5,8 м², санузел, прихожая"], ["Терраса", "14 м²"], ["Срок", "2 недели под ключ, установка за несколько часов"], ["Когда", "март 2026"]], "note": "Подходит, чтобы начать дачную жизнь или сдавать в аренду.", "spec": null, "video": null, "reviews": [["Какой очаровательный и удобный домик! Компактный такой!", "Алла, комментарий ВКонтакте"]], "photos": [["h12-01", "Терраса 14 м² перед большими окнами", 0], ["h12-02", "Печь уже топится, в доме тепло", 0], ["h12-03", "Кухня-гостиная: диван у больших окон", 0], ["h12-04", "Кухня вдоль стены", 0], ["h12-05", "Санузел с душем", 0], ["h12-06", "Планировка: кухня-гостиная, спальня, санузел, прихожая и терраса", 1]]}, "h13": {"title": "Дом на вырост, 72 м²", "facts": [["Размер", "60 м² и терраса 12 м²"], ["Модули", "три, под общей крышей"], ["Монтаж", "5 дней"], ["Когда", "октябрь 2025"]], "note": "Год назад на этом участке стоял один модуль 27 м². Теперь это дом на 60 м² с террасой.", "spec": null, "video": null, "reviews": [["Юля, Юра и всей вашей команде огромное спасибо! …С вами просто замечательно работать! В доме тепло, просторно, светло… Не верится, что один модуль превратился в такую красоту.", "Олеся, заказчица"]], "photos": [["h13-01", "Дом на вырост: 60 м² и терраса 12 м², три модуля", 0], ["h13-02", "Терраса 12 м² у входа", 0], ["h13-03", "Входная дверь с терморазрывом", 0], ["h13-04", "Прихожая со шкафом", 0], ["h13-05", "В прихожей есть окно", 0], ["h13-06", "Шкаф сделан под заказ", 0], ["h13-07", "Кухня-гостиная: кухонная зона и печь", 0], ["h13-08", "Кухня-гостиная: зона отдыха", 0], ["h13-09", "Спальня родителей", 0]]}, "h15": {"title": "Зимний дом 40 м²", "facts": [["Размер", "тёплая часть 30 м² и крытая терраса 10 м²"], ["Срок", "3 недели под ключ"], ["Установка", "1 день вместе с подключением к коммуникациям"], ["Когда", "декабрь 2025"]], "note": "Типовой проект: дом сдан в декабре 2025 года.", "spec": null, "video": null, "reviews": [], "photos": [["h15-01", "Зимний дом 40 м²: тёплая часть 30 м² и крытая терраса 10 м²", 0], ["h15-02", "Терраса под общей крышей, у входа горит свет", 0], ["h15-03", "Прихожая: входная дверь с зеркалом и шкаф с жалюзийными дверцами", 0], ["h15-04", "Тёмные двери и дровяная печь в углу", 0], ["h15-05", "Комната с двумя окнами и печью", 0], ["h15-06", "Санузел: душ, водонагреватель и фильтры для воды", 0]]}, "h16": {"title": "Минидом в Карелии", "facts": [["Где", "Карелия"], ["Фото", "прислали заказчики зимой"]], "note": "Заказчики прислали эти фото зимой, когда дом уже стоял в лесу и в нём жили.", "spec": null, "video": null, "reviews": [["К этим фото прилагалось большое, на 5 минут, аудио сообщение. Я слушала и плакала.", "Юлия, ВКонтакте"], ["Волшебно!", "комментарий ВКонтакте"]], "photos": [["h16-01", "Минидом среди заснеженных сосен, фото прислали заказчики", 0], ["h16-02", "Спальня с гирляндой, за окном зимний лес", 0], ["h16-03", "Кровать у окна с видом на лес", 0]]}};
+var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], "h1-04": [1000, 1334], "h1-05": [1000, 1334], "h1-06": [1000, 1334], "h1-07": [1000, 1334], "h1-08": [1000, 1334], "h1-09": [1179, 1881], "h2-01": [1000, 1334], "h2-02": [1000, 1334], "h2-03": [1000, 1334], "h2-04": [1000, 1334], "h2-05": [1000, 1334], "h2-06": [1000, 1334], "h2-07": [1000, 1334], "h2-08": [1000, 1334], "h2-09": [1142, 1466], "h3-01": [960, 1280], "h3-02": [1000, 1334], "h3-03": [1000, 1334], "h3-04": [1000, 1334], "h3-05": [1000, 1626], "h3-06": [1146, 500], "h4-01": [1000, 1334], "h4-02": [1000, 1334], "h4-03": [1000, 1334], "h4-04": [1000, 1334], "h4-05": [1000, 1334], "h4-06": [1179, 1881], "h5-01": [1000, 752], "h5-02": [990, 1280], "h5-03": [960, 1280], "h5-04": [960, 1280], "h5-05": [960, 1280], "h5-06": [960, 1280], "h5-07": [960, 1280], "h5-08": [1049, 1513], "c2": [760, 570], "c3": [760, 570], "c4": [760, 570], "c5": [760, 570], "hero-1": [960, 948], "h6-01": [1000, 1334], "h6-02": [1000, 1334], "h6-03": [1000, 1334], "h7-01": [1000, 1334], "h7-02": [960, 1280], "h7-03": [960, 1280], "h7-04": [960, 1280], "h7-05": [960, 1280], "h7-06": [960, 1280], "h7-07": [960, 1280], "h7-08": [1108, 929], "h8-01": [1000, 1334], "h8-02": [1000, 1334], "h8-03": [1000, 1334], "h8-04": [1000, 1334], "h8-05": [1000, 1334], "h9-01": [1000, 1334], "h9-02": [1000, 1334], "h9-03": [1000, 1334], "h9-04": [1000, 1334], "h9-05": [1000, 1334], "h9-06": [1000, 750], "h9-07": [1179, 952], "h10-01": [1000, 1334], "h10-02": [1000, 1334], "h10-03": [960, 1280], "h10-04": [960, 1280], "h10-05": [1000, 1334], "h10-06": [1000, 1334], "h10-07": [1000, 1334], "h10-08": [960, 1280], "h10-09": [1109, 899], "h11-01": [960, 1280], "h11-02": [960, 1280], "h11-03": [960, 1280], "h11-04": [1000, 1334], "h11-05": [1000, 1334], "h11-06": [1179, 1757], "h12-01": [1000, 1334], "h12-02": [1000, 1334], "h12-03": [1000, 1334], "h12-04": [1000, 1334], "h12-05": [1000, 1334], "h12-06": [1177, 767], "h13-01": [1000, 1026], "h13-02": [1000, 999], "h13-03": [1000, 973], "h13-04": [1000, 1132], "h13-05": [1000, 1066], "h13-06": [1000, 959], "h13-07": [1000, 1039], "h13-08": [1000, 986], "h13-09": [1000, 986], "h14-01": [1000, 1334], "h14-02": [1000, 1334], "h14-03": [1000, 1334], "h14-04": [1000, 1334], "h14-05": [1000, 1334], "c6": [760, 570], "c7": [760, 570], "c8": [760, 570], "c9": [760, 570], "c10": [760, 570], "c11": [760, 570], "c12": [760, 570], "c13": [760, 570], "c14": [760, 570], "h14-06": [1000, 1334], "h14-07": [1000, 1334], "h15-01": [1000, 1334], "h15-02": [1000, 1334], "h15-03": [1000, 1334], "h15-04": [1000, 1334], "h15-05": [1000, 1334], "h15-06": [1000, 1334], "h16-01": [1000, 920], "h16-02": [1000, 1333], "h16-03": [1000, 1333], "h16-04": [1000, 750], "c15": [760, 570], "c16": [760, 570]};
+</script>
+<script>
+(function () {
+  var root = document.documentElement;
+  var wide = matchMedia('(min-width: 900px)');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var APP = 'https://amanich2024.github.io/moduldom/';
+  var WRITE = 'https://vk.me/zagorodnaya_studia';
+
+  /* Telegram: только если страницу открыли как мини-приложение */
+  var tg = window.Telegram && window.Telegram.WebApp;
+  var inTG = !!(tg && tg.platform && tg.platform !== 'unknown');
+  if (inTG) {
+    root.classList.add('in-tg');
+    try { tg.ready(); tg.expand(); } catch (e) {}
+    try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {}
+    try {
+      tg.MainButton.setParams({ text: 'Собрать свой дом', color: '#D88B4C', text_color: '#1A1206' });
+      tg.MainButton.onClick(function () { location.href = 'index.html#/build'; });
+    } catch (e) {}
+  }
+  function openOut(url) {
+    if (inTG) { try { tg.openLink(url); return; } catch (e) {} }
+    window.open(url, '_blank', 'noopener');
+  }
+  function goBuild() {
+    if (inTG) location.href = 'index.html#/build'; else openOut(APP + '#/build');
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-build]');
+    if (b) { e.preventDefault(); goBuild(); return; }
+    var w = e.target.closest('[data-write]');
+    if (w) { e.preventDefault(); openOut(w.getAttribute('href') || WRITE); return; }
+    var h = e.target.closest('[data-house]');
+    if (h) { e.preventDefault(); openHouse(h.getAttribute('data-house'), h); }
+  });
+
+  /* ===== Окно дома ===== */
+  var dlg = document.getElementById('house');
+  var elPhotos = dlg.querySelector('.house__photos'), elHead = dlg.querySelector('.house__head'), elMore = dlg.querySelector('.house__more'), elName = dlg.querySelector('.house__name');
+  var current = null, opener = null, pushed = false;
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function render(id) {
+    var h = HOUSES[id]; if (!h) return false;
+    elName.textContent = h.title;
+    var head = '<h2 id="house-title">' + esc(h.title) + '</h2><dl class="facts-dl">';
+    h.facts.forEach(function (f) { head += '<dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd>'; });
+    head += '</dl>';
+    if (h.note) head += '<p class="house__note">' + esc(h.note) + '</p>';
+    var cta = '<h3>Хотите похожий дом?</h3><p class="house__note" style="margin-top:0">Стоимость считаем под ваш дом: она зависит от размера, планировки и отделки. Уточните цену у производителя.</p>' +
+      '<div class="btns"><a class="cta" data-write href="' + WRITE + '">Написать нам</a><a class="cta2" data-build href="#">Собрать свой дом</a></div>';
+    head += '<div class="house__cta only-wide">' + cta + '</div>';
+    elHead.innerHTML = head;
+    var ph = '';
+    h.photos.forEach(function (p, i) {
+      var s = SIZES[p[0]] || [1000, 1333];
+      ph += '<figure class="shot' + (p[2] ? ' shot--plan' : '') + '"><img src="img/' + p[0] + '.webp" width="' + s[0] + '" height="' + s[1] + '" alt="' + esc(p[1]) + '"' + (i > 1 ? ' loading="lazy"' : '') + ' decoding="async">' +
+        '<figcaption><span class="shot__n">' + (i + 1) + ' / ' + h.photos.length + '</span>' + esc(p[1]) + '</figcaption></figure>';
+    });
+    elPhotos.innerHTML = ph;
+    var more = '';
+    if (h.reviews && h.reviews.length) {
+      more += '<div><h3>Отзывы</h3>';
+      h.reviews.forEach(function (r) { more += '<figure class="hq"><blockquote>«' + esc(r[0]) + '»</blockquote><figcaption>' + esc(r[1]) + '</figcaption></figure>'; });
+      more += '</div>';
+    }
+    if (h.spec) { more += '<div><h3>Комплектация</h3><ul class="spec">' + h.spec.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul></div>'; }
+    if (h.video) more += '<div><a class="cta2" data-out href="' + esc(h.video) + '">Посмотреть, как ставили дом</a></div>';
+    more += '<div class="house__cta only-narrow">' + cta + '</div>';
+    elMore.innerHTML = more;
+    return true;
+  }
+  function show(id) {
+    if (!render(id)) return;
+    current = id;
+    dlg.hidden = false; dlg.scrollTop = 0; root.classList.add('has-house');
+    try { dlg.focus({ preventScroll: true }); } catch (e) {}
+    if (inTG) {
+      try { tg.MainButton.hide(); } catch (e) {}
+      try { tg.setHeaderColor('#EDEFEC'); tg.setBackgroundColor('#EDEFEC'); if (tg.setBottomBarColor) tg.setBottomBarColor('#EDEFEC'); } catch (e) {}
+      lastChrome = '';
+    }
+  }
+  function hide() {
+    if (current === null) return;
+    current = null; dlg.hidden = true; root.classList.remove('has-house');
+    elPhotos.innerHTML = '';
+    if (opener) { try { opener.focus({ preventScroll: true }); } catch (e) {} opener = null; }
+    lastChrome = ''; mbShown = null;
+  }
+  function openHouse(id, from) {
+    if (!HOUSES[id]) return;
+    opener = from || null;
+    if (location.hash !== '#dom/' + id) { try { history.pushState({ dom: id }, '', '#dom/' + id); pushed = true; } catch (e) { pushed = false; } }
+    show(id);
+  }
+  function closeHouse() {
+    if (current === null) return;
+    if (pushed && history.state && history.state.dom) { history.back(); }
+    else { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} hide(); }
+  }
+  function sync() {
+    var m = location.hash.match(/^#dom\/(\w+)/);
+    if (m && HOUSES[m[1]]) show(m[1]); else hide();
+  }
+  addEventListener('popstate', function () { pushed = !!(history.state && history.state.dom); sync(); });
+  dlg.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) { e.preventDefault(); closeHouse(); } });
+  dlg.addEventListener('click', function (e) { var o = e.target.closest('[data-out]'); if (o) { e.preventDefault(); openOut(o.getAttribute('href')); } });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && current !== null) closeHouse(); });
+  /* Пришли по прямой ссылке на дом: «Назад» закроет окно и оставит на странице */
+  (function () {
+    var m = location.hash.match(/^#dom\/(\w+)/);
+    if (m && HOUSES[m[1]]) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} openHouse(m[1]); }
+  })();
+
+  /* Telegram «Назад»: закрывает окно дома, иначе возвращает в каталог приложения */
+  if (inTG) { try { tg.BackButton.show(); tg.BackButton.onClick(function () { if (current !== null) closeHouse(); else location.href = 'index.html'; }); } catch (e) {} }
+
+  /* Дома: на компьютере лента сбоку (пролёт под длину ленты), на телефоне список */
+  var rail = document.getElementById('doma');
+  var railEl = rail.querySelector('.rail');
+  var nCards = railEl.querySelectorAll('.exhibit').length;
+  railEl.style.setProperty('--n', nCards);
+  if (!wide.matches || reduce) {
+    rail.setAttribute('data-sc-act', 'flow'); rail.removeAttribute('data-sc-span');
+    railEl.removeAttribute('data-sc-pan'); railEl.classList.add('rail--list');
+    var st = rail.querySelector('[data-sc-stage]'); if (st) st.removeAttribute('data-sc-stage');
+  } else {
+    var travel = Math.max(0, railEl.scrollWidth - innerWidth);
+    rail.setAttribute('data-sc-span', (1.2 + travel / innerHeight).toFixed(2));
+  }
+
+  /* Вечерняя сцена: видимая область рисунка под раскладку */
+  var eve = document.getElementById('vecher');
+  var scene = eve.querySelector('.eve__scene');
+  var svgs = scene.querySelectorAll('svg');
+  function layoutScene() {
+    var vw = innerWidth, vh = innerHeight, vb, w;
+    if (wide.matches) { vb = [-70, 24, 500, 186]; w = Math.min(vw, vh * 1.25); }
+    else { vb = [10, 22, 340, 188]; w = vw * 1.04; }
+    var h = w * vb[3] / vb[2];
+    svgs.forEach(function (s) { s.setAttribute('viewBox', vb.join(' ')); });
+    scene.style.width = w + 'px'; scene.style.height = h + 'px';
+    eve.style.setProperty('--ground-h', (h * (210 - 180) / vb[3]) + 'px');
+  }
+  layoutScene(); addEventListener('resize', layoutScene);
+
+  /* Первый экран: тёплый свет ровно на окнах и лампах фото при любой обрезке */
+  var heroEl = document.getElementById('dom');
+  var heroBox = heroEl.querySelector('.hero__photo'), heroImg = heroBox.querySelector('img');
+  var LIGHTS = [[0.368, 0.405], [0.591, 0.405], [0.45, 0.392], [0.277, 0.284], [0.512, 0.284]];
+  function placeLights() {
+    var bw = heroBox.clientWidth, bh = heroBox.clientHeight, iw = 960, ih = 948;
+    if (!bw || !bh) return;
+    var s = Math.max(bw / iw, bh / ih), dw = iw * s, dh = ih * s, ox = (bw - dw) * 0.5, oy = (bh - dh) * 0.45;
+    LIGHTS.forEach(function (l, i) {
+      heroEl.style.setProperty('--g' + (i + 1) + 'x', ((ox + l[0] * dw) / bw * 100).toFixed(2) + '%');
+      heroEl.style.setProperty('--g' + (i + 1) + 'y', ((oy + l[1] * dh) / bh * 100).toFixed(2) + '%');
+    });
+  }
+  placeLights(); addEventListener('resize', placeLights);
+
+  ScrollCraft.mount(document.body);
+
+  /* Компьютер: фото чуть «оглядывается» за мышью, с инерцией */
+  if (!reduce && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    var tx = 0, ty = 0, cx = 0, cy = 0;
+    heroEl.addEventListener('pointermove', function (e) { tx = e.clientX / innerWidth * 2 - 1; ty = e.clientY / innerHeight * 2 - 1; });
+    heroEl.addEventListener('pointerleave', function () { tx = 0; ty = 0; });
+    (function lean() { cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
+      heroEl.style.setProperty('--mx', cx.toFixed(3)); heroEl.style.setProperty('--my', cy.toFixed(3)); requestAnimationFrame(lean); })();
+  }
+
+  /* ===== Цвета вечера ===== */
+  function hex(c) { return '#' + c.map(function (v) { return Math.round(v).toString(16).padStart(2, '0'); }).join(''); }
+  function rgb(h) {
+    h = (h || '').trim();
+    var m = h.match(/rgba?\(([^)]+)\)/i);
+    if (m) return m[1].split(/[,\s/]+/).filter(Boolean).slice(0, 3).map(parseFloat);
+    h = h.replace('#', ''); if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var c = [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16); });
+    return c.some(isNaN) ? [237, 239, 236] : c;
+  }
+  function mix(a, b, t) { return [0, 1, 2].map(function (i) { return a[i] + (b[i] - a[i]) * t; }); }
+  function sm(a, b, x) { var t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+  var TOP = [rgb('#CFE0EA'), rgb('#8E9BB4'), rgb('#141B2C')];
+  var BOT = [rgb('#F1F0E8'), rgb('#EFB487'), rgb('#26324A')];
+  function sky(p, set) {
+    var a = sm(0.03, 0.17, p), b = sm(0.17, 0.34, p);
+    return b > 0 ? mix(set[1], set[2], b) : mix(set[0], set[1], a);
+  }
+  function lum(c) { var l = c.map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * l[0] + 0.7152 * l[1] + 0.0722 * l[2]; }
+
+  var meta = document.querySelector('meta[name="theme-color"]');
+  var lastChrome = '', lastTG = 0, mbShown = false, lastState = '', lastHero = '';
+  var heroStage = heroEl.querySelector('[data-sc-stage]');
+  var links = [].slice.call(document.querySelectorAll('.index__list a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+
+  function frame() {
+    requestAnimationFrame(frame);
+    if (current !== null) return;
+    var p = parseFloat(eve.style.getPropertyValue('--sc-p')) || 0;
+    var r = eve.getBoundingClientRect();
+    var top = sky(p, TOP), bot = sky(p, BOT);
+    var night = sm(0.05, 0.34, p);
+    eve.style.setProperty('--sky-top', hex(top));
+    eve.style.setProperty('--sky-bot', hex(bot));
+    eve.style.setProperty('--night', night.toFixed(3));
+    eve.style.setProperty('--w1', sm(0.24, 0.3, p).toFixed(3));
+    eve.style.setProperty('--w2', sm(0.32, 0.38, p).toFixed(3));
+    eve.style.setProperty('--lamps', sm(0.4, 0.46, p).toFixed(3));
+    eve.style.setProperty('--glow', sm(0.26, 0.46, p).toFixed(3));
+    eve.style.setProperty('--smoke', sm(0.36, 0.5, p).toFixed(3));
+    eve.style.setProperty('--stars', sm(0.3, 0.55, p).toFixed(3));
+
+    var state = [hex(top), sm(0.24, 0.3, p).toFixed(2), sm(0.32, 0.38, p).toFixed(2), sm(0.4, 0.46, p).toFixed(2)].join('|');
+    var hp = parseFloat(heroEl.style.getPropertyValue('--sc-p')) || 0, hs = hp.toFixed(2);
+    if (hs !== lastHero) { heroStage.setAttribute('data-sc-verify-state', hs); lastHero = hs; }
+    if (state !== lastState) { eve.querySelector('[data-sc-stage]').setAttribute('data-sc-verify-state', state); lastState = state; }
+
+    /* Цвет «рамки»: шапка-указатель, шапка Telegram, полоса браузера */
+    var chrome;
+    if (r.top <= 60 && r.bottom > 60) chrome = top;
+    else chrome = rgb((getComputedStyle(root).getPropertyValue('--sc-canvas') || '#EDEFEC').trim());
+    var ch = hex(chrome);
+    if (ch !== lastChrome) {
+      lastChrome = ch;
+      var dark = lum(chrome) < 0.18;
+      root.style.setProperty('--chrome', ch);
+      root.style.setProperty('--chrome-ink', dark ? '#ECEAE4' : '#1D2125');
+      root.classList.toggle('is-night', dark);
+      if (meta) meta.setAttribute('content', ch);
+      var now = performance.now();
+      if (inTG && now - lastTG > 40) {
+        lastTG = now;
+        try { tg.setHeaderColor(ch); } catch (e) {}
+        try { tg.setBackgroundColor(ch); } catch (e) {}
+        try { if (tg.setBottomBarColor) tg.setBottomBarColor(ch); } catch (e) {}
+      }
+    }
+
+    /* Родная кнопка Telegram появляется вместе с табличкой «Ваш дом» */
+    if (inTG) {
+      var want = p >= 0.84 && r.top <= 1;
+      if (want !== mbShown) { mbShown = want; try { want ? tg.MainButton.show() : tg.MainButton.hide(); } catch (e) {} }
+    }
+
+    /* Активный пункт указателя */
+    var cur = 0, line = innerHeight * 0.4;
+    for (var i = 0; i < sections.length; i++) if (sections[i].getBoundingClientRect().top <= line) cur = i;
+    links.forEach(function (a, i) { if ((a.getAttribute('aria-current') === 'true') !== (i === cur)) a.setAttribute('aria-current', i === cur ? 'true' : 'false'); });
+  }
+  requestAnimationFrame(frame);
+
+  /* Переход по указателю: прыжок, без плавной прокрутки на длинных пролётах */
+  links.concat([document.querySelector('.index__mark')]).forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var t = document.querySelector(a.getAttribute('href')); if (!t) return;
+      e.preventDefault();
+      var y = t.getBoundingClientRect().top + scrollY;
+      if (t.id === 'vecher') y += (t.offsetHeight - innerHeight) * 0.62;
+      scrollTo({ top: y, behavior: 'auto' });
+    });
+  });
+})();
+</script>
+</body>
+</html>
