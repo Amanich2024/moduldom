@@ -227,6 +227,14 @@ button { font: inherit; color: inherit; }
 .b-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
 .b-actions button { width: 100%; min-height: 48px; line-height: 1.2; }
 .viewer { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.viewer-strip { display: flex; width: 100vw; margin: 0 -16px; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+.viewer-strip::-webkit-scrollbar { display: none; }
+.vslide { flex: 0 0 100vw; margin: 0; scroll-snap-align: center; scroll-snap-stop: always; display: flex; align-items: center; justify-content: center; padding: 0 16px; box-sizing: border-box; }
+.vslide img { max-width: 100%; max-height: 78vh; object-fit: contain; border-radius: 8px; }
+.viewer.is-gallery #viewer-img { display: none; }
+.viewer.is-gallery { background: #0b0d0e; z-index: 60; }
+.viewer-count { position: absolute; top: calc(22px + env(safe-area-inset-top, 0px)); left: 16px; color: #fff; font-family: var(--f-mono); font-size: 13px; opacity: 0.8; }
+.viewer p { min-height: 2.9em; }
 .viewer p { color: #fff; font-size: 14px; text-align: center; margin: 12px 0 0; max-width: 34ch; opacity: 0.85; }
 .toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: rgba(17, 20, 22, 0.9); color: #fff; padding: 9px 16px; border-radius: 99px; font-size: 14px; z-index: 20; white-space: nowrap; }
 .slider { margin: 12px 0 2px; }
@@ -273,7 +281,7 @@ body.pe-open { overflow: hidden; }
 <body>
 <div class="app" id="app"></div>
 <div class="buybar" id="buybar" hidden><div class="buybar-inner"><button class="buy" id="buy" type="button">Купить</button></div></div>
-<div class="viewer" id="viewer" hidden><img id="viewer-img" alt=""><p id="viewer-hint" hidden></p><button type="button" id="viewer-close" aria-label="Закрыть">×</button></div>
+<div class="viewer" id="viewer" hidden><div class="viewer-strip" id="viewer-strip" hidden></div><img id="viewer-img" alt=""><p id="viewer-hint" hidden></p><span class="viewer-count" id="viewer-count" hidden></span><button type="button" id="viewer-close" aria-label="Закрыть">×</button></div>
 
 <script>
 const src = (k) => "img/" + k + ".webp";
@@ -2899,7 +2907,7 @@ function renderHouse(h) {
     thumbs.forEach((t, k) => t.setAttribute("aria-current", String(k === i)));
   }, { passive: true });
   thumbs.forEach((t) => t.addEventListener("click", () => gallery.scrollTo({ left: gallery.clientWidth * Number(t.dataset.i), behavior: "smooth" })));
-  app.querySelectorAll(".slide").forEach((b, k) => b.addEventListener("click", () => openViewerUrl(src(b.dataset.src), (h.caps && h.caps[k]) || "")));
+  app.querySelectorAll(".slide").forEach((b, k) => b.addEventListener("click", () => openGallery(photos, h.caps, k, (i) => { gallery.scrollTo({ left: gallery.clientWidth * i }); })));
   app.querySelectorAll(".plan").forEach((b) => b.addEventListener("click", () => openViewer(b.dataset.src)));
   const back = document.getElementById("back");
   if (back) back.addEventListener("click", () => go("#/"));
@@ -2959,19 +2967,48 @@ function setMain(text, fn) {
 }
 function setBuy(show) { setMain("Купить", show ? () => { if (current) go("#/done/" + current.id); } : null); }
 document.getElementById("buy").addEventListener("click", onBuy);
-if (inTG) { try { tg.MainButton.onClick(onBuy); tg.BackButton.onClick(() => { if (pe) peClose(); else go("#/"); }); } catch (e) {} }
+if (inTG) { try { tg.MainButton.onClick(onBuy); tg.BackButton.onClick(() => { if (!viewer.hidden) closeViewer(); else if (pe) peClose(); else go("#/"); }); } catch (e) {} }
 
 /* Просмотр фото на весь экран */
 const viewer = document.getElementById("viewer");
 function openViewer(key) { openViewerUrl(src(key), ""); }
 function openViewerUrl(url, hint) {
+  viewer.classList.remove("is-gallery"); document.getElementById("viewer-strip").hidden = true; document.getElementById("viewer-count").hidden = true;
   document.getElementById("viewer-img").src = url;
   const h = document.getElementById("viewer-hint");
   h.textContent = hint || ""; h.hidden = !hint;
   viewer.hidden = false;
 }
-function closeViewer() { viewer.hidden = true; }
-viewer.addEventListener("click", closeViewer);
+let vIndex = 0, vOnClose = null;
+function closeViewer() {
+  if (viewer.hidden) return;
+  viewer.hidden = true;
+  if (viewer.classList.contains("is-gallery")) {
+    viewer.classList.remove("is-gallery");
+    const strip = document.getElementById("viewer-strip"); strip.hidden = true; strip.onscroll = null; strip.innerHTML = "";
+    document.getElementById("viewer-count").hidden = true;
+    if (vOnClose) { const f = vOnClose; vOnClose = null; try { f(vIndex); } catch (e) {} }
+  }
+}
+/* Фото дома на весь экран: листаются вправо-влево, подпись и счётчик меняются вместе с фото */
+function openGallery(keys, caps, start, onClose) {
+  const strip = document.getElementById("viewer-strip"), hint = document.getElementById("viewer-hint"), count = document.getElementById("viewer-count");
+  caps = caps || []; vIndex = start || 0; vOnClose = onClose || null;
+  strip.innerHTML = keys.map((k, i) => `<figure class="vslide"><img src="${src(k)}" alt="${esc(caps[i] || "")}"${Math.abs(i - vIndex) > 1 ? ' loading="lazy"' : ""} decoding="async"></figure>`).join("");
+  const upd = () => { hint.textContent = caps[vIndex] || ""; hint.hidden = !caps[vIndex]; count.textContent = (vIndex + 1) + " / " + keys.length; };
+  viewer.classList.add("is-gallery"); strip.hidden = false; count.hidden = false; viewer.hidden = false;
+  upd();
+  requestAnimationFrame(() => { strip.scrollLeft = strip.clientWidth * vIndex; });
+  let raf = 0;
+  strip.onscroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { const i = Math.round(strip.scrollLeft / strip.clientWidth); if (i !== vIndex && i >= 0 && i < keys.length) { vIndex = i; upd(); } }); };
+}
+viewer.addEventListener("click", (e) => { if (e.target.closest("#viewer-close")) { closeViewer(); return; } if (!viewer.classList.contains("is-gallery")) closeViewer(); });
+document.addEventListener("keydown", (e) => {
+  if (viewer.hidden || !viewer.classList.contains("is-gallery")) return;
+  const strip = document.getElementById("viewer-strip");
+  if (e.key === "ArrowRight") strip.scrollBy({ left: strip.clientWidth, behavior: "smooth" });
+  if (e.key === "ArrowLeft") strip.scrollBy({ left: -strip.clientWidth, behavior: "smooth" });
+});
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeViewer(); });
 
 /* Навигация */
