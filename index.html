@@ -122,6 +122,7 @@ button { font: inherit; color: inherit; }
 .house-head h1 { font-family: var(--f-display); font-weight: 600; font-size: 28px; line-height: 1.1; margin: 0; text-wrap: balance; }
 .specs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
 .spec { background: var(--surface); padding: 10px 12px; min-width: 0; }
+.spec:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .spec span { display: block; font-size: 12px; color: var(--muted); }
 .spec b { display: block; font-family: var(--f-mono); font-weight: 500; font-size: 15px; margin-top: 2px; overflow-wrap: anywhere; }
 .text p { margin: 0 0 12px; max-width: 65ch; }
@@ -1165,10 +1166,6 @@ const HOUSES = [
    [
     "Терраса",
     "12 м²"
-   ],
-   [
-    "Модули",
-    "три"
    ],
    [
     "Сдан",
