@@ -2470,7 +2470,7 @@ function bControls() {
   const adjBox = document.getElementById("b-adj"), txBox = document.getElementById("b-tx");
   const { key } = variantOf(c), edited = !!(c.pv[key] || c.dpos[key] || c.dw[key] || c.win[key] || (c.spos && c.spos[key]) || (c.tsp && c.tsp[key]));
   adjBox.innerHTML = `<button type="button" class="ghost b-edit" id="b-edit">✎ Редактировать проект</button>
-    <p class="sl-note">План откроется на весь экран: стены, двери, окна${c.terrace === "along" ? " и терраса" : ""} — всё двигается пальцем.${edited ? " Ваши правки сохранены." : ""}</p>`;
+    <p class="sl-note">План откроется на весь экран: стены, двери, окна${c.terrace === "along" ? " и терраса" : ""} — всё можно двигать.${edited ? " Ваши правки сохранены." : ""}</p>`;
   document.getElementById("b-edit").addEventListener("click", peOpen);
   if (c.terrace === "along") {
     txBox.innerHTML = `<div class="slider"><div class="sl-lbl"><span>Длина террасы</span><b id="tlen-v"></b></div>
@@ -2734,15 +2734,15 @@ function peRender() {
     const names = d.rs.map((r) => ROOM[r.t].n.toLowerCase());
     const title = d.ext ? (d.rs[0] && d.rs[0].t === "shed" ? "Дверь в хозблок с улицы" : "Входная дверь") : `Дверь: ${names.join(" — ")}`;
     box.innerHTML = d.ext
-      ? `<div class="pe-card"><b class="pe-h">${esc(title)}</b><p>Проём ${cm(d.w)} × ${cm(DOOR_H_EXT)} см. Дверь можно тянуть пальцем вдоль стены.</p></div>`
+      ? `<div class="pe-card"><b class="pe-h">${esc(title)}</b><p>Проём ${cm(d.w)} × ${cm(DOOR_H_EXT)} см. Дверь можно двигать вдоль стены.</p></div>`
       : `<div class="pe-card"><b class="pe-h">${esc(title)}</b><div class="chips pe-chips">${DOOR_OPT.map((w) => `<button type="button" class="chip" data-dw="${w}" aria-pressed="${Math.abs(w - d.w) < 0.001}">${cm(w) - 9} см</button>`).join("")}</div>
-        <p>Ширина двери. Проём под неё ${cm(d.w)} × ${cm(DOOR_H)} см (на 9 см шире — под установку). Дверь можно тянуть пальцем вдоль стены.</p></div>`;
+        <p>Ширина двери. Проём под неё ${cm(d.w)} × ${cm(DOOR_H)} см (на 9 см шире — под установку). Дверь можно двигать вдоль стены.</p></div>`;
   } else if (typeof pe.sel === "string" && pe.sel[0] === "w") {
     const q = winsOf(c, lay).find((x) => "w" + x.idx === pe.sel);
     if (!q) { pe.sel = null; return peRender(); }
     const room = ROOM[lay.rooms[q.ri].t].n.toLowerCase();
     box.innerHTML = `<div class="pe-card"><b class="pe-h">Окно: ${esc(room)}</b><div class="chips pe-chips">${WIN_OPT.map(([k]) => `<button type="button" class="chip" data-wk="${k}" aria-pressed="${k === q.key}">${winName(k)}</button>`).join("")}</div>
-      <p>Ширина × высота, см. Подоконник ${cm(q.sill)} см от пола. Окно можно тянуть пальцем вдоль стены.</p>
+      <p>Ширина × высота, см. Подоконник ${cm(q.sill)} см от пола. Окно можно двигать вдоль стены.</p>
       <button type="button" class="ghost pe-del" data-wdel="1">Убрать окно</button></div>`;
   } else if (pe.sel === "mat") {
     box.innerHTML = `<div class="pe-card"><b class="pe-h">Расчёт материалов</b><p>Раздел в разработке. Скоро здесь появится расчёт материалов на ваш дом — по выбранному размеру и планировке.</p></div>`;
@@ -2750,13 +2750,13 @@ function peRender() {
     const [a0, a1] = alongSpan(c);
     box.innerHTML = `<div class="pe-card"><b class="pe-h">Терраса: ${fmt(a1 - a0)} × ${fmt(T_DEPTH)} м, ${fmt((a1 - a0) * T_DEPTH)} м²</b><p>Тяните оранжевые точки по краям террасы. ${exit2Pos(c) !== null ? "Входная дверь и второй выход всегда остаются" : "Входная дверь всегда остаётся"} на террасе, край не встаёт ближе 10 см к окну. Самая короткая — 2 м.</p></div>`;
   } else if (pe.sel === "stove") {
-    box.innerHTML = `<div class="pe-card"><b class="pe-h">Печь</b><p>Тяните печь пальцем в нужное место. Она ставится в любую комнату, кроме санузла и прихожей; труба на фасаде переедет вслед за ней.</p></div>`;
+    box.innerHTML = `<div class="pe-card"><b class="pe-h">Печь</b><p>Печь можно передвинуть в нужное место. Она ставится в любую комнату, кроме санузла и прихожей; труба на фасаде переедет вслед за ней.</p></div>`;
   } else if (pe.sel === "x2") {
     box.innerHTML = `<div class="pe-card"><b class="pe-h">Второй выход на террасу</b><p>Проём ${cm(DOOR_EXT)} × ${cm(DOOR_H_EXT)} см. Стоит в кухне-гостиной, ближе ко входу.</p></div>`;
   } else {
     box.innerHTML = `<div class="pe-card"><p><b class="pe-dot">●</b> Тяните оранжевые точки — двигаются стены. Пока тянете, сверху видна ширина комнат внутри.</p>
       <p>Нажмите на дверь или на её цифру — выберите проём. Дверь можно тянуть вдоль стены.</p>
-      ${c.stove && STOVE_MOVE ? "<p>Печь (тёмный квадрат) тоже можно тянуть пальцем.</p>" : ""}
+      ${c.stove && STOVE_MOVE ? "<p>Печь (тёмный квадрат) тоже можно двигать.</p>" : ""}
       ${c.terrace === "along" ? "<p>Терраса — тяните точки по её краям.</p>" : ""}
       <p>Окна — голубые. Нажмите на окно — выберите размер или уберите его. Нажмите на пустое место наружной стены — добавится окно.</p>
       ${lay.seam ? "<p>Пунктир — здесь соединяются модули, эту стену не двигаем.</p>" : ""}
