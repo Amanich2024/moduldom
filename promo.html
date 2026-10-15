@@ -550,6 +550,7 @@ html.has-house { overflow: hidden; }
   padding: var(--sc-5) var(--sc-5) var(--sc-4); box-shadow: var(--sc-e3), var(--sc-edge);
 }
 .hero__tag h1 { font-size: var(--sc-t-2xl); }
+.hero__photo[data-house], .hero__tag[data-house] { cursor: pointer; }
 .hero__note { position: absolute; z-index: 3; max-width: 30ch; font-size: var(--sc-t-sm); color: #3A4247; }
 .hero__note q { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-lg); line-height: 1.25; color: var(--sc-ink); quotes: "«" "»"; display: block; }
 .hero__note span { display: block; margin-top: var(--sc-2); }
@@ -777,13 +778,13 @@ html.has-house { overflow: hidden; }
       <div class="hero__brand">
         <p>Модульные дома и бани с собственного производства в Петербурге.</p>
       </div>
-      <figure class="hero__photo">
+      <figure class="hero__photo" data-house="h1">
         <div class="hero__lean"><div class="hero__move">
           <img src="img/hero-1.webp" width="960" height="948" alt="Тёмный дом с террасой под общей крышей в сумерках: под навесом горит свет, светятся дверь и окно">
           <div class="hero__warm" aria-hidden="true"></div>
         </div></div>
       </figure>
-      <div class="hero__tag tag">
+      <div class="hero__tag tag" data-house="h1">
         <h1>Чёрный снаружи, белый внутри</h1>
         <dl>
           <dt>Размер</dt><dd>6×8,5 м: дом 6×6 и терраса 2,5×6</dd>
