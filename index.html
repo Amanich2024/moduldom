@@ -2536,7 +2536,7 @@ function peOpen() {
   setMain(null);
   // в Telegram свайп вниз сворачивает приложение — на время правки плана отключаем
   if (inTG) { try { tg.BackButton.show(); if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {} }
-  document.getElementById("pe-done").addEventListener("click", peClose);
+  document.getElementById("pe-done").addEventListener("click", () => peClose());
   document.getElementById("pe-mat").addEventListener("click", () => { pe.sel = "mat"; peRender(); });
   document.getElementById("pe-reset").addEventListener("click", () => {
     const { key } = variantOf(bcfg);
@@ -2598,8 +2598,10 @@ function peOpen() {
     bSave(); peRender();
   });
   peRender();
+  ovPush("pe");
 }
-function peClose() {
+function peClose(fromHistory) {
+  if (!fromHistory && ovKind === "pe") ovPop();
   const ov = document.getElementById("pe");
   if (ov) ov.remove();
   document.body.classList.remove("pe-open");
@@ -2707,7 +2709,7 @@ function peRender() {
       <p class="pe-gab">Размеры комнат — внутри, от стены до стены. Дом: ${esc(gabTxt(c))}.</p></div>`;
   }
 }
-window.addEventListener("hashchange", () => { if (pe) peClose(); });
+window.addEventListener("hashchange", () => { if (pe) { ovKind = null; peClose(true); } });
 
 /* ===== Заявка и «Поделиться своим домом» ===== */
 const BOT_NAME = "uumoduldom_bot";
@@ -3039,10 +3041,12 @@ function openViewerUrl(url, hint) {
   const h = document.getElementById("viewer-hint");
   h.textContent = hint || ""; h.hidden = !hint;
   viewer.hidden = false;
+  if (ovKind !== "viewer") ovPush("viewer");
 }
 let vIndex = 0, vOnClose = null;
-function closeViewer() {
+function closeViewer(fromHistory) {
   if (viewer.hidden) return;
+  if (!fromHistory && ovKind === "viewer") ovPop();
   viewer.hidden = true;
   if (viewer.classList.contains("is-gallery")) {
     viewer.classList.remove("is-gallery");
@@ -3058,6 +3062,7 @@ function openGallery(keys, caps, start, onClose) {
   strip.innerHTML = keys.map((k, i) => `<figure class="vslide"><img src="${src(k)}" alt="${esc(caps[i] || "")}"${Math.abs(i - vIndex) > 1 ? ' loading="lazy"' : ""} decoding="async"></figure>`).join("");
   const upd = () => { hint.textContent = caps[vIndex] || ""; hint.hidden = !caps[vIndex]; count.textContent = (vIndex + 1) + " / " + keys.length; document.getElementById("viewer-prev").disabled = vIndex <= 0; document.getElementById("viewer-next").disabled = vIndex >= keys.length - 1; };
   viewer.classList.add("is-gallery"); strip.hidden = false; count.hidden = false; viewer.hidden = false;
+  if (ovKind !== "viewer") ovPush("viewer");
   upd();
   requestAnimationFrame(() => { strip.scrollLeft = strip.clientWidth * vIndex; });
   let raf = 0;
@@ -3072,10 +3077,16 @@ document.addEventListener("keydown", (e) => {
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeViewer(); });
 
+/* Окна поверх страницы — свой шаг в истории: «Назад» закрывает окно, страница остаётся */
+var ovKind = null;
+function ovPush(kind) { try { history.pushState({ ov: kind }, "", location.href); ovKind = kind; } catch (e) { ovKind = null; } }
+function ovPop() { if (!ovKind) return; ovKind = null; try { history.back(); } catch (e) {} }
+window.addEventListener("popstate", () => { if (!ovKind) return; const k = ovKind; ovKind = null; if (k === "pe" && pe) peClose(true); else if (k === "viewer" && !viewer.hidden) closeViewer(true); });
 /* Навигация */
 function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
 function route() {
-  closeViewer();
+  if (ovKind === "viewer") ovKind = null;
+  closeViewer(true);
   let m = location.hash.match(/^#\/(house|done)\/([\w-]+)/);
   if (m && ALIASES[m[2]]) { try { history.replaceState(null, "", "#/" + m[1] + "/" + ALIASES[m[2]]); } catch (e) {} m = location.hash.match(/^#\/(house|done)\/([\w-]+)/); }
   const h = m && (m[1] === "done" && m[2] === "my" ? { id: "my", name: `${sizeOf(bcfg).name}, ${layoutOf(bcfg).name.toLowerCase()}`, svg: facadeSVG(bcfg) } : HOUSES.find((x) => x.id === m[2]));
