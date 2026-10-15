@@ -82,6 +82,22 @@ button { font: inherit; color: inherit; }
 .about li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; font-size: 14px; }
 .about li::before { content: ""; width: 10px; height: 10px; margin-top: 6px; border: 2px solid var(--wood); border-radius: 2px; }
 .channel { display: inline-flex; margin-top: 14px; font-weight: 600; font-size: 14px; color: var(--wood); text-decoration: none; }
+.voices { margin-top: 28px; }
+.voices h2, .faq h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0 0 4px; }
+.voices .sub { margin: 0 0 12px; font-size: 13px; color: var(--muted); }
+.voice { margin: 0 0 10px; background: var(--wood-soft); border-radius: var(--radius); padding: 14px 16px; }
+.voice[data-id] { cursor: pointer; }
+.voice blockquote { margin: 0; font-size: 15px; line-height: 1.45; }
+.voice figcaption { margin-top: 8px; font-size: 12px; color: var(--muted); }
+.voice figcaption b { color: var(--ink); font-weight: 600; }
+.voice .to { color: var(--wood); font-weight: 600; white-space: nowrap; }
+.faq { margin-top: 22px; background: var(--surface); border-radius: var(--radius); padding: 14px 16px 6px; }
+.faq details { border-top: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; font-weight: 600; font-size: 15px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; flex: none; color: var(--wood); font-size: 20px; line-height: 1; }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { margin: 0 0 10px; font-size: 14px; line-height: 1.5; }
 .demo-note { margin: 18px 0 0; font-size: 12px; color: var(--muted); text-align: center; }
 
 /* Страница дома */
@@ -167,9 +183,6 @@ button { font: inherit; color: inherit; }
 .tg-link { margin: 6px 0 0; text-align: center; }
 
 /* Конструктор «Собрать свой дом» */
-.story-cta { display: grid; grid-template-columns: minmax(0, 1fr) 16px; gap: 12px; align-items: center; text-decoration: none; color: inherit; background: var(--wood-soft); border-radius: var(--radius); padding: 14px; margin: -10px 0 22px; }
-.story-cta .cta-text b { display: block; font-family: var(--f-display); font-weight: 600; font-size: 18px; }
-.story-cta .cta-text span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
 .build-cta { display: grid; grid-template-columns: 128px minmax(0, 1fr) 16px; gap: 12px; align-items: center; width: 100%; text-align: left; border: 0; background: var(--surface); border-radius: var(--radius); padding: 10px 12px 10px 10px; margin-bottom: 22px; cursor: pointer; }
 .cta-pic { display: block; border-radius: 9px; overflow: hidden; aspect-ratio: 360 / 210; }
 .cta-pic svg { display: block; width: 100%; height: 100%; }
@@ -2746,13 +2759,30 @@ function bShare() {
   let sp = null;
   try { sp = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.start_param; } catch (e) {}
   if (!sp) { try { sp = new URLSearchParams(location.search).get("tgWebAppStartParam") || new URLSearchParams(location.search).get("d"); } catch (e) {} }
-  if (sp === "story") { let seen = false; try { seen = sessionStorage.getItem("story-seen") === "1"; sessionStorage.setItem("story-seen", "1"); } catch (e) {} if (!seen) { location.replace("promo.html"); return; } }
   const c = bDecode(sp);
   if (!c) return;
   bcfg = c; bSave();
   try { history.replaceState(null, "", location.pathname + location.search + "#/build"); } catch (e) { location.hash = "#/build"; }
 })();
 
+const REVIEWS = [
+  ["Юля, Юра и всей вашей команде огромное спасибо! …С вами просто замечательно работать! В доме тепло, просторно, светло… Не верится, что один модуль превратился в такую красоту.", "Олеся", "заказчица, дом на вырост 72 м²", "dom-72"],
+  ["Сидим на даче, топим печку и вас с благодарностью вспоминаем.", "Наталья", "заказчица", ""],
+  ["Какие ваши дома просторные и красивые.", "Елена", "о зимнем доме 69 м²", "dom-69-zimnij"],
+  ["А главное — качественный! Как вспомню свой мини-теремок, так вздрогну.", "Нина", "о доме 48 м²", "dom-48-ryzhij"],
+  ["Вот оно — тихое семейное счастье и релакс!", "Алла", "о доме с баней", "dom-s-banej"],
+  ["Сколько можно уместить в таком пространстве, обалдеть!", "Сергей", "о дачном доме 3×9", "dacha-3x9"]
+];
+const FAQ = [
+  ["Сколько стоит дом?", ["Стоимость считаем под ваш дом: она зависит от размера, планировки и отделки. Уточните цену у производителя."]],
+  ["Можно свою планировку и цвета?", ["Да. Планировку и цвета придумывают заказчики, мы помогаем доработать и сделать удобнее. Изменить планировку можно бесплатно."]],
+  ["Что входит в «под ключ»?", ["Чистовая отделка, электрика, разводка и вся сантехника.", "Сантехника: трубы открытым монтажом."]],
+  ["Сколько ждать?", ["Дом или баню делаем от 2 до 5 недель, смотря по размеру. На участке ставим за 1–2 дня."]],
+  ["Где делают дома?", ["На собственном производстве в Санкт-Петербурге, в сухом цеху."]],
+  ["Какой самый большой дом?", ["Обычно тёплая часть до 54 м²: это два модуля, к ним терраса. Собирали и из трёх модулей: дом на вырост, 60 м² и терраса 12 м², монтаж занял 5 дней."]],
+  ["Можно привезти свою мебель и технику?", ["Да. Привезите её к нам на производство: она приедет на участок прямо в доме."]],
+  ["Какая высота потолков?", ["245 см в коньке и 205 см в нижней точке."]]
+];
 const ABOUT = [
   "Собственное производство в Санкт-Петербурге: дома собирают в сухом цеху.",
   "Изготовление от 2 до 5 недель в комплектации «под ключ», смотря по размеру; установка на участке — 1–2 дня.",
@@ -2796,7 +2826,6 @@ function renderCatalog() {
       <span class="cta-text"><b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span></span>
       <span class="cta-arrow" aria-hidden="true">→</span>
     </button>
-    <a class="story-cta" href="promo.html"><span class="cta-text"><b>Прогулка по домам</b><span>Фото, отзывы заказчиков и вечер в готовом доме</span></span><span class="cta-arrow" aria-hidden="true">→</span></a>
     <p class="section-title">Дома <span class="count">· ${HOUSES.length}</span></p>
     <div class="list">
       ${HOUSES.map((h, i) => `
@@ -2810,12 +2839,18 @@ function renderCatalog() {
           </div>
         </button>`).join("")}
     </div>
-    <section class="about">
-      <h2>Как мы работаем</h2>
-      <ul>${ABOUT.map((a) => `<li>${esc(a)}</li>`).join("")}</ul>
+    <section class="voices">
+      <h2>Что пишут о домах</h2>
+      <p class="sub">Заказчики и подписчики, ВКонтакте</p>
+      ${REVIEWS.map((r) => `<figure class="voice"${r[3] ? ` data-id="${r[3]}" role="button" tabindex="0"` : ""}><blockquote>«${esc(r[0])}»</blockquote><figcaption><b>${esc(r[1])}</b>${r[2] ? ", " + esc(r[2]) : ""}${r[3] ? ` <span class="to">Смотреть дом →</span>` : ""}</figcaption></figure>`).join("")}
+    </section>
+    <section class="faq">
+      <h2>Частые вопросы</h2>
+      ${FAQ.map((q) => `<details><summary>${esc(q[0])}</summary>${q[1].map((p) => `<p>${esc(p)}</p>`).join("")}</details>`).join("")}
     </section>
     <p class="demo-note">Пробная версия витрины.</p>`;
   app.querySelectorAll(".card").forEach((b) => b.addEventListener("click", () => { catalogY = window.scrollY; go("#/house/" + b.dataset.id); }));
+  app.querySelectorAll(".voice[data-id]").forEach((v) => { const open = () => { catalogY = window.scrollY; go("#/house/" + v.dataset.id); }; v.addEventListener("click", open); v.addEventListener("keydown", (e) => { if (e.key === "Enter") open(); }); });
   document.getElementById("build-cta").addEventListener("click", () => { catalogY = window.scrollY; go("#/build"); });
   restoreCatalogScroll();
 }
