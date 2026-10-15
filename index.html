@@ -243,6 +243,13 @@ button { font: inherit; color: inherit; }
 .viewer.is-gallery { background: #0b0d0e; z-index: 60; }
 .viewer-count { position: absolute; top: calc(22px + env(safe-area-inset-top, 0px)); left: 16px; color: #fff; font-family: var(--f-mono); font-size: 13px; opacity: 0.8; }
 .viewer p { min-height: 2.9em; }
+/* Компьютер: кнопки ‹ › по бокам фото; на телефоне листают пальцем */
+.viewer .viewer-nav { display: none; position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 56px; height: 56px; padding: 0 0 4px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.14); color: #fff; font-size: 36px; line-height: 1; place-items: center; cursor: pointer; }
+.viewer .viewer-nav:hover { background: rgba(255, 255, 255, 0.28); }
+.viewer .viewer-nav:disabled { opacity: 0.2; cursor: default; }
+.viewer #viewer-prev { left: 20px; right: auto; }
+.viewer #viewer-next { right: 20px; }
+@media (hover: hover) and (pointer: fine) { .viewer.is-gallery .viewer-nav { display: grid; } }
 .viewer p { color: #fff; font-size: 14px; text-align: center; margin: 12px 0 0; max-width: 34ch; opacity: 0.85; }
 .toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: rgba(17, 20, 22, 0.9); color: #fff; padding: 9px 16px; border-radius: 99px; font-size: 14px; z-index: 20; white-space: nowrap; }
 .slider { margin: 12px 0 2px; }
@@ -289,7 +296,7 @@ body.pe-open { overflow: hidden; }
 <body>
 <div class="app" id="app"></div>
 <div class="buybar" id="buybar" hidden><div class="buybar-inner"><button class="buy" id="buy" type="button">Купить</button></div></div>
-<div class="viewer" id="viewer" hidden><div class="viewer-strip" id="viewer-strip" hidden></div><img id="viewer-img" alt=""><p id="viewer-hint" hidden></p><span class="viewer-count" id="viewer-count" hidden></span><button type="button" id="viewer-close" aria-label="Закрыть">×</button></div>
+<div class="viewer" id="viewer" hidden><div class="viewer-strip" id="viewer-strip" hidden></div><img id="viewer-img" alt=""><p id="viewer-hint" hidden></p><span class="viewer-count" id="viewer-count" hidden></span><button type="button" class="viewer-nav" id="viewer-prev" aria-label="Предыдущее фото">‹</button><button type="button" class="viewer-nav" id="viewer-next" aria-label="Следующее фото">›</button><button type="button" id="viewer-close" aria-label="Закрыть">×</button></div>
 
 <script>
 const src = (k) => "img/" + k + ".webp";
@@ -3028,14 +3035,14 @@ function openGallery(keys, caps, start, onClose) {
   const strip = document.getElementById("viewer-strip"), hint = document.getElementById("viewer-hint"), count = document.getElementById("viewer-count");
   caps = caps || []; vIndex = start || 0; vOnClose = onClose || null;
   strip.innerHTML = keys.map((k, i) => `<figure class="vslide"><img src="${src(k)}" alt="${esc(caps[i] || "")}"${Math.abs(i - vIndex) > 1 ? ' loading="lazy"' : ""} decoding="async"></figure>`).join("");
-  const upd = () => { hint.textContent = caps[vIndex] || ""; hint.hidden = !caps[vIndex]; count.textContent = (vIndex + 1) + " / " + keys.length; };
+  const upd = () => { hint.textContent = caps[vIndex] || ""; hint.hidden = !caps[vIndex]; count.textContent = (vIndex + 1) + " / " + keys.length; document.getElementById("viewer-prev").disabled = vIndex <= 0; document.getElementById("viewer-next").disabled = vIndex >= keys.length - 1; };
   viewer.classList.add("is-gallery"); strip.hidden = false; count.hidden = false; viewer.hidden = false;
   upd();
   requestAnimationFrame(() => { strip.scrollLeft = strip.clientWidth * vIndex; });
   let raf = 0;
   strip.onscroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { const i = Math.round(strip.scrollLeft / strip.clientWidth); if (i !== vIndex && i >= 0 && i < keys.length) { vIndex = i; upd(); } }); };
 }
-viewer.addEventListener("click", (e) => { if (e.target.closest("#viewer-close")) { closeViewer(); return; } if (!viewer.classList.contains("is-gallery")) closeViewer(); });
+viewer.addEventListener("click", (e) => { const nb = e.target.closest(".viewer-nav"); if (nb) { const st = document.getElementById("viewer-strip"); st.scrollBy({ left: (nb.id === "viewer-next" ? 1 : -1) * st.clientWidth, behavior: "smooth" }); return; } if (e.target.closest("#viewer-close")) { closeViewer(); return; } if (!viewer.classList.contains("is-gallery")) closeViewer(); });
 document.addEventListener("keydown", (e) => {
   if (viewer.hidden || !viewer.classList.contains("is-gallery")) return;
   const strip = document.getElementById("viewer-strip");
