@@ -1760,9 +1760,9 @@ function facadeSVG(c, view = "front") {
   } else if (!entInSpan) stepBlock(entranceX, 1.0);
   // у двери хозблока тоже ступенька, если она не выходит на террасу
   for (const m of shedAt) if (!(along && m > a0 + 0.45 && m < a1 - 0.45)) stepBlock(m, 0.9);
-  // кровля
-  const n = parseInt(acc.c.slice(1), 16), light = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255 > 0.6;
-  const plane = light ? shade(acc.c, -0.1) : shade(acc.c, 0.16), seamC = light ? shade(acc.c, -0.3) : acc.c;
+  // кровля — всегда чёрная: цвет кровли не меняется
+  const roofC = ACCENTS.black.c;
+  const plane = shade(roofC, 0.16), seamC = roofC;
   // плоскость ската, видная над карнизом, — с листами кровли (шов каждые 0,5 м, от одного края, чтобы не сбивались)
   const planeRect = (xa, xb, yt, yb) => {
     if (yb - yt < 0.5 || xb - xa < 0.5) return;
@@ -1773,7 +1773,7 @@ function facadeSVG(c, view = "front") {
   // (над открытой террасой тени нет: под кровлей там пусто)
   const fascia = (xa, xb, e, shadow = true) => {
     if (xb - xa < 0.5) return;
-    p.push(rect(xa, e - fasc, xb - xa, fasc, acc.c));
+    p.push(rect(xa, e - fasc, xb - xa, fasc, roofC));
     p.push(line(xa, e - fasc + 0.6, xb, e - fasc + 0.6, "#FFFFFF", 0.8, 'opacity=".22"'));
     const sa = Math.max(xa, xl), sb = Math.min(xb, xr);
     if (shadow && sb - sa > 0.5) p.push(rect(sa, e, sb - sa, 0.06 * s, "#000000", 'opacity=".18"'));
@@ -2001,7 +2001,7 @@ function endsSVG(c) {
     // кровля с уклоном
     const yl = -over / s, yr = W + ta + over / s;
     const ys = gable ? [yl, 3, yr] : [yl, yr];
-    p.push(poly([...ys.map((y) => [X(y), H(y) - fasc]), ...ys.slice().reverse().map((y) => [X(y), H(y)])], acc.c));
+    p.push(poly([...ys.map((y) => [X(y), H(y) - fasc]), ...ys.slice().reverse().map((y) => [X(y), H(y)])], ACCENTS.black.c));
     // тень под кровлей — только на стене (над террасой и свесами под кровлей пусто)
     const ysw = gable ? [0, 3, W] : [0, W];
     p.push(poly([...ysw.map((y) => [X(y), H(y)]), ...ysw.slice().reverse().map((y) => [X(y), H(y) + 0.06 * s])], "#000000", 'opacity=".18"'));
@@ -2334,7 +2334,7 @@ function bSummary(c) {
     ["Двери", doorsTxt],
     ["Окна", winsTxt(c, lay)],
     ["Стены", colorName(WALLS, "wall", c)],
-    ["Углы, окна, крыша", colorName(ACCENTS, "accent", c)],
+    ["Углы и окна", colorName(ACCENTS, "accent", c)],
     ["Внутри", colorName(INNER, "inner", c)],
     ["Дополнительно", extras.length ? extras.join(", ") : "нет"]
   ];
@@ -2373,7 +2373,7 @@ function renderBuild() {
     <section class="b-group"><h2>Планировка</h2><div class="chips" id="b-layouts"></div><div id="b-adj"></div></section>
     <section class="b-group"><h2>Терраса</h2><div class="chips">${chips("terrace", Object.entries(TERR).map(([id, o]) => [id, o.n]), c.terrace)}</div><div id="b-tx"></div></section>
     <section class="b-group"><h2>Цвет стен</h2><div class="swatches">${sw("wall", WALLS, c.wall)}</div></section>
-    <section class="b-group"><h2>Углы, окна и крыша</h2><div class="swatches">${sw("accent", ACCENTS, c.accent)}</div></section>
+    <section class="b-group"><h2>Углы и окна</h2><div class="swatches">${sw("accent", ACCENTS, c.accent)}</div></section>
     <section class="b-group"><h2>Отделка внутри</h2><div class="swatches">${sw("inner", Object.fromEntries(Object.entries(INNER).map(([id, o]) => [id, { n: o.n, c: o.c || o.pal[0] }])), c.inner)}</div></section>
     <section class="b-group"><h2>Дополнительно</h2><div class="toggles">${EXTRAS.map(([k, n]) => `<label class="toggle"><input type="checkbox" data-x="${k}"${c[k] ? " checked" : ""}><span class="sw" aria-hidden="true"></span><span class="t">${esc(n)}</span></label>`).join("")}</div></section>
     </div>
