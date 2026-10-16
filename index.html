@@ -1332,7 +1332,8 @@ const EXTRAS = [
   ["exit2", "Второй выход на террасу"],
   ["porch", "Крыльцо со ступенями"],
   ["ins150", "Утепление 150 мм"],
-  ["gutter", "Водосток"]
+  ["gutter", "Водосток"],
+  ["aerator", "Аэраторы на коньке"]
 ];
 /* «Свой цвет»: наружная отделка, углы/окна/кровля, внутренняя отделка */
 WALLS.custom = { n: "Свой цвет", c: "#8A6E5A", line: "#755D4C" };
@@ -1582,6 +1583,19 @@ const rect = (x, y, w, h, fill, extra = "") => `<rect x="${x.toFixed(1)}" y="${y
 const line = (x1, y1, x2, y2, stroke, w = 1, extra = "") => `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${stroke}" stroke-width="${w}" ${extra}/>`;
 
 /* Рисунок фасада (вид спереди). Координаты: m — метры от левого края дома; торцевая терраса может стоять слева. */
+/* Коньковые аэраторы (как у ТехноНИКОЛЬ и Döcke): плоский профиль по 0,6 м лежит на коньке почти по всей длине дома.
+   Только у двускатной кровли. Рисуем чуть выше настоящих 3 см, чтобы было видно. */
+function ridgeAerFront(p, xa, xb, top, s) {   // спереди и сзади: полоса на коньке от xa до xb (px), top — верх конька
+  const h = 0.13 * s;
+  p.push(rect(xa, top - h, xb - xa, h, "#2B2F33"));                          // профиль
+  p.push(rect(xa, top - h, xb - xa, 0.03 * s, "#4A5056"));                   // светлая кромка сверху
+  for (let x = xa + 0.6 * s; x < xb - 0.1 * s; x += 0.6 * s) p.push(line(x, top - h, x, top, "#151719", 0.8));   // стыки через 0,6 м
+  for (let x = xa + 0.1 * s; x < xb - 0.05 * s; x += 0.12 * s) p.push(line(x, top - 0.045 * s, x, top - 0.005 * s, "#6B7176", 0.6));   // щели для воздуха
+}
+function ridgeAerEnd(p, cx, top, s) {   // с торца: плоская «шапочка» на коньке
+  const w = 0.5 * s, h = 0.13 * s;
+  p.push(`<path d="M${(cx - w / 2).toFixed(1)} ${top.toFixed(1)} L${(cx - w / 2 + 0.05 * s).toFixed(1)} ${(top - h).toFixed(1)} L${(cx + w / 2 - 0.05 * s).toFixed(1)} ${(top - h).toFixed(1)} L${(cx + w / 2).toFixed(1)} ${top.toFixed(1)} Z" fill="#2B2F33"/>`);
+}
 function facadeSVG(c, view = "front") {
   applyCustom(c);
   const u = "f" + (++svgUid);
@@ -1765,6 +1779,7 @@ function facadeSVG(c, view = "front") {
     const ridgeTop = roofAt(3) - fasc;
     planeRect(rx0, rx1, ridgeTop, eTop);
     p.push(rect(rx0, ridgeTop - 0.02 * s, rx1 - rx0, 0.09 * s, seamC));   // конёк
+    if (c.aerator) ridgeAerFront(p, Math.min(X(0.3), X(L - 0.3)), Math.max(X(0.3), X(L - 0.3)), ridgeTop - 0.02 * s, s);   // коньковые аэраторы
   } else if (back) {
     planeRect(rx0, rx1, roofAt(W) - fasc, eTop);
     if (along) { const [sa, sb] = spanPx(); planeRect(sa, sb, roofAt(W + T_DEPTH) - fasc, roofAt(W) - fasc); }   // кровля над террасой
@@ -1983,6 +1998,7 @@ function endsSVG(c) {
     const yl = -over / s, yr = W + ta + over / s;
     const ys = gable ? [yl, 3, yr] : [yl, yr];
     p.push(poly([...ys.map((y) => [X(y), H(y) - fasc]), ...ys.slice().reverse().map((y) => [X(y), H(y)])], ACCENTS.black.c));
+    if (gable && c.aerator) ridgeAerEnd(p, X(3), H(3) - fasc, s);   // коньковый аэратор с торца
     // тень под кровлей — только на стене (над террасой и свесами под кровлей пусто)
     const ysw = gable ? [0, 3, W] : [0, W];
     p.push(poly([...ysw.map((y) => [X(y), H(y)]), ...ysw.slice().reverse().map((y) => [X(y), H(y) + 0.06 * s])], "#000000", 'opacity=".18"'));
@@ -2295,7 +2311,7 @@ function bSummary(c) {
   const size = sizeOf(c), lay = layoutOf(c);
   const houseA = size.L * size.W, terA = terraceArea(c);
   const cl = lay.rooms.map((r) => clearOf(lay, r, size.L, size.W)), clearA = cl.reduce((t, q) => t + q.a, 0);
-  const extras = EXTRAS.filter(([k]) => c[k] && !(k === "exit2" && exit2At(c) === null) && !(k === "porch" && c.terrace !== "none")).map(([, n]) => n);
+  const extras = EXTRAS.filter(([k]) => c[k] && !(k === "exit2" && exit2At(c) === null) && !(k === "porch" && c.terrace !== "none") && !(k === "aerator" && layoutOf(c).seam !== "h")).map(([, n]) => n);
   const terTxt = c.terrace === "along" ? `вдоль дома, ${fmt(terA / T_DEPTH)} м, ${fmt(terA)} м²`
     : c.terrace === "end" ? `${endSide(c) === "left" ? "слева" : "справа"}, на всю ширину дома, вход с террасы, ${fmt(terA)} м²` : "нет";
   const main = lay.rooms.map((r, i) => [r, cl[i]]).filter(([r]) => r.t === "bed" || r.t === "kl").sort((a, b) => (a[0].t === "kl") - (b[0].t === "kl"));
@@ -2436,6 +2452,8 @@ function bUpdate() {
   if (ex) { ex.disabled = c.terrace !== "along"; ex.closest(".toggle").classList.toggle("off", c.terrace !== "along"); }
   const po = app.querySelector('[data-x="porch"]');
   if (po) { po.disabled = c.terrace !== "none"; po.closest(".toggle").classList.toggle("off", c.terrace !== "none"); }
+  const ae = app.querySelector('[data-x="aerator"]');
+  if (ae) { const ng = layoutOf(c).seam !== "h"; ae.disabled = ng; ae.closest(".toggle").classList.toggle("off", ng); }
   const lay = sum.lay;
   const tl = document.getElementById("tlen");
   if (tl) {
@@ -2712,7 +2730,7 @@ const MANAGER = "";   // @username менеджера без «@», куда п�
 const ENC = {
   sizes: () => B_SIZES.map((s) => s.id), terr: ["none", "along", "end"],
   walls: () => Object.keys(WALLS), acc: () => Object.keys(ACCENTS), inner: () => Object.keys(INNER),
-  flags: ["stove", "pano", "exit2", "porch", "ins150", "gutter"], wkeys: () => WIN_OPT.map((o) => o[0]), wallIds: ["S", "N", "W", "E"]
+  flags: ["stove", "pano", "exit2", "porch", "ins150", "gutter", "aerator"], wkeys: () => WIN_OPT.map((o) => o[0]), wallIds: ["S", "N", "W", "E"]
 };
 const b36 = (n) => Math.max(0, Math.round(n)).toString(36);
 const b36w = (n, w) => b36(n).padStart(w, "0").slice(-w);
