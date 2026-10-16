@@ -4,6 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Юлия и Юрий · дома</title>
+<script>
+(function () {
+  try {
+    if (location.hash || /[?&](tgWebApp|catalog)/i.test(location.search)) return;
+    try { if (sessionStorage.getItem("__telegram__initParams")) return; } catch (e) {}
+    if (/Telegram/i.test(navigator.userAgent || "")) return;
+    var mouse = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (mouse && window.innerWidth >= 1000) location.replace("promo.html" + location.search);
+  } catch (e) {}
+})();
+</script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
