@@ -16,8 +16,9 @@ body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Ro
 .app { max-width:520px; margin:0 auto; padding:14px 0 40vh; }
 .brand { font-family:"Oswald",sans-serif; font-weight:600; font-size:21px; margin:6px 16px 2px; }
 .sub { color:var(--muted); font-size:13px; margin:0 16px 10vh; }
-.card { width:76%; margin:0 auto 4vh; }
+.card { width:100%; margin:0 auto 10vh; }
 canvas { display:block; width:100%; aspect-ratio:4/3; }
+.name, .dim { margin-left:16px; margin-right:16px; }
 .name { font-family:"Oswald",sans-serif; font-weight:600; font-size:16px; line-height:1.15; margin:6px 0 0; }
 .dim { color:var(--muted); font-size:12px; margin:0; }
 .ticker { position:fixed; left:0; right:0; bottom:calc(44px + env(safe-area-inset-bottom,0px)); white-space:nowrap; pointer-events:none; font-family:"Oswald",sans-serif; font-weight:500; font-size:28px; letter-spacing:.02em; color:rgba(242,241,236,.55); text-transform:uppercase; }
@@ -28,7 +29,7 @@ canvas { display:block; width:100%; aspect-ratio:4/3; }
 <body>
 <div class="app">
   <h1 class="brand">Проба: дом собирается из кубиков</h1>
-  <p class="sub">Листай. На подходе дом рассыпан на квадратики и тёмный, в центре собирается целиком и светлеет.</p>
+  <p class="sub">Листай. У верхнего и нижнего края экрана дом распадается на квадратики, в середине целый.</p>
   <div id="list"></div>
 </div>
 <div class="ticker"><span id="tick"></span></div>
@@ -62,29 +63,40 @@ const cards = [...document.querySelectorAll('.card')].map((el, i) => {
 const dpr = Math.min(2, devicePixelRatio || 1);
 function size(){ for (const c of cards){ const w = c.cv.clientWidth; c.cv.width = w * dpr; c.cv.height = w * 0.75 * dpr; c.last = null; } }
 
-function draw(c, d){
-  // d: 0 — в центре (целое), 1 — далеко (рассыпано)
-  const {ctx, img, cv} = c, W = cv.width, H = cv.height;
+function draw(c, top){
+  // top — положение верха холста на экране (px). Кубик портится тем сильнее, чем он ближе к верхнему или нижнему краю экрана.
+  const {ctx, img, cv} = c, W = cv.width, H = cv.height, VH = innerHeight;
   ctx.clearRect(0, 0, W, H);
   if (!img.complete || !img.naturalWidth) return;
-  // кадрируем как object-fit: cover
   const ir = img.naturalWidth / img.naturalHeight, cr = W / H;
   let sw, sh; if (ir > cr){ sh = img.naturalHeight; sw = sh * cr; } else { sw = img.naturalWidth; sh = sw / cr; }
   const sx = (img.naturalWidth - sw) / 2, sy = (img.naturalHeight - sh) / 2;
-  const bright = 1 - d * 0.65;
-  ctx.filter = `brightness(${bright.toFixed(2)})`;
-  if (d < 0.02){ ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H); ctx.filter = 'none'; return; }
   const tw = W / COLS, th = H / ROWS, stw = sw / COLS, sth = sh / ROWS;
-  const e = d * d; // разлёт растёт ближе к краю экрана
-  for (let r = 0; r < ROWS; r++) for (let q = 0; q < COLS; q++){
-    const k = seeds[r * COLS + q];
-    if (k < e * 0.9) continue;                       // часть кубиков ещё не прилетела
-    const dx = (k - 0.5) * e * W * 0.6, dy = (seeds[(r * COLS + q + 37) % seeds.length] - 0.5) * e * H * 0.8;
-    const sc = 1 - e * 0.35 * k;
-    const x = q * tw + dx, y = r * th + dy;
-    ctx.drawImage(img, sx + q * stw, sy + r * sth, stw, sth, x, y, tw * sc + 0.5, th * sc + 0.5);
+  const cssH = cv.clientHeight, zone = VH * 0.30;               // полоса у края экрана, где кубики портятся
+  const center = Math.abs(top + cssH / 2 - VH / 2) / (VH / 2);   // 0 — карточка в центре
+  const dimAll = 1 - Math.min(1, center) * 0.3;                 // дальняя карточка темнее целиком
+  for (let r = 0; r < ROWS; r++){
+    const yCss = top + (r + 0.5) * (cssH / ROWS);
+    const dist = Math.min(yCss, VH - yCss);                      // до ближайшего края экрана
+    const f = Math.max(0, Math.min(1, (zone - dist) / zone));    // 0 — далеко от края, 1 — у самого края
+    for (let q = 0; q < COLS; q++){
+      const k = seeds[r * COLS + q], k2 = seeds[(r * COLS + q + 37) % seeds.length];
+      if (f > 0 && k < f * 0.45) continue;                       // часть кубиков у края выпала
+      const dx = (k - 0.5) * f * tw * 0.9, dy = (k2 - 0.5) * f * th * 0.9;
+      const sc = 1 - f * 0.25 * k2;
+      const b = dimAll * (1 - f * 0.6 * k);
+      ctx.filter = f > 0.01 ? `brightness(${b.toFixed(2)})` : (dimAll < 0.99 ? `brightness(${dimAll.toFixed(2)})` : 'none');
+      ctx.drawImage(img, sx + q * stw, sy + r * sth, stw, sth, q * tw + dx, r * th + dy, tw * sc + 0.5, th * sc + 0.5);
+    }
   }
   ctx.filter = 'none';
+  // прожектор: середина светлая, края в тени; чем дальше карточка от центра экрана, тем тень глубже
+  const lit = 1 - Math.min(1, center);                           // 1 — в центре
+  const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.75);
+  const edge = 0.55 + 0.3 * (1 - lit);                           // сколько темноты по краям
+  g.addColorStop(0, `rgba(0,0,0,${(0.05 * (1 - lit)).toFixed(2)})`);
+  g.addColorStop(1, `rgba(0,0,0,${edge.toFixed(2)})`);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
 }
 
 let raf = 0;
@@ -94,10 +106,9 @@ function update(){
   for (const c of cards){
     const r = c.cv.getBoundingClientRect();
     if (r.bottom < -H || r.top > 2 * H) continue;
-    const t = Math.abs(r.top + r.height / 2 - mid) / (H * 0.42);  // 0 — в центре, 1 — у края
-    const d = Math.max(0, Math.min(1, (t - 0.18) / 0.82));          // в зоне ±18% дом целый
-    const key = d.toFixed(2);
-    if (key !== c.last){ c.last = key; draw(c, d); }
+    if (r.bottom < 0 || r.top > H) continue;
+    const key = Math.round(r.top);
+    if (key !== c.last){ c.last = key; draw(c, r.top); }
   }
   document.getElementById('tick').style.setProperty('--tx', (-scrollY * 0.35).toFixed(0) + 'px');
 }
