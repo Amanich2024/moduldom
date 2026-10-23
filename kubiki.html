@@ -50,7 +50,7 @@ document.getElementById('list').innerHTML = HOUSES.map(h => `
   </div>`).join('');
 document.getElementById('tick').textContent = HOUSES.map(h => h.name).join('   /   ') + '   /   ';
 
-const COLS = 10, ROWS = 6;
+const COLS = 12, ROWS = 7;  // 12 в ряд → кубик ~32 px на телефоне; при 16:9 почти квадратные
 // случайные, но постоянные множители для каждого кубика: кто разлетается дальше, кто ближе
 const seeds = []; let s = 7;
 for (let i = 0; i < COLS * ROWS; i++){ s = (s * 9301 + 49297) % 233280; seeds.push(s / 233280); }
@@ -73,7 +73,7 @@ function draw(c, top){
   let sw, sh; if (ir > cr){ sh = img.naturalHeight; sw = sh * cr; } else { sw = img.naturalWidth; sh = sw / cr; }
   const sx = (img.naturalWidth - sw) / 2, sy = (img.naturalHeight - sh) / 2;
   const tw = W / COLS, th = H / ROWS, stw = sw / COLS, sth = sh / ROWS;
-  const cssH = cv.clientHeight, zone = VH * 0.30;               // полоса у края экрана, где кубики портятся
+  const cssH = cv.clientHeight, zone = VH * 0.13;               // полоса у края экрана, где кубики портятся: ~13% высоты сверху и снизу
   const center = Math.abs(top + cssH / 2 - VH / 2) / (VH / 2);   // 0 — карточка в центре
   const dimAll = 1 - Math.min(1, center) * 0.3;                 // дальняя карточка темнее целиком
   for (let r = 0; r < ROWS; r++){
@@ -82,12 +82,15 @@ function draw(c, top){
     const f = Math.max(0, Math.min(1, (zone - dist) / zone));    // 0 — далеко от края, 1 — у самого края
     for (let q = 0; q < COLS; q++){
       const k = seeds[r * COLS + q], k2 = seeds[(r * COLS + q + 37) % seeds.length];
+      const big = f > 0 && k2 > 0.8 && q < COLS - 1;               // каждый пятый кубик у края — двойной ширины
+      if (f > 0 && q > 0 && seeds[(r * COLS + q - 1 + 37) % seeds.length] > 0.8) continue; // он уже накрыт двойным слева
       if (f > 0 && k < f * 0.45) continue;                       // часть кубиков у края выпала
+      const n = big ? 2 : 1;
       const dx = (k - 0.5) * f * tw * 0.9, dy = (k2 - 0.5) * f * th * 0.9;
       const sc = 1 - f * 0.25 * k2;
       const b = dimAll * (1 - f * 0.6 * k);
       ctx.filter = f > 0.01 ? `brightness(${b.toFixed(2)})` : (dimAll < 0.99 ? `brightness(${dimAll.toFixed(2)})` : 'none');
-      ctx.drawImage(img, sx + q * stw, sy + r * sth, stw, sth, q * tw + dx, r * th + dy, tw * sc + 0.5, th * sc + 0.5);
+      ctx.drawImage(img, sx + q * stw, sy + r * sth, stw * n, sth, q * tw + dx, r * th + dy, tw * n * sc + 0.5, th * sc + 0.5);
     }
   }
   ctx.filter = 'none';
