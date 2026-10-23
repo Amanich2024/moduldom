@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Проба: волна</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
+<style>
+:root { --bg:#141618; --ink:#F2F1EC; --muted:#9AA0A6; --radius:14px; }
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+.app { max-width:520px; margin:0 auto; padding:14px 16px 55vh; perspective:900px; }
+.brand { font-family:"Oswald",sans-serif; font-weight:600; font-size:21px; margin:6px 0 2px; }
+.sub { color:var(--muted); font-size:13px; margin:0 0 20vh; }
+.card { width:82%; margin:0 auto 46px; transform:translateX(var(--x,0)) rotateY(var(--ry,0deg)); transform-origin:50% 50%; will-change:transform; }
+.photo { aspect-ratio:4/3; border-radius:var(--radius); overflow:hidden; background:#222; box-shadow:0 18px 40px rgba(0,0,0,.45); }
+.photo img { width:100%; height:100%; object-fit:cover; display:block; }
+.name { font-family:"Oswald",sans-serif; font-weight:600; font-size:19px; line-height:1.15; margin:10px 0 2px; }
+.dim { color:var(--muted); font-size:13px; margin:0; }
+.ticker { position:fixed; left:0; right:0; bottom:calc(44px + env(safe-area-inset-bottom,0px)); white-space:nowrap; pointer-events:none; font-family:"Oswald",sans-serif; font-weight:500; font-size:28px; letter-spacing:.02em; color:rgba(242,241,236,.55); text-transform:uppercase; }
+.ticker span { display:inline-block; transform:translateX(var(--tx,0)); will-change:transform; }
+.hint { position:fixed; left:0; right:0; bottom:0; padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); text-align:center; font-size:13px; color:#fff; background:rgba(20,24,30,.85); backdrop-filter:blur(6px); }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1 class="brand">Проба: волна</h1>
+  <p class="sub">Листай. Столбик домов гуляет влево-вправо, карточка на подходе чуть поворачивается к тебе. Внизу бегут названия.</p>
+  <div id="list"></div>
+</div>
+<div class="ticker"><span id="tick"></span></div>
+<div class="hint">Страница для просмотра эффекта. Ни из приложения, ни с сайта сюда ссылок нет.</div>
+<script>
+const HOUSES = [
+  {a:"hero-1", name:"Чёрный снаружи, белый внутри", dim:"6×8,5 м: дом 6×6 м и терраса 2,5×6 м"},
+  {a:"c2",     name:"Баня с жилой комнатой", dim:"31,5 м² + терраса 12 м²"},
+  {a:"c3",     name:"Дачный дом 3×9 с хозблоком", dim:"3×9 м + хозблок"},
+  {a:"c8",     name:"Дом-студия 27 м²", dim:"27 м²"},
+  {a:"c10",    name:"Дом 48 м², рыжий с графитом", dim:"48 м², 6×8 м"},
+];
+document.getElementById('list').innerHTML = HOUSES.map(h => `
+  <div class="card">
+    <div class="photo"><img src="img/${h.a}.webp" alt=""></div>
+    <h2 class="name">${h.name}</h2><p class="dim">${h.dim}</p>
+  </div>`).join('');
+document.getElementById('tick').textContent = HOUSES.map(h => h.name).join('   /   ') + '   /   ';
+
+const cards = [...document.querySelectorAll('.card')];
+let raf = 0;
+function update(){
+  raf = 0;
+  const H = innerHeight, mid = H * 0.5, amp = Math.min(60, innerWidth * 0.12);
+  for (const c of cards){
+    const r = c.getBoundingClientRect();
+    const t = (r.top + r.height / 2 - mid) / H;          // −0.5..0.5, 0 — в центре
+    // волна: положение по горизонтали — синус от положения на экране; в центре — середина
+    const x = Math.sin(t * Math.PI) * amp;
+    // поворот: карточка, идущая снизу, повёрнута чуть вправо; в центре смотрит прямо
+    const ry = Math.max(-1, Math.min(1, t * 2)) * -10;
+    c.style.setProperty('--x', x.toFixed(1) + 'px');
+    c.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+  }
+  document.getElementById('tick').style.setProperty('--tx', (-scrollY * 0.35).toFixed(0) + 'px');
+}
+const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+addEventListener('scroll', queue, {passive:true});
+addEventListener('resize', queue);
+update();
+</script>
+</body>
+</html>
