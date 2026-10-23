@@ -13,13 +13,13 @@
 * { box-sizing:border-box; }
 html,body { margin:0; }
 body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
-.app { max-width:520px; margin:0 auto; padding:14px 0 55vh; }
+.app { max-width:520px; margin:0 auto; padding:14px 0 40vh; }
 .brand { font-family:"Oswald",sans-serif; font-weight:600; font-size:21px; margin:6px 16px 2px; }
-.sub { color:var(--muted); font-size:13px; margin:0 16px 22vh; }
-.card { margin:0 0 14vh; }
+.sub { color:var(--muted); font-size:13px; margin:0 16px 10vh; }
+.card { width:76%; margin:0 auto 4vh; }
 canvas { display:block; width:100%; aspect-ratio:4/3; }
-.name { font-family:"Oswald",sans-serif; font-weight:600; font-size:19px; line-height:1.15; margin:10px 16px 2px; }
-.dim { color:var(--muted); font-size:13px; margin:0 16px; }
+.name { font-family:"Oswald",sans-serif; font-weight:600; font-size:16px; line-height:1.15; margin:6px 0 0; }
+.dim { color:var(--muted); font-size:12px; margin:0; }
 .ticker { position:fixed; left:0; right:0; bottom:calc(44px + env(safe-area-inset-bottom,0px)); white-space:nowrap; pointer-events:none; font-family:"Oswald",sans-serif; font-weight:500; font-size:28px; letter-spacing:.02em; color:rgba(242,241,236,.55); text-transform:uppercase; }
 .ticker span { display:inline-block; transform:translateX(var(--tx,0)); will-change:transform; }
 .hint { position:fixed; left:0; right:0; bottom:0; padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); text-align:center; font-size:13px; color:#fff; background:rgba(20,24,30,.85); backdrop-filter:blur(6px); }
@@ -94,8 +94,8 @@ function update(){
   for (const c of cards){
     const r = c.cv.getBoundingClientRect();
     if (r.bottom < -H || r.top > 2 * H) continue;
-    const t = Math.abs(r.top + r.height / 2 - mid) / (H * 0.55);  // 0 — в центре, 1 — у края
-    const d = Math.max(0, Math.min(1, (t - 0.12) / 0.88));          // в зоне ±12% дом целый
+    const t = Math.abs(r.top + r.height / 2 - mid) / (H * 0.42);  // 0 — в центре, 1 — у края
+    const d = Math.max(0, Math.min(1, (t - 0.18) / 0.82));          // в зоне ±18% дом целый
     const key = d.toFixed(2);
     if (key !== c.last){ c.last = key; draw(c, d); }
   }
