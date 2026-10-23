@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
 <style>
-:root { --bg:#111214; --ink:#F2F1EC; --muted:#9AA0A6; }
+:root { --bg:#EDEFEC; --ink:#1D2125; --muted:#5E666C; }
 * { box-sizing:border-box; }
 html,body { margin:0; }
 body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
@@ -22,7 +22,7 @@ canvas { display:block; width:100%; aspect-ratio:16/9; }
 .name { font-family:"Oswald",sans-serif; font-weight:600; font-size:15px; line-height:1.15; margin:5px 0 0; display:inline; }
 .dim { color:var(--muted); font-size:12px; margin:0; display:inline; }
 .dim::before { content:" · "; }
-.ticker { position:fixed; left:0; right:0; bottom:calc(44px + env(safe-area-inset-bottom,0px)); white-space:nowrap; pointer-events:none; font-family:"Oswald",sans-serif; font-weight:500; font-size:28px; letter-spacing:.02em; color:rgba(242,241,236,.55); text-transform:uppercase; }
+.ticker { position:fixed; left:0; right:0; bottom:calc(44px + env(safe-area-inset-bottom,0px)); white-space:nowrap; pointer-events:none; font-family:"Oswald",sans-serif; font-weight:500; font-size:28px; letter-spacing:.02em; color:rgba(29,33,37,.35); text-transform:uppercase; }
 .ticker span { display:inline-block; transform:translateX(var(--tx,0)); will-change:transform; }
 .hint { position:fixed; left:0; right:0; bottom:0; padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); text-align:center; font-size:13px; color:#fff; background:rgba(20,24,30,.85); backdrop-filter:blur(6px); }
 </style>
@@ -75,7 +75,7 @@ function draw(c, top){
   const tw = W / COLS, th = H / ROWS, stw = sw / COLS, sth = sh / ROWS;
   const cssH = cv.clientHeight, zone = VH * 0.13;               // полоса у края экрана, где кубики портятся: ~13% высоты сверху и снизу
   const center = Math.abs(top + cssH / 2 - VH / 2) / (VH / 2);   // 0 — карточка в центре
-  const dimAll = 1 - Math.min(1, center) * 0.3;                 // дальняя карточка темнее целиком
+  const dimAll = 1;                 // дальняя карточка темнее целиком
   for (let r = 0; r < ROWS; r++){
     const yCss = top + (r + 0.5) * (cssH / ROWS);
     const dist = Math.min(yCss, VH - yCss);                      // до ближайшего края экрана
@@ -88,18 +88,19 @@ function draw(c, top){
       const n = big ? 2 : 1;
       const dx = (k - 0.5) * f * tw * 0.9, dy = (k2 - 0.5) * f * th * 0.9;
       const sc = 1 - f * 0.25 * k2;
-      const b = dimAll * (1 - f * 0.6 * k);
-      ctx.filter = f > 0.01 ? `brightness(${b.toFixed(2)})` : (dimAll < 0.99 ? `brightness(${dimAll.toFixed(2)})` : 'none');
-      ctx.drawImage(img, sx + q * stw, sy + r * sth, stw * n, sth, q * tw + dx, r * th + dy, tw * n * sc + 0.5, th * sc + 0.5);
+      const x = q * tw + dx, y = r * th + dy, w = tw * n * sc + 0.5, h = th * sc + 0.5;
+      ctx.drawImage(img, sx + q * stw, sy + r * sth, stw * n, sth, x, y, w, h);
+      const fade = f * 0.7 * k;                                  // кубик у края тает в светлый фон
+      if (fade > 0.01){ ctx.fillStyle = `rgba(237,239,236,${fade.toFixed(2)})`; ctx.fillRect(x, y, w, h); }
     }
   }
   ctx.filter = 'none';
   // прожектор: середина светлая, края в тени; чем дальше карточка от центра экрана, тем тень глубже
   const lit = 1 - Math.min(1, center);                           // 1 — в центре
   const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.75);
-  const edge = 0.55 + 0.3 * (1 - lit);                           // сколько темноты по краям
-  g.addColorStop(0, `rgba(0,0,0,${(0.05 * (1 - lit)).toFixed(2)})`);
-  g.addColorStop(1, `rgba(0,0,0,${edge.toFixed(2)})`);
+  const edge = 0.35 + 0.35 * (1 - lit);                          // сколько светлой дымки по краям
+  g.addColorStop(0, `rgba(237,239,236,${(0.25 * (1 - lit)).toFixed(2)})`);
+  g.addColorStop(1, `rgba(237,239,236,${edge.toFixed(2)})`);
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
 }
 
