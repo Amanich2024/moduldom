@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Проба: дом собирается из кубиков</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
+<style>
+:root { --bg:#111214; --ink:#F2F1EC; --muted:#9AA0A6; }
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+.app { max-width:520px; margin:0 auto; padding:14px 0 55vh; }
+.brand { font-family:"Oswald",sans-serif; font-weight:600; font-size:21px; margin:6px 16px 2px; }
+.sub { color:var(--muted); font-size:13px; margin:0 16px 22vh; }
+.card { margin:0 0 14vh; }
+canvas { display:block; width:100%; aspect-ratio:4/3; }
+.name { font-family:"Oswald",sans-serif; font-weight:600; font-size:19px; line-height:1.15; margin:10px 16px 2px; }
+.dim { color:var(--muted); font-size:13px; margin:0 16px; }
+.ticker { position:fixed; left:0; right:0; bottom:calc(44px + env(safe-area-inset-bottom,0px)); white-space:nowrap; pointer-events:none; font-family:"Oswald",sans-serif; font-weight:500; font-size:28px; letter-spacing:.02em; color:rgba(242,241,236,.55); text-transform:uppercase; }
+.ticker span { display:inline-block; transform:translateX(var(--tx,0)); will-change:transform; }
+.hint { position:fixed; left:0; right:0; bottom:0; padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); text-align:center; font-size:13px; color:#fff; background:rgba(20,24,30,.85); backdrop-filter:blur(6px); }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1 class="brand">Проба: дом собирается из кубиков</h1>
+  <p class="sub">Листай. На подходе дом рассыпан на квадратики и тёмный, в центре собирается целиком и светлеет.</p>
+  <div id="list"></div>
+</div>
+<div class="ticker"><span id="tick"></span></div>
+<div class="hint">Страница для просмотра эффекта. Ни из приложения, ни с сайта сюда ссылок нет.</div>
+<script>
+const HOUSES = [
+  {a:"hero-1", name:"Чёрный снаружи, белый внутри", dim:"6×8,5 м: дом 6×6 м и терраса 2,5×6 м"},
+  {a:"c2",     name:"Баня с жилой комнатой", dim:"31,5 м² + терраса 12 м²"},
+  {a:"c3",     name:"Дачный дом 3×9 с хозблоком", dim:"3×9 м + хозблок"},
+  {a:"c8",     name:"Дом-студия 27 м²", dim:"27 м²"},
+  {a:"c10",    name:"Дом 48 м², рыжий с графитом", dim:"48 м², 6×8 м"},
+];
+document.getElementById('list').innerHTML = HOUSES.map(h => `
+  <div class="card">
+    <canvas></canvas>
+    <h2 class="name">${h.name}</h2><p class="dim">${h.dim}</p>
+  </div>`).join('');
+document.getElementById('tick').textContent = HOUSES.map(h => h.name).join('   /   ') + '   /   ';
+
+const COLS = 10, ROWS = 8;
+// случайные, но постоянные множители для каждого кубика: кто разлетается дальше, кто ближе
+const seeds = []; let s = 7;
+for (let i = 0; i < COLS * ROWS; i++){ s = (s * 9301 + 49297) % 233280; seeds.push(s / 233280); }
+
+const cards = [...document.querySelectorAll('.card')].map((el, i) => {
+  const cv = el.querySelector('canvas'), img = new Image();
+  img.src = 'img/' + HOUSES[i].a + '.webp';
+  img.onload = queue;
+  return {el, cv, ctx: cv.getContext('2d'), img, last: null};
+});
+const dpr = Math.min(2, devicePixelRatio || 1);
+function size(){ for (const c of cards){ const w = c.cv.clientWidth; c.cv.width = w * dpr; c.cv.height = w * 0.75 * dpr; c.last = null; } }
+
+function draw(c, d){
+  // d: 0 — в центре (целое), 1 — далеко (рассыпано)
+  const {ctx, img, cv} = c, W = cv.width, H = cv.height;
+  ctx.clearRect(0, 0, W, H);
+  if (!img.complete || !img.naturalWidth) return;
+  // кадрируем как object-fit: cover
+  const ir = img.naturalWidth / img.naturalHeight, cr = W / H;
+  let sw, sh; if (ir > cr){ sh = img.naturalHeight; sw = sh * cr; } else { sw = img.naturalWidth; sh = sw / cr; }
+  const sx = (img.naturalWidth - sw) / 2, sy = (img.naturalHeight - sh) / 2;
+  const bright = 1 - d * 0.65;
+  ctx.filter = `brightness(${bright.toFixed(2)})`;
+  if (d < 0.02){ ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H); ctx.filter = 'none'; return; }
+  const tw = W / COLS, th = H / ROWS, stw = sw / COLS, sth = sh / ROWS;
+  const e = d * d; // разлёт растёт ближе к краю экрана
+  for (let r = 0; r < ROWS; r++) for (let q = 0; q < COLS; q++){
+    const k = seeds[r * COLS + q];
+    if (k < e * 0.9) continue;                       // часть кубиков ещё не прилетела
+    const dx = (k - 0.5) * e * W * 0.6, dy = (seeds[(r * COLS + q + 37) % seeds.length] - 0.5) * e * H * 0.8;
+    const sc = 1 - e * 0.35 * k;
+    const x = q * tw + dx, y = r * th + dy;
+    ctx.drawImage(img, sx + q * stw, sy + r * sth, stw, sth, x, y, tw * sc + 0.5, th * sc + 0.5);
+  }
+  ctx.filter = 'none';
+}
+
+let raf = 0;
+function update(){
+  raf = 0;
+  const H = innerHeight, mid = H * 0.5;
+  for (const c of cards){
+    const r = c.cv.getBoundingClientRect();
+    if (r.bottom < -H || r.top > 2 * H) continue;
+    const t = Math.abs(r.top + r.height / 2 - mid) / (H * 0.55);  // 0 — в центре, 1 — у края
+    const d = Math.max(0, Math.min(1, (t - 0.12) / 0.88));          // в зоне ±12% дом целый
+    const key = d.toFixed(2);
+    if (key !== c.last){ c.last = key; draw(c, d); }
+  }
+  document.getElementById('tick').style.setProperty('--tx', (-scrollY * 0.35).toFixed(0) + 'px');
+}
+function queue(){ if (!raf) raf = requestAnimationFrame(update); }
+addEventListener('scroll', queue, {passive:true});
+addEventListener('resize', () => { size(); queue(); });
+size(); update();
+</script>
+</body>
+</html>
