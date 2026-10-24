@@ -95,13 +95,17 @@ function draw(c, top){
     }
   }
   ctx.filter = 'none';
-  // прожектор: середина светлая, края в тени; чем дальше карточка от центра экрана, тем тень глубже
-  const lit = 1 - Math.min(1, center);                           // 1 — в центре
-  const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.75);
-  const edge = 0.35 + 0.35 * (1 - lit);                          // сколько светлой дымки по краям
-  g.addColorStop(0, `rgba(237,239,236,${(0.25 * (1 - lit)).toFixed(2)})`);
-  g.addColorStop(1, `rgba(237,239,236,${edge.toFixed(2)})`);
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // затемнение: соседние дома чуть темнее, центральный обычный
+  const lit = 1 - Math.min(1, center);
+  const dark = 0.22 * (1 - lit);
+  if (dark > 0.01){ ctx.fillStyle = `rgba(0,0,0,${dark.toFixed(2)})`; ctx.fillRect(0, 0, W, H); }
+  // подсветка центрального: середина чуть ярче
+  if (lit > 0.01){
+    const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.6);
+    g.addColorStop(0, `rgba(255,255,255,${(0.12 * lit).toFixed(2)})`);
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
 }
 
 let raf = 0;
