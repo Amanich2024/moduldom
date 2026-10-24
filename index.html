@@ -224,20 +224,15 @@ button { font: inherit; color: inherit; }
 .count { color: var(--muted); }
 .tg-link { margin: 6px 0 0; text-align: center; }
 
-/* Конструктор «Собрать свой дом» */
-.build-cta { display: grid; grid-template-columns: 128px minmax(0, 1fr) 16px; gap: 12px; align-items: center; width: 100%; text-align: left; border: 0; background: var(--surface); border-radius: var(--radius); padding: 10px 12px 10px 10px; margin-bottom: 22px; cursor: pointer; }
-.cta-pic { display: block; border-radius: 9px; overflow: hidden; aspect-ratio: 360 / 210; }
+/* Конструктор «Собрать свой дом»: карточка прилипает к верху и за первые 150 px прокрутки сжимается в полоску (--p: 0 большая, 1 полоска) */
+.cta-mark { display: block; height: 0; }
+.cta-wrap { position: sticky; top: 0; z-index: 30; margin: 0 -16px 22px; padding: calc(var(--p, 0) * (4px + env(safe-area-inset-top, 0px))) 16px 0; pointer-events: none; }
+.build-cta { --p: 0; pointer-events: auto; display: grid; grid-template-columns: calc(128px - var(--p) * 74px) minmax(0, 1fr) 16px; gap: calc(12px - var(--p) * 2px); align-items: center; width: 100%; text-align: left; border: 0; background: var(--surface); border-radius: calc(var(--radius) - var(--p) * 4px); padding: calc(10px - var(--p) * 4px) 12px calc(10px - var(--p) * 4px) calc(10px - var(--p) * 2px); cursor: pointer; box-shadow: 0 8px 20px -12px rgba(17, 20, 22, calc(var(--p) * 0.55)); color: var(--ink); }
+.cta-pic { display: block; border-radius: calc(9px - var(--p) * 3px); overflow: hidden; aspect-ratio: 360 / 210; }
 .cta-pic svg { display: block; width: 100%; height: 100%; }
-.cta-text b { display: block; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.15; }
-.cta-text span { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
+.cta-text b { display: block; font-family: var(--f-display); font-weight: 600; font-size: calc(19px - var(--p) * 3px); line-height: 1.15; }
+.cta-text span { display: block; font-size: 13px; color: var(--muted); margin-top: calc(3px - var(--p) * 3px); line-height: 1.35; max-height: calc((1 - var(--p)) * 4.2em); opacity: calc(1 - var(--p) * 1.6); overflow: hidden; }
 .cta-arrow { color: var(--wood); font-weight: 600; font-size: 18px; }
-/* Узкая полоска «Собрать свой дом»: появляется сверху, когда большая карточка ушла вверх, и держится, пока листают дома */
-.build-bar { position: fixed; z-index: 30; top: 0; left: 50%; width: min(100%, 520px); box-sizing: border-box; display: grid; grid-template-columns: 54px minmax(0, 1fr) 16px; gap: 10px; align-items: center; padding: calc(6px + env(safe-area-inset-top, 0px)) 16px 6px; border: 0; border-radius: 0 0 14px 14px; background: var(--surface); box-shadow: 0 8px 20px -12px rgba(17, 20, 22, 0.5); color: var(--ink); text-align: left; cursor: pointer; transform: translate(-50%, -115%); visibility: hidden; transition: transform 220ms ease, visibility 0s linear 220ms; }
-.build-bar.is-on { transform: translate(-50%, 0); visibility: visible; transition: transform 220ms ease; }
-.bar-pic { display: block; border-radius: 6px; overflow: hidden; aspect-ratio: 360 / 210; }
-.bar-pic svg { display: block; width: 100%; height: 100%; }
-.build-bar b { font-family: var(--f-display); font-weight: 600; font-size: 16px; line-height: 1.2; }
-@media (prefers-reduced-motion: reduce) { .build-bar, .build-bar.is-on { transition: none; } }
 .b-head h1 { font-family: var(--f-display); font-weight: 600; font-size: 28px; line-height: 1.1; margin: 2px 0 4px; }
 .b-head p { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
 .b-preview { position: sticky; top: 0; z-index: 3; background: var(--bg); margin: 0 -16px; padding: 8px 16px 10px; }
@@ -1406,7 +1401,7 @@ function cloudLoad() {
           if (!v2 || !B_LAYOUTS[v2.size]) return;
           bcfg = bNorm(v2); bSave(true);
           try { localStorage.setItem(B_KEY + "-t", String(t)); } catch (e) {}
-          if (location.hash.startsWith("#/build")) renderBuild();
+          if (location.hash.startsWith("#/build")) renderBuild(); else ctaRefresh();
         } catch (e) {}
       });
     });
@@ -2842,12 +2837,14 @@ function focusCards() {
     c.querySelector(".card-photo").style.setProperty("--z", (1 + e * 0.06).toFixed(3));
   });
 }
-/* Полоска «Собрать свой дом» сверху: видна, когда большая карточка ушла за верх экрана */
+/* Карточка «Собрать свой дом»: прилипла к верху и сжимается в полоску за первые 150 px прокрутки после этого */
 function barCheck() {
-  const bar = document.getElementById("build-bar"), cta = document.getElementById("build-cta");
-  if (!bar || !cta) return;
-  const on = cta.getBoundingClientRect().bottom < 8;
-  if (on !== bar.classList.contains("is-on")) { bar.classList.toggle("is-on", on); bar.setAttribute("aria-hidden", on ? "false" : "true"); bar.tabIndex = on ? 0 : -1; }
+  const wrap = document.getElementById("cta-wrap"), cta = document.getElementById("build-cta"), mark = document.getElementById("cta-mark");
+  if (!wrap || !cta || !mark) return;
+  const start = mark.getBoundingClientRect().top + window.scrollY;   // метка перед карточкой: где карточка упирается в верх
+  const p = Math.max(0, Math.min(1, (window.scrollY - start) / 150));
+  cta.style.setProperty("--p", p.toFixed(3));
+  wrap.style.setProperty("--p", p.toFixed(3));
 }
 addEventListener("scroll", barCheck, { passive: true });
 const queueFocus = () => { if (!focusRaf) focusRaf = requestAnimationFrame(focusCards); };
@@ -2892,6 +2889,14 @@ if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
 const HOUSE_SVG = '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 15 16 6l12 9" fill="none" stroke="#D88B4C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="15" width="16" height="11" rx="1" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M14 26v-5h4v5" fill="none" stroke="#fff" stroke-width="2.4"/></svg>';
 
+function bCustom(){ try { return JSON.stringify(bNorm(bcfg)) !== JSON.stringify(bNorm(B_DEFAULT)); } catch (e) { return false; } }
+function bSummary(){ const sz = sizeOf(bcfg), w = WALLS[bcfg.wall] || WALLS.wood; return `${sz.name} · ${w.n.toLowerCase()}${bcfg.terrace && bcfg.terrace !== "none" ? " · с террасой" : ""}`; }
+/* Кнопка конструктора: перерисовать картинку и подпись, когда план дома обновился (например, пришёл из облака Telegram) */
+function ctaRefresh() {
+  const cta = document.getElementById("build-cta"); if (!cta) return;
+  cta.querySelector(".cta-pic").innerHTML = facadeSVG(bcfg);
+  cta.querySelector(".cta-text").innerHTML = bCustom() ? `<b>Ваш проект</b><span>${bSummary()}. Можно продолжить</span>` : `<b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span>`;
+}
 function renderCatalog() {
   current = null;
   setBuy(false);
@@ -2909,16 +2914,11 @@ function renderCatalog() {
       <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div>
     </div>
     <p class="promise"><b>Каждый дом делаем под того, кто будет в нём жить:</b> планировку, размеры и цвета выбираете вы. Всё продумываем вместе ещё до начала производства, чтобы в готовом доме было удобно с первого дня.</p>
-    <button class="build-cta" type="button" id="build-cta">
-      <span class="cta-pic">${facadeSVG(B_DEFAULT)}</span>
-      <span class="cta-text"><b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span></span>
+    <i class="cta-mark" id="cta-mark" aria-hidden="true"></i><div class="cta-wrap" id="cta-wrap"><button class="build-cta" type="button" id="build-cta">
+      <span class="cta-pic">${facadeSVG(bcfg)}</span>
+      <span class="cta-text">${bCustom() ? `<b>Ваш проект</b><span>${bSummary()}. Можно продолжить</span>` : `<b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span>`}</span>
       <span class="cta-arrow" aria-hidden="true">→</span>
-    </button>
-    <button class="build-bar" type="button" id="build-bar" aria-hidden="true" tabindex="-1">
-      <span class="bar-pic">${facadeSVG(B_DEFAULT)}</span>
-      <b>Собрать свой дом</b>
-      <span class="cta-arrow" aria-hidden="true">→</span>
-    </button>
+    </button></div>
     <p class="section-title">Дома <span class="count">· ${HOUSES.length}</span></p>
     <div class="list">
       ${HOUSES.map((h, i) => `
@@ -2945,7 +2945,6 @@ function renderCatalog() {
   app.querySelectorAll(".card").forEach((b) => b.addEventListener("click", () => { catalogY = window.scrollY; go("#/house/" + b.dataset.id); }));
   app.querySelectorAll(".voice[data-id]").forEach((v) => { const open = () => { catalogY = window.scrollY; go("#/house/" + v.dataset.id); }; v.addEventListener("click", open); v.addEventListener("keydown", (e) => { if (e.key === "Enter") open(); }); });
   document.getElementById("build-cta").addEventListener("click", () => { catalogY = window.scrollY; go("#/build"); });
-  document.getElementById("build-bar").addEventListener("click", () => { catalogY = window.scrollY; go("#/build"); });
   restoreCatalogScroll();
   requestAnimationFrame(focusCards); requestAnimationFrame(barCheck);
 }
