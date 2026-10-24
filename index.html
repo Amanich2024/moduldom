@@ -1703,7 +1703,7 @@ function facadeSVG(c, view = "front") {
   };
   const door = (cx, glass) => {
     const dw = 0.9, x = X(cx) - dw * s / 2, y = floorY - 2.05 * s;
-    let out = rect(x, y, dw * s, 2.05 * s, glass ? frame : acc.c === "#F1F1EE" ? "#3A3F44" : acc.c);
+    let out = rect(x, y, dw * s, 2.05 * s, glass ? frame : ACCENTS.black.c);   // входная дверь всегда чёрная: других не ставят
     if (glass) out += rect(x + 0.08 * s, y + 0.08 * s, dw * s - 0.16 * s, 2.05 * s - 0.08 * s, `url(#${u}g)`);
     else out += `<circle cx="${(x + dw * s - 0.16 * s).toFixed(1)}" cy="${(y + 1.05 * s).toFixed(1)}" r="${(0.05 * s).toFixed(1)}" fill="#C9CDD0"/>`;
     return out;
@@ -1756,8 +1756,7 @@ function facadeSVG(c, view = "front") {
   }
   if (entranceX === null) { /* вход в торце, с террасы — с фасада не виден */ }
   else if (!entInSpan && c.porch) {
-    stepsAt(X(entranceX), false);
-    p.push(rect(X(entranceX - 0.85), floorY - 2.42 * s, 1.7 * s, 0.1 * s, acc.c));
+    stepsAt(X(entranceX), false);   // козырька над входом нет: без террасы его не ставят
   } else if (!entInSpan) stepBlock(entranceX, 1.0);
   // у двери хозблока тоже ступенька, если она не выходит на террасу
   for (const m of shedAt) if (!(along && m > a0 + 0.45 && m < a1 - 0.45)) stepBlock(m, 0.9);
