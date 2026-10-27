@@ -224,15 +224,20 @@ button { font: inherit; color: inherit; }
 .count { color: var(--muted); }
 .tg-link { margin: 6px 0 0; text-align: center; }
 
-/* Конструктор «Собрать свой дом»: карточка прилипает к верху и за первые 150 px прокрутки сжимается в полоску (--p: 0 большая, 1 полоска) */
-.cta-mark { display: block; height: 0; }
-.cta-wrap { position: sticky; top: 0; z-index: 30; margin: 0 -16px 22px; padding: calc(var(--p, 0) * (4px + env(safe-area-inset-top, 0px))) 16px 0; pointer-events: none; }
-.build-cta { --p: 0; pointer-events: auto; display: grid; grid-template-columns: calc(128px - var(--p) * 74px) minmax(0, 1fr) 16px; gap: calc(12px - var(--p) * 2px); align-items: center; width: 100%; text-align: left; border: 0; background: var(--surface); border-radius: calc(var(--radius) - var(--p) * 4px); padding: calc(10px - var(--p) * 4px) 12px calc(10px - var(--p) * 4px) calc(10px - var(--p) * 2px); cursor: pointer; box-shadow: 0 8px 20px -12px rgba(17, 20, 22, calc(var(--p) * 0.55)); color: var(--ink); }
-.cta-pic { display: block; border-radius: calc(9px - var(--p) * 3px); overflow: hidden; aspect-ratio: 360 / 210; }
+/* Конструктор «Собрать свой дом» */
+.build-cta { display: grid; grid-template-columns: 128px minmax(0, 1fr) 16px; gap: 12px; align-items: center; width: 100%; text-align: left; border: 0; background: var(--surface); border-radius: var(--radius); padding: 10px 12px 10px 10px; margin-bottom: 22px; cursor: pointer; }
+.cta-pic { display: block; border-radius: 9px; overflow: hidden; aspect-ratio: 360 / 210; }
 .cta-pic svg { display: block; width: 100%; height: 100%; }
-.cta-text b { display: block; font-family: var(--f-display); font-weight: 600; font-size: calc(19px - var(--p) * 3px); line-height: 1.15; }
-.cta-text span { display: block; font-size: 13px; color: var(--muted); margin-top: calc(3px - var(--p) * 3px); line-height: 1.35; max-height: calc((1 - var(--p)) * 4.2em); opacity: calc(1 - var(--p) * 1.6); overflow: hidden; }
+.cta-text b { display: block; font-family: var(--f-display); font-weight: 600; font-size: 19px; line-height: 1.15; }
+.cta-text span { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.35; }
 .cta-arrow { color: var(--wood); font-weight: 600; font-size: 18px; }
+/* Узкая полоска «Собрать свой дом»: появляется сверху, когда большая карточка ушла вверх, и держится, пока листают дома */
+.build-bar { position: fixed; z-index: 30; top: 0; left: 50%; width: min(100%, 520px); box-sizing: border-box; display: grid; grid-template-columns: 54px minmax(0, 1fr) 16px; gap: 10px; align-items: center; padding: calc(6px + env(safe-area-inset-top, 0px)) 16px 6px; border: 0; border-radius: 0 0 14px 14px; background: var(--surface); box-shadow: 0 8px 20px -12px rgba(17, 20, 22, 0.5); color: var(--ink); text-align: left; cursor: pointer; transform: translate(-50%, -115%); visibility: hidden; transition: transform 220ms ease, visibility 0s linear 220ms; }
+.build-bar.is-on { transform: translate(-50%, 0); visibility: visible; transition: transform 220ms ease; }
+.bar-pic { display: block; border-radius: 6px; overflow: hidden; aspect-ratio: 360 / 210; }
+.bar-pic svg { display: block; width: 100%; height: 100%; }
+.build-bar b { font-family: var(--f-display); font-weight: 600; font-size: 16px; line-height: 1.2; }
+@media (prefers-reduced-motion: reduce) { .build-bar, .build-bar.is-on { transition: none; } }
 .b-head h1 { font-family: var(--f-display); font-weight: 600; font-size: 28px; line-height: 1.1; margin: 2px 0 4px; }
 .b-head p { margin: 0 0 10px; font-size: 14px; color: var(--muted); }
 .b-preview { position: sticky; top: 0; z-index: 3; background: var(--bg); margin: 0 -16px; padding: 8px 16px 10px; }
@@ -242,6 +247,8 @@ button { font: inherit; color: inherit; }
 .b-seg { display: inline-flex; flex: 0 0 auto; background: var(--surface); border-radius: 99px; padding: 3px; }
 .b-seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 99px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; }
 .b-seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.b-flip { flex: 0 0 auto; border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 6px 11px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; }
+.b-flip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .b-meta { min-width: 0; font-family: var(--f-mono); font-size: 11.5px; line-height: 1.35; color: var(--muted); }
 .b-group { margin: 16px 0 0; }
 .b-group h2 { font-family: var(--f-display); font-weight: 500; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
@@ -1353,7 +1360,7 @@ function applyCustom(c) {
   INNER.custom.c = i; INNER.custom.pal = [i, shade(i, -0.04), shade(i, 0.25), shade(i, 0.1), shade(i, -0.08), shade(i, -0.18)];
 }
 const colorName = (obj, k, c) => obj[c[k]].n + (c[k] === "custom" && c[CC_KEY[k]] ? ` (${c[CC_KEY[k]]})` : "");
-const B_DEFAULT = { size: "6x8", layout: "bed2", terrace: "end", tLen: 0, tSide: "right", adjv: null, adjKey: "", wall: "wood", accent: "graphite", inner: "light", stove: true, pano: false, exit2: false, porch: true, ins150: false, gutter: true };
+const B_DEFAULT = { size: "6x8", layout: "bed2", terrace: "end", tLen: 0, tSide: "right", adjv: null, adjKey: "", wall: "wood", accent: "graphite", inner: "light", stove: true, pano: false, exit2: false, porch: true, ins150: false, gutter: true, flip: false };
 const B_KEY = "modul-build-v1";
 function bNorm(v) {
   const c = Object.assign({}, B_DEFAULT, v && B_LAYOUTS[v.size] ? v : {});
@@ -1401,7 +1408,7 @@ function cloudLoad() {
           if (!v2 || !B_LAYOUTS[v2.size]) return;
           bcfg = bNorm(v2); bSave(true);
           try { localStorage.setItem(B_KEY + "-t", String(t)); } catch (e) {}
-          if (location.hash.startsWith("#/build")) renderBuild(); else ctaRefresh();
+          if (location.hash.startsWith("#/build")) renderBuild();
         } catch (e) {}
       });
     });
@@ -1602,6 +1609,21 @@ function ridgeAerEnd(p, cx, top, s) {   // с торца: плоская «ша�
   const w = 0.5 * s, h = 0.13 * s;
   p.push(`<path d="M${(cx - w / 2).toFixed(1)} ${top.toFixed(1)} L${(cx - w / 2 + 0.05 * s).toFixed(1)} ${(top - h).toFixed(1)} L${(cx + w / 2 - 0.05 * s).toFixed(1)} ${(top - h).toFixed(1)} L${(cx + w / 2).toFixed(1)} ${top.toFixed(1)} Z" fill="#2B2F33"/>`);
 }
+/* «Отразить»: зеркало всего рисунка (данные плана не трогаем). Текст внутри разворачиваем обратно вокруг его точки, чтобы читался */
+function mirrorSVG(svg) {
+  const m = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/); if (!m) return svg;
+  const VW = parseFloat(m[1]);
+  const i = svg.indexOf(">") + 1, j = svg.lastIndexOf("</svg>");
+  let body = svg.slice(i, j);
+  body = body.replace(/<text\b([^>]*)>/g, (all, attrs) => {
+    const xm = attrs.match(/\sx="([-\d.]+)"/), x = xm ? parseFloat(xm[1]) : 0;
+    const tm = attrs.match(/\stransform="([^"]*)"/);
+    const fix = `matrix(-1 0 0 1 ${(2 * x).toFixed(1)} 0)` + (tm ? " " + tm[1] : "");
+    const rest = tm ? attrs.replace(tm[0], "") : attrs;
+    return `<text transform="${fix}"${rest}>`;
+  });
+  return svg.slice(0, i) + `<g transform="matrix(-1 0 0 1 ${VW} 0)">` + body + "</g>" + svg.slice(j);
+}
 function facadeSVG(c, view = "front") {
   applyCustom(c);
   const u = "f" + (++svgUid);
@@ -1703,7 +1725,7 @@ function facadeSVG(c, view = "front") {
   };
   const door = (cx, glass) => {
     const dw = 0.9, x = X(cx) - dw * s / 2, y = floorY - 2.05 * s;
-    let out = rect(x, y, dw * s, 2.05 * s, glass ? frame : ACCENTS.black.c);   // входная дверь всегда чёрная: других не ставят
+    let out = rect(x, y, dw * s, 2.05 * s, glass ? frame : acc.c === "#F1F1EE" ? "#3A3F44" : acc.c);
     if (glass) out += rect(x + 0.08 * s, y + 0.08 * s, dw * s - 0.16 * s, 2.05 * s - 0.08 * s, `url(#${u}g)`);
     else out += `<circle cx="${(x + dw * s - 0.16 * s).toFixed(1)}" cy="${(y + 1.05 * s).toFixed(1)}" r="${(0.05 * s).toFixed(1)}" fill="#C9CDD0"/>`;
     return out;
@@ -1756,7 +1778,8 @@ function facadeSVG(c, view = "front") {
   }
   if (entranceX === null) { /* вход в торце, с террасы — с фасада не виден */ }
   else if (!entInSpan && c.porch) {
-    stepsAt(X(entranceX), false);   // козырька над входом нет: без террасы его не ставят
+    stepsAt(X(entranceX), false);
+    p.push(rect(X(entranceX - 0.85), floorY - 2.42 * s, 1.7 * s, 0.1 * s, acc.c));
   } else if (!entInSpan) stepBlock(entranceX, 1.0);
   // у двери хозблока тоже ступенька, если она не выходит на террасу
   for (const m of shedAt) if (!(along && m > a0 + 0.45 && m < a1 - 0.45)) stepBlock(m, 0.9);
@@ -1811,7 +1834,8 @@ function facadeSVG(c, view = "front") {
       p.push(rect(gx, e + 0.12 * s, 0.08 * s, ground - 0.1 * s - e - 0.12 * s, "#9EA4A8"));
     });
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Фасад дома">${p.join("")}</svg>`;
+  const out = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Фасад дома">${p.join("")}</svg>`;
+  return c.flip ? mirrorSVG(out) : out;
 }
 
 /* ===== Окна ===== */
@@ -2016,9 +2040,10 @@ function endsSVG(c) {
     }
     p.push(`<text x="${(ox0 + half / 2).toFixed(1)}" y="${(VH - 10).toFixed(1)}" text-anchor="middle" font-size="11" fill="#5E666C" font-family="Onest, Segoe UI, Arial, sans-serif">${title}</text>`);
   };
-  panel("W", 0, "Вид слева");
-  panel("E", half, "Вид справа");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Вид сбоку">${p.join("")}</svg>`;
+  panel("W", 0, c.flip ? "Вид справа" : "Вид слева");
+  panel("E", half, c.flip ? "Вид слева" : "Вид справа");
+  const out = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Вид сбоку">${p.join("")}</svg>`;
+  return c.flip ? mirrorSVG(out) : out;
 }
 
 /* Схема планировки. opt.edit — режим «Редактировать план» (крупно, с ручками стен и меню дверей),
@@ -2309,7 +2334,8 @@ function planSVG(c, opt = {}) {
       p.push(`<g data-wall="${q.k}">${stem}<circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="22" fill="transparent"/><circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="${act ? 12.5 : 11}" fill="#E07A2E" stroke="#FFFFFF" stroke-width="2"/><path d="${arr}" fill="#FFFFFF"/></g>`);
   }
   }
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Планировка дома">${p.join("")}</svg>`;
+  const out = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Планировка дома">${p.join("")}</svg>`;
+  return c.flip ? mirrorSVG(out) : out;
 }
 
 function bSummary(c) {
@@ -2318,7 +2344,7 @@ function bSummary(c) {
   const cl = lay.rooms.map((r) => clearOf(lay, r, size.L, size.W)), clearA = cl.reduce((t, q) => t + q.a, 0);
   const extras = EXTRAS.filter(([k]) => c[k] && !(k === "exit2" && exit2At(c) === null) && !(k === "porch" && c.terrace !== "none") && !(k === "aerator" && layoutOf(c).seam !== "h")).map(([, n]) => n);
   const terTxt = c.terrace === "along" ? `вдоль дома, ${fmt(terA / T_DEPTH)} м, ${fmt(terA)} м²`
-    : c.terrace === "end" ? `${endSide(c) === "left" ? "слева" : "справа"}, на всю ширину дома, вход с террасы, ${fmt(terA)} м²` : "нет";
+    : c.terrace === "end" ? `${(endSide(c) === "left") !== !!c.flip ? "слева" : "справа"}, на всю ширину дома, вход с террасы, ${fmt(terA)} м²` : "нет";
   const main = lay.rooms.map((r, i) => [r, cl[i]]).filter(([r]) => r.t === "bed" || r.t === "kl").sort((a, b) => (a[0].t === "kl") - (b[0].t === "kl"));
   const roomsTxt = main.map(([r, q]) => `${ROOM[r.t].n.toLowerCase()} ${fmt2(q.w)}×${fmt2(q.h)} м, ${fmt(q.a)} м²`).join("; ");
   // проёмы дверей: межкомнатные по ширине, наружные — отдельно
@@ -2368,6 +2394,7 @@ function renderBuild() {
           <button type="button" data-view="ends" aria-pressed="${bView === "ends"}">Сбоку</button>
           <button type="button" data-view="plan" aria-pressed="${bView === "plan"}">План</button>
         </div>
+        <button type="button" class="b-flip" id="b-flip" aria-pressed="${!!c.flip}" title="Отразить дом зеркально">⇄ Отразить</button>
         <div class="b-meta" id="b-meta"></div>
       </div>
     </div>
@@ -2392,6 +2419,7 @@ function renderBuild() {
       </div>
     </section>`;
   app.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => { bView = b.dataset.view; bUpdate(); }));
+  document.getElementById("b-flip").addEventListener("click", () => { bcfg.flip = !bcfg.flip; bChanged(); });
   if (!bBound) { app.addEventListener("click", bClick); bBound = true; }
   app.querySelectorAll("[data-x]").forEach((i) => i.addEventListener("change", () => { bcfg[i.dataset.x] = i.checked; bChanged(); }));
   document.getElementById("b-img").addEventListener("click", bImage);
@@ -2438,7 +2466,7 @@ function bControls() {
       <input type="range" id="tlen" min="${alongMin(c)}" max="${L}" step="0.5" value="${alongLen(c)}" aria-label="Длина террасы"><div class="sl-lbl sl-ends"><span id="tlen-min">${fmt(alongMin(c))} м</span><span>${fmt(L)} м — вся длина</span></div></div>`;
     document.getElementById("tlen").addEventListener("input", (e) => { bcfg.tLen = parseFloat(e.target.value); delete bcfg.tsp[variantOf(bcfg).key]; bSave(); bUpdate(); });
   } else if (c.terrace === "end") {
-    txBox.innerHTML = `<p class="sl-note">Терраса ${endSide(c) === "left" ? "слева" : "справа"}, на всю ширину дома. Вход в дом — с террасы, через прихожую.</p>`;
+    txBox.innerHTML = `<p class="sl-note">Терраса ${(endSide(c) === "left") !== !!c.flip ? "слева" : "справа"}, на всю ширину дома. Вход в дом — с террасы, через прихожую.</p>`;
   } else txBox.innerHTML = "";
 }
 function bChanged() {
@@ -2450,6 +2478,7 @@ function bUpdate() {
   const c = bcfg, sum = bSummary(c);
   document.getElementById("b-canvas").innerHTML = bView === "plan" ? planSVG(c) : bView === "back" ? facadeSVG(c, "back") : bView === "ends" ? endsSVG(c) : facadeSVG(c);
   app.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === bView)));
+  const fb = document.getElementById("b-flip"); if (fb) fb.setAttribute("aria-pressed", String(!!c.flip));
   document.getElementById("b-meta").textContent = `${sum.size.name} · ${fmt(sum.houseA)} м²` + (sum.terA ? ` + терраса ${fmt(sum.terA)} м²` : "") + ` · ${sum.lay.name.toLowerCase()}`;
   document.getElementById("b-layouts").innerHTML = B_LAYOUTS[c.size].map((l) => `<button type="button" class="chip" data-k="layout" data-v="${l.id}" aria-pressed="${l.id === layoutOf(c).id}">${esc(l.name)}</button>`).join("");
   app.querySelectorAll("button[data-k]").forEach((b) => { if (b.dataset.k !== "layout") b.setAttribute("aria-pressed", String(c[b.dataset.k] === b.dataset.v)); });
@@ -2631,7 +2660,8 @@ function peMeters(cx, cy) {
   if (!svg || !planGeo) return null;
   const pt = svg.createSVGPoint(); pt.x = cx; pt.y = cy;
   const v = pt.matrixTransform(svg.getScreenCTM().inverse());
-  return { x: (v.x - planGeo.ox) / planGeo.s, y: (v.y - planGeo.oy) / planGeo.s };
+  const vx = bcfg.flip ? svg.viewBox.baseVal.width - v.x : v.x;   // при «Отразить» рисунок зеркальный
+  return { x: (vx - planGeo.ox) / planGeo.s, y: (v.y - planGeo.oy) / planGeo.s };
 }
 function peMoveWall(k, m) {
   const { v, key } = variantOf(bcfg), q = v.params.find((x) => x.k === k);
@@ -2735,7 +2765,7 @@ const MANAGER = "";   // @username менеджера без «@», куда п�
 const ENC = {
   sizes: () => B_SIZES.map((s) => s.id), terr: ["none", "along", "end"],
   walls: () => Object.keys(WALLS), acc: () => Object.keys(ACCENTS), inner: () => Object.keys(INNER),
-  flags: ["stove", "pano", "exit2", "porch", "ins150", "gutter", "aerator"], wkeys: () => WIN_OPT.map((o) => o[0]), wallIds: ["S", "N", "W", "E"]
+  flags: ["stove", "pano", "exit2", "porch", "ins150", "gutter", "aerator", "flip"], wkeys: () => WIN_OPT.map((o) => o[0]), wallIds: ["S", "N", "W", "E"]
 };
 const b36 = (n) => Math.max(0, Math.round(n)).toString(36);
 const b36w = (n, w) => b36(n).padStart(w, "0").slice(-w);
@@ -2836,14 +2866,12 @@ function focusCards() {
     c.querySelector(".card-photo").style.setProperty("--z", (1 + e * 0.06).toFixed(3));
   });
 }
-/* Карточка «Собрать свой дом»: прилипла к верху и сжимается в полоску за первые 150 px прокрутки после этого */
+/* Полоска «Собрать свой дом» сверху: видна, когда большая карточка ушла за верх экрана */
 function barCheck() {
-  const wrap = document.getElementById("cta-wrap"), cta = document.getElementById("build-cta"), mark = document.getElementById("cta-mark");
-  if (!wrap || !cta || !mark) return;
-  const start = mark.getBoundingClientRect().top + window.scrollY;   // метка перед карточкой: где карточка упирается в верх
-  const p = Math.max(0, Math.min(1, (window.scrollY - start) / 150));
-  cta.style.setProperty("--p", p.toFixed(3));
-  wrap.style.setProperty("--p", p.toFixed(3));
+  const bar = document.getElementById("build-bar"), cta = document.getElementById("build-cta");
+  if (!bar || !cta) return;
+  const on = cta.getBoundingClientRect().bottom < 8;
+  if (on !== bar.classList.contains("is-on")) { bar.classList.toggle("is-on", on); bar.setAttribute("aria-hidden", on ? "false" : "true"); bar.tabIndex = on ? 0 : -1; }
 }
 addEventListener("scroll", barCheck, { passive: true });
 const queueFocus = () => { if (!focusRaf) focusRaf = requestAnimationFrame(focusCards); };
@@ -2888,14 +2916,6 @@ if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
 const HOUSE_SVG = '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 15 16 6l12 9" fill="none" stroke="#D88B4C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="15" width="16" height="11" rx="1" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M14 26v-5h4v5" fill="none" stroke="#fff" stroke-width="2.4"/></svg>';
 
-function bCustom(){ try { return JSON.stringify(bNorm(bcfg)) !== JSON.stringify(bNorm(B_DEFAULT)); } catch (e) { return false; } }
-function bSummary(){ const sz = sizeOf(bcfg), w = WALLS[bcfg.wall] || WALLS.wood; return `${sz.name} · ${w.n.toLowerCase()}${bcfg.terrace && bcfg.terrace !== "none" ? " · с террасой" : ""}`; }
-/* Кнопка конструктора: перерисовать картинку и подпись, когда план дома обновился (например, пришёл из облака Telegram) */
-function ctaRefresh() {
-  const cta = document.getElementById("build-cta"); if (!cta) return;
-  cta.querySelector(".cta-pic").innerHTML = facadeSVG(bcfg);
-  cta.querySelector(".cta-text").innerHTML = bCustom() ? `<b>Ваш проект</b><span>${bSummary()}. Можно продолжить</span>` : `<b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span>`;
-}
 function renderCatalog() {
   current = null;
   setBuy(false);
@@ -2913,11 +2933,16 @@ function renderCatalog() {
       <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div>
     </div>
     <p class="promise"><b>Каждый дом делаем под того, кто будет в нём жить:</b> планировку, размеры и цвета выбираете вы. Всё продумываем вместе ещё до начала производства, чтобы в готовом доме было удобно с первого дня.</p>
-    <i class="cta-mark" id="cta-mark" aria-hidden="true"></i><div class="cta-wrap" id="cta-wrap"><button class="build-cta" type="button" id="build-cta">
-      <span class="cta-pic">${facadeSVG(bcfg)}</span>
-      <span class="cta-text">${bCustom() ? `<b>Ваш проект</b><span>${bSummary()}. Можно продолжить</span>` : `<b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span>`}</span>
+    <button class="build-cta" type="button" id="build-cta">
+      <span class="cta-pic">${facadeSVG(B_DEFAULT)}</span>
+      <span class="cta-text"><b>Собрать свой дом</b><span>Размер, планировка, цвет фасада — и сразу видно, как он будет выглядеть</span></span>
       <span class="cta-arrow" aria-hidden="true">→</span>
-    </button></div>
+    </button>
+    <button class="build-bar" type="button" id="build-bar" aria-hidden="true" tabindex="-1">
+      <span class="bar-pic">${facadeSVG(B_DEFAULT)}</span>
+      <b>Собрать свой дом</b>
+      <span class="cta-arrow" aria-hidden="true">→</span>
+    </button>
     <p class="section-title">Дома <span class="count">· ${HOUSES.length}</span></p>
     <div class="list">
       ${HOUSES.map((h, i) => `
@@ -2944,6 +2969,7 @@ function renderCatalog() {
   app.querySelectorAll(".card").forEach((b) => b.addEventListener("click", () => { catalogY = window.scrollY; go("#/house/" + b.dataset.id); }));
   app.querySelectorAll(".voice[data-id]").forEach((v) => { const open = () => { catalogY = window.scrollY; go("#/house/" + v.dataset.id); }; v.addEventListener("click", open); v.addEventListener("keydown", (e) => { if (e.key === "Enter") open(); }); });
   document.getElementById("build-cta").addEventListener("click", () => { catalogY = window.scrollY; go("#/build"); });
+  document.getElementById("build-bar").addEventListener("click", () => { catalogY = window.scrollY; go("#/build"); });
   restoreCatalogScroll();
   requestAnimationFrame(focusCards); requestAnimationFrame(barCheck);
 }
