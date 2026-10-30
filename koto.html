@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проба: приёмы Koto на наших домах</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;1,300&display=swap">
+<style>
+:root { --cream:#F5F1EA; --ink:#1A1A18; --ink2:#4A4742; --line:#E0DCD3; --btn:#111; }
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background:var(--cream); color:var(--ink); font-family:"Jost","Segoe UI",system-ui,sans-serif; font-weight:300; font-size:19px; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+h1,h2,h3 { font-weight:300; margin:0; letter-spacing:.01em; line-height:1.15; }
+em { font-style:italic; }
+.wrap { max-width:1180px; margin:0 auto; padding:0 28px; }
+.hint { position:fixed; left:0; right:0; bottom:0; z-index:50; padding:8px 16px; text-align:center; font-size:13px; color:#fff; background:rgba(20,24,30,.85); }
+
+/* шапка */
+.head { display:flex; align-items:center; gap:12px; padding:18px 28px; }
+.head img { width:40px; height:40px; border-radius:10px; }
+.head b { font-weight:500; font-size:17px; letter-spacing:.06em; text-transform:uppercase; }
+
+/* первый экран: широкое фото, под ним заголовок и абзац */
+.hero { margin:0 28px; height:72vh; border-radius:4px; overflow:hidden; }
+.hero img { width:100%; height:100%; object-fit:cover; display:block; transform:scale(calc(1.06 - .06 * var(--p,0))); transition:transform .1s linear; }
+.intro { padding:56px 0 30px; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:end; }
+.intro h1 { font-size:clamp(40px,6vw,76px); }
+.intro p { margin:0; color:var(--ink2); max-width:42ch; }
+
+/* строка разделов — прилипает */
+.tabs { position:sticky; top:0; z-index:20; background:rgba(245,241,234,.94); backdrop-filter:blur(6px); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.tabs .wrap { display:flex; gap:34px; overflow-x:auto; scrollbar-width:none; }
+.tabs a { flex:0 0 auto; padding:14px 0; color:var(--ink2); text-decoration:none; font-size:14px; font-weight:400; letter-spacing:.14em; text-transform:uppercase; border-bottom:2px solid transparent; }
+.tabs a.on { color:var(--ink); border-color:var(--ink); }
+
+/* манифест — слова зажигаются по прокрутке */
+.manifest { padding:20vh 0; }
+.manifest p { margin:0 auto; max-width:22ch; text-align:center; font-size:clamp(34px,5.2vw,66px); line-height:1.2; }
+.manifest span { opacity:.18; transition:opacity .35s ease; }
+.manifest span.on { opacity:1; }
+
+/* всплытие снизу */
+.up { opacity:0; transform:translateY(14px); transition:opacity .9s ease, transform .9s ease; }
+.up.in { opacity:1; transform:none; }
+
+/* счётчики-барабаны */
+.nums { display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.num { padding:44px 20px; text-align:center; border-left:1px solid var(--line); }
+.num:first-child { border-left:0; }
+.num .od { display:inline-flex; font-size:clamp(54px,7vw,92px); line-height:1; height:1em; overflow:hidden; font-weight:300; }
+.num .od .col { display:flex; flex-direction:column; transition:transform 1.8s cubic-bezier(.2,.8,.2,1); }
+.num .od .col i { font-style:normal; height:1em; }
+.num .od .fix { display:inline-block; }
+.num small { display:block; margin-top:10px; color:var(--ink2); font-size:15px; letter-spacing:.06em; }
+
+/* разделы: по одному на экран */
+.sec { padding:16vh 0 4vh; scroll-margin-top:60px; }
+.sec .k { font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink2); }
+.sec h2 { font-size:clamp(36px,5vw,64px); margin:8px 0 28px; }
+.sec .ph { aspect-ratio:16/8; overflow:hidden; border-radius:4px; }
+.sec .ph img { width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.04); transition:transform 1.6s ease; }
+.sec .ph.in img { transform:none; }
+.sec .row { display:grid; grid-template-columns:1.1fr 1fr; gap:48px; padding-top:32px; }
+.sec .row p { margin:0; color:var(--ink2); }
+.quote { border-left:2px solid var(--ink); padding-left:20px; font-style:italic; font-size:21px; }
+.quote span { display:block; font-style:normal; font-size:14px; color:var(--ink2); margin-top:8px; letter-spacing:.04em; }
+.more { display:inline-block; margin-top:22px; color:var(--ink); font-size:14px; letter-spacing:.14em; text-transform:uppercase; text-decoration:none; border-bottom:1px solid var(--ink); padding-bottom:3px; }
+
+/* большая цитата заказчицы */
+.big { padding:18vh 0; text-align:center; }
+.big p { margin:0 auto; max-width:30ch; font-size:clamp(26px,3.4vw,42px); line-height:1.35; font-style:italic; }
+.big span { display:block; margin-top:20px; font-size:15px; color:var(--ink2); font-style:normal; letter-spacing:.06em; }
+
+/* финал */
+.final { padding:16vh 0 20vh; text-align:center; border-top:1px solid var(--line); }
+.final .k { font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink2); }
+.final h2 { font-size:clamp(34px,5vw,62px); margin:12px 0 34px; }
+.final a { display:inline-block; margin:6px; padding:16px 30px; background:var(--btn); color:#fff; text-decoration:none; font-size:14px; letter-spacing:.14em; text-transform:uppercase; }
+.final a.lt { background:transparent; color:var(--ink); border:1px solid var(--ink); }
+
+/* вертикальная кнопка справа */
+.side { position:fixed; right:0; top:50%; z-index:30; transform:translate(100%,-50%) ; transition:transform .5s ease; }
+.side.show { transform:translate(0,-50%); }
+.side a { display:block; writing-mode:vertical-rl; transform:rotate(180deg); background:var(--btn); color:#fff; text-decoration:none; padding:22px 12px; font-size:13px; letter-spacing:.22em; text-transform:uppercase; }
+
+@media (max-width:760px) {
+  .intro, .sec .row { grid-template-columns:1fr; gap:22px; }
+  .hero { margin:0 16px; height:56vh; } .wrap { padding:0 18px; } .head { padding:16px 18px; }
+  .nums { grid-template-columns:1fr; } .num { border-left:0; border-top:1px solid var(--line); } .num:first-child { border-top:0; }
+}
+@media (prefers-reduced-motion: reduce) { .up, .sec .ph img, .num .od .col { transition:none; } }
+</style>
+</head>
+<body>
+
+<header class="head"><img src="katalog/img/logo.png" alt=""><b>Загородная студия</b></header>
+
+<div class="hero" id="hero"><img src="img/n-hero-1.webp" alt=""></div>
+
+<section class="wrap intro">
+  <h1>Найдите <em>свой</em> дом</h1>
+  <p>Открыто и честно строим на собственном производстве в Санкт-Петербурге. Дом собираем в тёплом цеху и привозим на участок готовым.</p>
+</section>
+
+<nav class="tabs"><div class="wrap">
+  <a href="#doma">Дома</a><a href="#bani">Бани</a><a href="#dacha">Дачные</a><a href="#vnutri">Внутри</a>
+</div></nav>
+
+<section class="wrap manifest"><p id="mtext">Для тех, кто хочет жить за городом круглый год. Тепло зимой, светло летом, удобно с первого дня.</p></section>
+
+<section class="wrap"><div class="nums up">
+  <div class="num"><span class="od" data-n="4"></span><small>недели в цеху</small></div>
+  <div class="num"><span class="od" data-n="2" data-pre="1–"></span><small>дня на установку</small></div>
+  <div class="num"><span class="od" data-n="150"></span><small>мм утепления в полу и кровле</small></div>
+</div></section>
+
+<section class="wrap sec" id="doma">
+  <div class="k up">01 — Дома</div>
+  <h2 class="up">Просторно всей семье</h2>
+  <div class="ph up"><img src="img/c6.webp" alt=""></div>
+  <div class="row">
+    <div class="up"><p>Две-три спальни, кухня-гостиная, терраса под общей крышей. От 48 до 72 м² — планировку и цвет фасада выбираете вы.</p><a class="more" href="katalog/">Смотреть дома</a></div>
+    <div class="quote up">Какие ваши дома просторные и красивые.<span>Елена, ВКонтакте</span></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="bani">
+  <div class="k up">02 — Бани</div>
+  <h2 class="up">Баня, в которой можно жить</h2>
+  <div class="ph up"><img src="img/c7.webp" alt=""></div>
+  <div class="row">
+    <div class="up"><p>Парная, душевая и жилая комната с террасой. Приезжаете на выходные — и не нужно ждать, пока протопится дом.</p><a class="more" href="katalog/">Смотреть бани</a></div>
+    <div class="quote up">Какой чудесный домик! С банькой! Вот оно — тихое семейное счастье и релакс!<span>Алла, ВКонтакте</span></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="dacha">
+  <div class="k up">03 — Дачные</div>
+  <h2 class="up">Компактно и с умом</h2>
+  <div class="ph up"><img src="img/c3.webp" alt=""></div>
+  <div class="row">
+    <div class="up"><p>Дом 3×9 с хозблоком или минидом с террасой. Встаёт на небольшой участок, привозится одним модулем.</p><a class="more" href="katalog/">Смотреть дачные</a></div>
+    <div class="quote up">Какой классный проект! Восхищаюсь вами.<span>Татьяна, ВКонтакте</span></div>
+  </div>
+</section>
+
+<section class="wrap sec" id="vnutri">
+  <div class="k up">04 — Внутри</div>
+  <h2 class="up">Мебель приезжает прямо в доме</h2>
+  <div class="ph up"><img src="img/h1-03.webp" alt="" style="object-position:50% 60%"></div>
+  <div class="row">
+    <div class="up"><p>Привезите мебель и технику к нам в цех — они поедут на участок уже стоящими на своих местах. Дровяная печь греет, даже если отключат свет.</p></div>
+    <div class="quote up">Нет слов! Красота. Стиль. Уют.<span>Елена, ВКонтакте</span></div>
+  </div>
+</section>
+
+<section class="wrap big up">
+  <p>«В доме тепло, просторно, светло… Не верится, что один модуль превратился в такую красоту.»</p>
+  <span>Олеся, заказчица</span>
+</section>
+
+<section class="wrap final">
+  <div class="k up">С чего начать</div>
+  <h2 class="up">Расскажите, какой дом вы задумали</h2>
+  <div class="up"><a href="tel:+79111422642">Позвонить</a><a class="lt" href="katalog/">Дома и цены</a></div>
+</section>
+
+<div class="side" id="side"><a href="tel:+79111422642">Связаться</a></div>
+<div class="hint">Проба приёмов Koto на наших фото. Ссылок на эту страницу ни из приложения, ни с сайта нет.</div>
+
+<script>
+// манифест по словам
+const mt = document.getElementById("mtext");
+mt.innerHTML = mt.textContent.split(" ").map(w => `<span>${w}</span>`).join(" ");
+const words = [...mt.querySelectorAll("span")];
+// счётчики-барабаны
+document.querySelectorAll(".od").forEach(od => {
+  const pre = od.dataset.pre || "", n = od.dataset.n;
+  od.innerHTML = (pre ? `<span class="fix">${pre}</span>` : "") + [...n].map(d => `<span class="col" data-d="${d}">${[...Array(10).keys(), ...Array(10).keys()].map(x => `<i>${x}</i>`).join("")}</span>`).join("");
+});
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add("in");
+  e.target.querySelectorAll && e.target.querySelectorAll(".col").forEach((c, i) => { c.style.transform = `translateY(-${10 + +c.dataset.d}em)`; c.style.transitionDelay = (i * 0.15) + "s"; });
+  io.unobserve(e.target);
+}), { threshold: 0.2 });
+document.querySelectorAll(".up").forEach(el => io.observe(el));
+const tabs = [...document.querySelectorAll(".tabs a")], secs = tabs.map(a => document.querySelector(a.getAttribute("href")));
+const side = document.getElementById("side"), mf = document.querySelector(".manifest");
+let raf = 0;
+function update() {
+  raf = 0; const H = innerHeight;
+  document.getElementById("hero").style.setProperty("--p", Math.min(1, scrollY / H).toFixed(3));
+  const r = mf.getBoundingClientRect(); const k = Math.max(0, Math.min(1, (H * 0.85 - r.top) / (r.height * 0.75)));
+  const n = Math.round(words.length * k); words.forEach((w, i) => w.classList.toggle("on", i < n));
+  let cur = -1; secs.forEach((s, i) => { if (s.getBoundingClientRect().top < H * 0.4) cur = i; });
+  tabs.forEach((a, i) => a.classList.toggle("on", i === cur));
+  side.classList.toggle("show", scrollY > H * 0.8);
+}
+const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+addEventListener("scroll", queue, { passive: true }); addEventListener("resize", queue); update();
+</script>
+</body>
+</html>
