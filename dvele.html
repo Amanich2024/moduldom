@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Проба: приёмы Dvele на наших домах</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
+<style>
+:root { --bg:#F4F1E8; --ink:#1E2420; --muted:#6B7068; --green:#2F4A33; --dark:#1C241E; }
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",system-ui,sans-serif; font-size:18px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-spacing:.01em; }
+.wrap { max-width:1100px; margin:0 auto; padding:0 24px; }
+.hint { position:fixed; left:0; right:0; bottom:0; z-index:50; padding:8px 16px; text-align:center; font-size:13px; color:#fff; background:rgba(20,24,30,.85); backdrop-filter:blur(6px); }
+.note { font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
+
+/* 1. Первый экран: дом во весь экран, заголовок остаётся, второй дом наезжает и растёт */
+.hero { position:relative; height:100vh; overflow:hidden; }
+.hero img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scale(calc(1 + .08 * var(--p,0))); }
+.hero .t { position:absolute; left:0; right:0; bottom:12vh; text-align:center; color:#fff; text-shadow:0 2px 24px rgba(0,0,0,.45); }
+.hero h1 { font-size:clamp(34px,6vw,72px); line-height:1.05; }
+.hero p { margin:10px 0 0; font-size:20px; opacity:.9; }
+.over { position:relative; height:200vh; }
+.over .stick { position:sticky; top:0; height:100vh; display:grid; place-items:center; overflow:hidden; }
+.over h2 { font-size:clamp(32px,5vw,64px); max-width:14ch; text-align:center; line-height:1.1; color:var(--ink); }
+.over .pic { position:absolute; left:50%; top:50%; width:min(92vw,1100px); aspect-ratio:16/10; border-radius:18px; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.25);
+  transform:translate(-50%,calc(-50% + (1 - var(--q,0)) * 110vh)) scale(calc(.6 + .4 * var(--q,0))); }
+.over .pic img { width:100%; height:100%; object-fit:cover; display:block; }
+
+/* 2. Манифест: текст стоит, слова наливаются цветом */
+.manifest { position:relative; height:220vh; }
+.manifest .stick { position:sticky; top:0; height:100vh; display:grid; place-items:center; }
+.manifest p { font-family:"Oswald",sans-serif; font-weight:500; font-size:clamp(28px,4.6vw,58px); line-height:1.2; max-width:22ch; margin:0; text-align:center; }
+.manifest span { color:rgba(30,36,32,.18); transition:color .25s; }
+.manifest span.on { color:var(--green); }
+
+/* 3. Шаги 01/02/03 на прилипшем фото */
+.steps { position:relative; height:320vh; }
+.steps .stick { position:sticky; top:0; height:100vh; overflow:hidden; }
+.steps .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:brightness(.55); }
+.steps .list { position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); color:#fff; }
+.step { opacity:.22; transform:translateY(18px); transition:opacity .4s, transform .4s; padding:14px 0; border-top:1px solid rgba(255,255,255,.25); }
+.step.on { opacity:1; transform:none; }
+.step b { font-family:"Oswald",sans-serif; font-size:14px; letter-spacing:.2em; opacity:.8; display:block; }
+.step h3 { font-size:clamp(26px,3.6vw,44px); }
+.step p { margin:4px 0 0; max-width:40ch; font-size:17px; opacity:.9; }
+
+/* 4. Три панели: текст едет, фото меняется */
+.panels { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; padding:10vh 0; }
+.panels .pics { position:sticky; top:12vh; aspect-ratio:4/3; border-radius:18px; overflow:hidden; }
+.panels .pics img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .6s; }
+.panels .pics img.on { opacity:1; }
+.panel { min-height:70vh; display:flex; flex-direction:column; justify-content:center; }
+.panel h3 { font-size:clamp(28px,3.4vw,42px); margin-bottom:10px; }
+.panel p { margin:0; color:#3A3F3A; max-width:40ch; }
+
+/* 5. Счётчик */
+.count { text-align:center; padding:14vh 24px; }
+.count b { font-family:"Oswald",sans-serif; font-weight:600; font-size:clamp(64px,12vw,160px); line-height:1; color:var(--green); display:block; font-variant-numeric:tabular-nums; }
+.count span { font-size:20px; color:var(--muted); }
+
+/* 6. Финал: призыв + три кнопки */
+.final { background:var(--dark); color:#fff; padding:14vh 24px; text-align:center; }
+.final h2 { font-size:clamp(30px,5vw,56px); }
+.final .btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:28px; }
+.final a { display:inline-block; padding:16px 26px; border-radius:999px; border:1px solid rgba(255,255,255,.5); color:#fff; text-decoration:none; font-family:"Oswald",sans-serif; font-size:18px; }
+.final a.main { background:#fff; color:var(--dark); border-color:#fff; }
+@media (max-width:760px) { .panels { grid-template-columns:1fr; } .panels .pics { position:relative; top:0; } .panel { min-height:auto; padding:20px 0; } }
+</style>
+</head>
+<body>
+
+<section class="hero" id="hero">
+  <img src="img/n-hero-1.webp" alt="">
+  <div class="t"><h1>Дом, в котором уже стоит ваша мебель</h1><p>Собран в цеху, привезён на участок за один день</p></div>
+</section>
+
+<section class="over" id="over">
+  <div class="stick">
+    <h2>Каждый дом делаем под того, кто будет в нём жить</h2>
+    <div class="pic"><img src="img/c10.webp" alt=""></div>
+  </div>
+</section>
+
+<section class="manifest" id="manifest">
+  <div class="stick"><p id="mtext">Планировку, размеры и цвета выбираете вы. Всё продумываем вместе ещё до начала производства, чтобы в готовом доме было удобно с первого дня.</p></div>
+</section>
+
+<section class="steps" id="steps">
+  <div class="stick">
+    <img class="bg" src="img/h1-03.webp" alt="">
+    <div class="wrap list">
+      <div class="step" data-i="0"><b>01</b><h3>Собираете дом в конструкторе</h3><p>Размер, планировка, цвета — картинка меняется сразу. Утверждаем вместе до начала работ.</p></div>
+      <div class="step" data-i="1"><b>02</b><h3>Четыре недели делаем в цеху</h3><p>В сухом тёплом цеху, в любую погоду. Мебель и технику можно привезти к нам — они поедут на участок прямо в доме.</p></div>
+      <div class="step" data-i="2"><b>03</b><h3>Один-два дня — и дом на участке</h3><p>Привозим собранным, ставим, подключаем. Заезжайте.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap panels" id="panels">
+  <div class="pics">
+    <img src="img/c12.webp" class="on" alt="">
+    <img src="img/h1-04.webp" alt="">
+    <img src="img/h1-02.webp" alt="">
+  </div>
+  <div>
+    <div class="panel" data-i="0"><h3>Тепло зимой</h3><p>Каменная вата 150 мм в полу и кровле, 100 мм в стенах, мембраны с вентзазором. Дом для круглого года, не только для лета.</p></div>
+    <div class="panel" data-i="1"><h3>Печь, если отключат свет</h3><p>Дровяная печь греет без электричества. Заказчики ставят её в кухне-гостиной — она и греет, и собирает вокруг себя.</p></div>
+    <div class="panel" data-i="2"><h3>Своя планировка</h3><p>Две спальни или одна большая, парная, терраса под общей крышей. Придумываете вы — мы помогаем сделать удобнее.</p></div>
+  </div>
+</section>
+
+<section class="count" id="count">
+  <b data-to="410">0</b>
+  <span>домов построили с 2012 года</span>
+</section>
+
+<section class="final">
+  <h2>Поговорим о вашем доме</h2>
+  <div class="btns">
+    <a class="main" href="tel:+79111422642">Позвонить</a>
+    <a href="https://t.me/modul_studia_spb_bot?startapp">Каталог с ценами</a>
+    <a href="https://amanich2024.github.io/moduldom/">Собрать свой дом</a>
+  </div>
+</section>
+
+<div class="hint">Проба приёмов Dvele на наших фото. Ссылок на эту страницу ни из приложения, ни с сайта нет.</div>
+
+<script>
+// манифест — разбить на слова
+const mt = document.getElementById("mtext");
+mt.innerHTML = mt.textContent.split(" ").map(w => `<span>${w}</span>`).join(" ");
+const words = [...mt.querySelectorAll("span")];
+const steps = [...document.querySelectorAll(".step")], panels = [...document.querySelectorAll(".panel")], pics = [...document.querySelectorAll(".panels .pics img")];
+const cnt = document.querySelector(".count b"); let counted = false;
+const prog = (el) => { const r = el.getBoundingClientRect(); return Math.max(0, Math.min(1, -r.top / (r.height - innerHeight))); };
+let raf = 0;
+function update() {
+  raf = 0;
+  const H = innerHeight;
+  document.getElementById("hero").style.setProperty("--p", Math.min(1, scrollY / H).toFixed(3));
+  const q = prog(document.getElementById("over")); document.querySelector(".over .stick").style.setProperty("--q", Math.min(1, q * 1.25).toFixed(3));
+  const m = prog(document.getElementById("manifest")); const n = Math.round(words.length * Math.min(1, m * 1.15));
+  words.forEach((w, i) => w.classList.toggle("on", i < n));
+  const s = prog(document.getElementById("steps")); steps.forEach((st, i) => st.classList.toggle("on", s >= (i + 0.35) / 3));
+  let cur = 0; panels.forEach((p, i) => { if (p.getBoundingClientRect().top < H * 0.55) cur = i; }); pics.forEach((p, i) => p.classList.toggle("on", i === cur));
+  const cr = cnt.getBoundingClientRect(); if (!counted && cr.top < H * 0.8) { counted = true; const to = +cnt.dataset.to, t0 = performance.now();
+    (function tick(t) { const k = Math.min(1, (t - t0) / 1600), e = 1 - Math.pow(1 - k, 3); cnt.textContent = Math.round(to * e); if (k < 1) requestAnimationFrame(tick); })(t0); }
+}
+const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+addEventListener("scroll", queue, { passive: true }); addEventListener("resize", queue); update();
+</script>
+</body>
+</html>
