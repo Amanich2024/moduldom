@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Каталог домов</title>
+<title>Загородная студия · дома и цены</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,9 +19,14 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .hidden { display:none !important; }
 
 /* ---------- лента ---------- */
-.top { padding:18px 16px 8px; }
-.brand { font-size:22px; color:var(--green); }
-.sub { color:var(--muted); font-size:13px; margin:2px 0 0; }
+.top { display:flex; align-items:center; gap:12px; padding:16px 16px 10px; }
+.logo { width:48px; height:48px; border-radius:12px; flex:0 0 auto; }
+.brand { font-size:22px; color:var(--green); line-height:1.1; }
+.sub { color:var(--muted); font-size:13px; margin:3px 0 0; }
+.facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:4px 16px 6px; }
+.fact { background:var(--card); border-radius:12px; padding:10px 10px 9px; min-width:0; }
+.fact b { display:block; font-family:"Oswald",sans-serif; font-weight:600; font-size:20px; line-height:1.1; color:var(--green); }
+.fact span { display:block; font-size:12px; line-height:1.3; color:var(--muted); margin-top:3px; }
 .chips { display:flex; gap:8px; padding:10px 16px 6px; overflow-x:auto; scrollbar-width:none; }
 .chips::-webkit-scrollbar { display:none; }
 .chip { flex:0 0 auto; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:7px 14px; font-size:14px; color:var(--ink); cursor:pointer; user-select:none; }
@@ -84,9 +89,17 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 <div class="app">
 
 <section id="v-list">
-  <div class="top">
-    <h1 class="brand">Дома и цены</h1>
-    <p class="sub">Девять готовых проектов. Дом привозим собранным.</p>
+  <header class="top">
+    <img class="logo" src="img/logo.png" alt="">
+    <div>
+      <h1 class="brand">Загородная студия</h1>
+      <p class="sub">Открыто и честно строим на собственном производстве</p>
+    </div>
+  </header>
+  <div class="facts">
+    <div class="fact"><b>До 4 нед.</b><span>изготовление под ключ</span></div>
+    <div class="fact"><b>1–2 дня</b><span>установка на участке</span></div>
+    <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div>
   </div>
   <div class="chips" id="chips"></div>
   <div class="list" id="list"></div>
