@@ -168,6 +168,8 @@ function renderChips() {
 document.getElementById("chips").addEventListener("click", (e) => {
   const c = e.target.closest(".chip"); if (!c) return;
   filter = c.dataset.f; renderChips(); renderList();
+  const top = document.getElementById("chips").getBoundingClientRect().top + scrollY - 8;
+  if (scrollY > top) scrollTo({ top, behavior: "smooth" });
 });
 
 // ---------- лента ----------
