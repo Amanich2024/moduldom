@@ -32,9 +32,40 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 @media (prefers-reduced-motion: reduce) { .top::after { animation:none; } }
 .logo { display:block; box-shadow:0 2px 8px rgba(0,0,0,.18); width:calc(48px - 16px * var(--p)); height:calc(48px - 16px * var(--p)); border-radius:calc(12px - 4px * var(--p)); flex:0 0 auto; }
 .top-text { min-width:0; }
-.brand { font-size:calc(22px - 4px * var(--p)); color:var(--green); line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.sub { color:var(--muted); font-size:14px; line-height:1.3; margin:3px 0 0; max-height:calc(40px * (1 - var(--p))); opacity:calc(1 - var(--p) * 1.6); overflow:hidden; transition:none; }
+.brand { font-size:calc(20px - 2px * var(--p)); color:var(--green); line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sub { color:var(--muted); font-size:14px; line-height:1.3; margin:3px 0 0; max-height:calc(60px * (1 - var(--p))); opacity:calc(1 - var(--p) * 1.6); overflow:hidden; transition:none; }
 .sub b { color:var(--green); font-weight:600; }
+.acts { margin-left:auto; display:flex; gap:6px; flex:0 0 auto; }
+.call { flex:0 0 auto; width:calc(38px - 4px * var(--p)); height:calc(38px - 4px * var(--p)); border-radius:50%; background:var(--green); color:#fff; display:grid; place-items:center; text-decoration:none; box-shadow:0 2px 8px rgba(47,74,51,.25); }
+.tabs { position:sticky; top:52px; z-index:5; margin:6px 0 4px; padding:4px 12px 8px; background:var(--bg); }
+.tabs .in { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; background:#E6E4DB; border-radius:14px; }
+.tab { border:0; background:transparent; border-radius:11px; padding:11px 8px; font-family:"Oswald",sans-serif; font-weight:600; font-size:16px; letter-spacing:.02em; color:var(--muted); cursor:pointer; }
+.tab[aria-pressed="true"] { background:var(--card); color:var(--green); box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.cap .q { margin-top:4px; font-size:13px; color:var(--ink); font-style:italic; }
+.cap .q span { color:var(--muted); font-style:normal; }
+/* ---------- построенный дом ---------- */
+.bphotos figure { margin:0 0 12px; cursor:zoom-in; }
+.bphotos img { width:100%; display:block; aspect-ratio:4/3; object-fit:cover; background:#DDD8CA; }
+.bphotos figcaption { padding:6px 16px 0; font-size:13px; color:var(--muted); }
+.bphotos .bplan img { aspect-ratio:auto; max-height:70vh; object-fit:contain; background:#fff; }
+.specs { margin-top:14px; background:var(--card); border-radius:var(--radius); padding:4px 16px; }
+.specs .r { display:grid; grid-template-columns:120px 1fr; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
+.specs .r:first-child { border-top:0; }
+.specs .r .k { color:var(--muted); }
+.inside { margin-top:14px; display:flex; flex-wrap:wrap; gap:6px; }
+.inside span { background:var(--card); border-radius:999px; padding:6px 12px; font-size:13px; }
+.bquote { margin:18px 16px 0; padding:14px 16px; border-left:3px solid var(--green); background:var(--card); border-radius:0 14px 14px 0; font-style:italic; font-size:15px; }
+.bquote span { display:block; margin-top:6px; font-style:normal; font-size:12px; color:var(--muted); }
+.facts.bottom { padding-top:18px; }
+.gal .slide { cursor:zoom-in; }
+.zoomhint { position:absolute; right:12px; bottom:28px; background:rgba(30,36,32,.75); color:#fff; font-size:12px; padding:4px 10px; border-radius:999px; pointer-events:none; }
+/* ---------- просмотр фото ---------- */
+.lb { position:fixed; inset:0; z-index:100; background:#000; display:none; touch-action:none; user-select:none; -webkit-user-select:none; overflow:hidden; }
+.lb.on { display:block; }
+.lb img { position:absolute; left:0; top:0; width:100%; height:100%; object-fit:contain; transform-origin:0 0; will-change:transform; pointer-events:none; }
+.lb .x { position:absolute; top:calc(10px + env(safe-area-inset-top,0px)); right:12px; width:42px; height:42px; border-radius:50%; border:0; background:rgba(255,255,255,.2); color:#fff; font-size:26px; line-height:42px; text-align:center; cursor:pointer; z-index:2; }
+.lb .n { position:absolute; left:0; right:0; bottom:calc(16px + env(safe-area-inset-bottom,0px)); text-align:center; color:#fff; font-size:13px; opacity:.85; padding:0 48px; }
+
 .facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:4px 16px 6px; }
 .fact { background:var(--card); border-radius:12px; padding:10px 10px 9px; min-width:0; }
 .fact b { display:block; font-family:"Oswald",sans-serif; font-weight:600; font-size:20px; line-height:1.1; color:var(--green); }
@@ -87,6 +118,12 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .link { display:block; margin:14px 16px 0; padding:14px 16px; background:var(--card); border-radius:14px; color:var(--ink); text-decoration:none; font-size:15px; }
 .link::after { content:"›"; float:right; color:var(--muted); font-size:20px; line-height:1; }
 .ask { display:block; margin:18px 16px 0; padding:16px; background:var(--green); color:#fff; border-radius:14px; text-align:center; font-family:"Oswald",sans-serif; font-weight:600; font-size:18px; text-decoration:none; border:0; width:calc(100% - 32px); cursor:pointer; }
+.contact { margin:20px 16px 0; }
+.contact .t { font-family:"Oswald",sans-serif; font-weight:600; font-size:18px; margin-bottom:10px; }
+.contact .bt { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.contact a { display:flex; align-items:center; justify-content:center; gap:8px; padding:15px 10px; border-radius:14px; text-decoration:none; font-family:"Oswald",sans-serif; font-weight:600; font-size:17px; }
+.contact a.tg { background:var(--green); color:#fff; }
+.contact a.ph { background:var(--card); color:var(--green); border:2px solid var(--green); }
 .ask small { display:block; font-family:"Onest",sans-serif; font-weight:400; font-size:13px; opacity:.85; margin-top:2px; }
 .note { padding:14px 16px 0; color:var(--muted); font-size:12px; }
 
@@ -108,17 +145,23 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
       <h1 class="brand">Загородная студия</h1>
       <p class="sub"><b>Открыто и честно</b> строим на собственном производстве</p>
     </div>
+    <div class="acts"><a class="call" href="https://t.me/+79111422642" id="tgbtn" aria-label="Написать в Telegram"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21.9 4.6 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.2L5.9 13.5l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.5 3.1c.9-.3 1.7.2 1.4 1.5z"/></svg></a><a class="call" href="tel:+79111422642" aria-label="Позвонить"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.7.5 2.6.7a2 2 0 0 1 1.7 2z"/></svg></a></div>
   </header>
   <div class="facts">
     <div class="fact"><b>До 4 нед.</b><span>изготовление под ключ</span></div>
     <div class="fact"><b>1–2 дня</b><span>установка на участке</span></div>
     <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div>
   </div>
+  <nav class="tabs" id="tabs"><div class="in">
+    <button class="tab" data-t="katalog" aria-pressed="true">Дома и цены</button>
+    <button class="tab" data-t="built" aria-pressed="false">Построили</button>
+  </div></nav>
   <div class="chips" id="chips"></div>
   <div class="list" id="list"></div>
 </section>
 
 <section id="v-house" class="hidden"></section>
+<div class="lb" id="lb"><img id="lb-img" alt=""><button class="x" id="lb-x" aria-label="Закрыть">×</button><div class="n" id="lb-n"></div></div>
 
 <section id="v-how" class="hidden">
   <div class="back"><button id="how-back" aria-label="Назад">‹</button><span class="t">Как построен каждый дом</span></div>
@@ -165,7 +208,15 @@ const H = [
 const rub = (n) => n.toLocaleString("ru-RU") + " ₽";
 const m2 = (n) => String(n).replace(".", ",") + " м²";
 const bedsWord = (n) => n === 0 ? "студия" : n === 1 ? "1 спальня" : `${n} спальни`;
-const dimLine = (h) => `${h.box} м` + (h.ter ? ` · терраса ${h.ter} м` : "") + ` · ${bedsWord(h.beds)}`;
+const dimLine = (h) => `дом ${m2(h.area)}` + (h.ter ? ` · терраса ${m2(h.terArea)}` : "") + ` · ${bedsWord(h.beds)}`;
+// Построенные дома — из основного приложения (фото лежат в ../img)
+const B = [{"id":"chernyj-6x8","name":"Чёрный снаружи, белый внутри","dim":"6×8,5 м: дом 6×6 м и терраса 2,5×6 м","lead":"Две спальни, кухня-гостиная с печью и терраса под общей крышей.","cover":"hero-1","photos":["h1-01","h1-02","h1-03","h1-04","h1-05","h1-06","h1-07","h1-08"],"caps":["Дом 6×8,5 м: сам дом 6×6 м и терраса 2,5×6 м под общей крышей","Вечером горит свет под навесом террасы","Холодильник и мебель заказчика приехали на участок прямо в доме","Дровяная печь греет, даже если отключат электричество","Спальня с двумя окнами","Прихожая, справа санузел со стиральной машиной","Цвет стен выбрал заказчик","Стены подготовлены под плитку: её заказчик выберет и положит позже"],"plans":["h1-09"],"specs":[["Размер","6×8,5 м"],["Спальни","2"],["Печь","дровяная"],["Сдан","сентябрь 2026"]],"quote":["Нет слов! Красота. Стиль. Уют.","Елена, ВКонтакте"],"inside":["Две спальни","Кухня-гостиная","Прихожая","Санузел","Дровяная печь","Терраса 2,5×6 м под общей крышей"]},{"id":"banya-s-komnatoj","name":"Баня с жилой комнатой","dim":"31,5 м² + терраса 12 м²","lead":"Баня, в которой можно жить: комната 14 м², парная, душевая и санузел. Угловая терраса 12 м².","cover":"c2","photos":["h2-01","h2-02","h2-03","h2-04","h2-05","h2-06","h2-07","h2-08"],"caps":["Баня с жилой комнатой: 31,5 м² и угловая терраса 12 м²","В сумерках на террасе горит свет","Комната 14 м²: по плану здесь диван и кровать, можно остаться ночевать","Коридор к парной и душевой","Душевая отделана панелями под тёмный камень","Санузел с окном: унитаз и раковина с тумбой","Парная: дровяная печь у стены из кирпича","Полки буквой Г, из парной дверь в душевую"],"plans":["h2-09"],"specs":[["Площадь бани","31,5 м²"],["Терраса","12 м², угловая"],["Изготовление","3–4 недели"],["Сдана","октябрь 2026"]],"inside":["Комната 14 м²","Парная","Душевая","Санузел","Угловая терраса 12 м²"]},{"id":"dacha-3x9","name":"Дачный дом 3×9 с хозблоком","dim":"3×9 м + хозблок","lead":"Кухня-гостиная с печью, санузел с душем и хозблок со своим входом.","cover":"c3","photos":["h3-01","h3-02","h3-03","h3-04","h3-05"],"caps":["Два входа под одним козырьком: в дом и в хозблок","Кухня вдоль окон: духовой шкаф, посудомоечная машина и холодильник","Топится печь, рядом плита и столешница под окнами","Прихожая: шкаф подвешен над полом, справа дверь в санузел","Санузел: душ, унитаз и стиральная машина"],"plans":["h3-06"],"specs":[["Размер","3×9 м"],["Изготовление","3–4 недели"],["Установка","1 день"],["Сдан","сентябрь 2026"]],"quote":["Какой классный проект! Восхищаюсь вами.","Татьяна, ВКонтакте"],"inside":["Кухня-гостиная с печью","Санузел с душем","Прихожая","Хозблок со своим входом"]},{"id":"banya-2x6","name":"Баня 2,5×6","dim":"2,5×6 м","lead":"Комната отдыха, моечная и парная. Гарантия 5 лет.","cover":"c4","photos":["h4-01","h4-02","h4-03","h4-04","h4-05"],"caps":["Баня приезжает на участок готовой: с печью, полками и электрикой","Огонь в печи видно через стеклянную дверцу топки","Моечная: бак для воды, лавка и пол со стоком","Парная: полки буквой Г и печь «Гейзер мини»","Из парной дверь ведёт в моечную"],"plans":["h4-06"],"specs":[["Размер","2,5×6 м"],["Изготовление","2–3 недели"],["Гарантия","5 лет"],["Сдана","август 2026"]],"quote":["Банька — мечта!","Алла, ВКонтакте"],"inside":["Утепление: пол и потолок 150 мм, стены 100 мм","Крыша из гибкой черепицы","Окна двухкамерные Rehau","Пол со стоком для воды; влагостойкий ламинат 33 класса","Парная и моечная из осины и лиственницы","Входная дверь не промерзает зимой, внутри стеклянные банные двери","Электрика с защитой от удара током (УЗО)"]},{"id":"dom-48-ugol","name":"Дом 48 м² с угловой террасой","dim":"48 м² + угловая терраса","lead":"Две спальни, гостиная и кухня-столовая. Фото прислали заказчики после переезда.","cover":"c5","photos":["h5-01","h5-02","h5-03","h5-04","h5-05","h5-06","h5-07"],"caps":["Фото прислали заказчики после переезда","В прихожей встречает хозяйский пёс","Спальня с большим окном","Вторая спальня стала детской","Гостиная: угловой диван у окна","Напротив дивана тумба с телевизором","Санузел: водонагреватель и фильтр для воды"],"plans":["h5-08"],"specs":[["Площадь дома","48 м²"],["Спальни","2"],["Терраса","угловая, крытая"],["Сдан","август 2026"]],"quote":["Очень уютно получилось!","Марина, ВКонтакте"],"inside":["Две спальни","Гостиная","Кухня-столовая","Санузел","Угловая крытая терраса"]},{"id":"dom-69-terrasa","name":"Рыжий дом 69 м²","dim":"54 м² + терраса 15 м²","lead":"Кухня-гостиная с печью, две спальни и терраса 15 м² на всю ширину дома.","cover":"c6","photos":["h6-01","h6-02","h6-03","h14-03","h14-04","h14-05","h14-06"],"caps":["69 м² вместе с террасой: дом 6×9 м и терраса 6×2,5 м","Терраса на всю ширину дома, к ней ведут широкие ступени","Вид сбоку: окна вдоль длинной стороны и труба от печи","Кухня-гостиная: печь и стеклянная дверь на террасу","Спальня с двуспальной кроватью","Вторая спальня","Санузел: душ и раковина с тумбой"],"plans":[],"specs":[["Размер с террасой","6×11,5 м"],["Площадь дома","54 м²"],["Изготовление","4–5 недель"],["Сдан","июнь 2026"]],"quote":["Какие ваши дома просторные и красивые.","Елена, ВКонтакте"],"inside":["Кухня-гостиная с печью","Две спальни","Санузел с душем","Стеклянная дверь на террасу","Терраса 6×2,5 м на всю ширину дома"]},{"id":"dom-s-banej","name":"Дом с баней","dim":"Дом с парной и террасой, Карелия","lead":"Кухня-гостиная, спальня, санузел с душем и своя парная.","cover":"c7","photos":["h7-01","h16-01","h7-02","h7-03","h7-04","h7-05","h7-06","h7-07","h16-02","h16-03"],"caps":["Рыжий фасад и широкая терраса со ступенями","Зимой: дом среди заснеженных сосен, фото прислали хозяева","Кухня-гостиная, за резной перегородкой спальное место","Кухня: духовой шкаф, варочная панель и стол у окна","Спальня: двуспальная кровать и ещё одно спальное место","Санузел: душевая со стеклянными дверями и зеркало с подсветкой","Парная: дровяная печь и полки с подсветкой","Печь-каменка, дверь из парной ведёт в дом","Зимой: спальня за резной перегородкой, на окне гирлянда","Зимой: кровать у окна, за окном заснеженный лес"],"plans":["h7-08"],"specs":[["Где","Карелия"],["Изготовление","до 4 недель"],["Установка","1–2 дня"],["Парная","в доме"]],"quote":["Какой чудесный домик! С банькой! Вот оно — тихое семейное счастье и релакс!","Алла, ВКонтакте"],"inside":["Кухня-гостиная","Спальня","Санузел с душем","Парная","Широкая терраса со ступенями"]},{"id":"studio-27","name":"Дом-студия 27 м²","dim":"27 м²","lead":"Зимний дом с печью: комната, спальня и санузел. Готов за 12–15 дней.","cover":"c8","photos":["h8-01","h8-02","h8-03","h8-04","h8-05"],"caps":["Зимний дом-студия 27 м² с дровяной печью","Комната с печью и окнами на две стороны","Коридор: шкаф-купе с зеркалом, в конце печь","Отдельная спальня","Санузел: душ, раковина над стиральной машиной и унитаз"],"plans":[],"specs":[["Площадь","27 м²"],["Изготовление","12–15 дней"],["Установка","несколько часов"],["Сдан","апрель 2026"]],"inside":["Комната с печью","Спальня","Санузел с душем"]},{"id":"dom-48-zelenyj","name":"Дом 48 м², зелёный","dim":"48 м² + терраса","lead":"Спальня, кухня-гостиная с печью и терраса. Изготовление 3 недели, установка 1 день.","cover":"c9","photos":["h9-01","h9-02","h9-03","h9-04","h9-05","h9-06"],"caps":["Зелёный фасад и белая терраса на закате","Терраса с белыми перилами у входа","Кухня-гостиная с печью и окнами на две стороны","Кухня-гостиная во всю ширину дома, в конце печь","Спальня с большим окном","Санузел: стены под тёмный мрамор, место под душ"],"plans":["h9-07"],"specs":[["Площадь","48 м²"],["Спальня","1"],["Изготовление","3 недели"],["Сдан","март 2026"]],"quote":["Мне нравятся все ваши дома! Особенно в тёплых светлых тонах.","Татьяна, ВКонтакте"],"inside":["Кухня-гостиная с печью","Спальня","Прихожая с гардеробом","Санузел","Терраса с белыми перилами"]},{"id":"dom-48-ryzhij","name":"Дом 48 м², рыжий с графитом","dim":"48 м², 6×8 м","lead":"Две спальни, кухня-гостиная с печью и санузел. Под ключ за 3 недели.","cover":"c10","photos":["h10-01","h10-02","h10-03","h10-04","h10-05","h10-06","h10-07","h10-08"],"caps":["Дом 48 м² зимой: свет у входа и в окнах","Вход с фонарями по обе стороны двери","Гостиная: светлые стены и тёмный пол","Печь у стены, отделанной под чёрный мрамор","Стеклянная дверь на улицу","Прихожая: шкаф с жалюзийными дверцами","Душевая: стены под тёмный камень","Первый тост в новом доме, у печи"],"plans":["h10-09"],"specs":[["Размер","6×8 м, 48 м²"],["Спальни","2"],["Изготовление","3 недели"],["Сдан","март 2026"]],"quote":["А главное — качественный! Как вспомню свой мини-теремок, так вздрогну.","Нина, ВКонтакте"],"inside":["Две спальни","Кухня-гостиная с печью","Санузел с душем","Прихожая"]},{"id":"dom-54","name":"Дом 54 м², бордовый","dim":"54 м² + терраса","lead":"Две спальни, кухня-гостиная с печью и терраса у входа.","cover":"c11","photos":["h11-01","h11-02","h11-03","h11-04","h11-05"],"caps":["Бордовый фасад, белые окна и терраса","Кухня-гостиная с дровяной печью","Коридор к спальням","Санузел: душ, стены под светлый мрамор","Прихожая: входная дверь с зеркалом"],"plans":["h11-06"],"specs":[["Площадь","54 м²"],["Спальни","2"],["Изготовление","3 недели"],["Сдан","март 2026"]],"quote":["Цвет дома просто отличный! Планировка замечательная!","Олеся, ВКонтакте"],"inside":["Кухня-гостиная с печью","Две спальни","Санузел","Терраса у входа"]},{"id":"minidom-zimnij","name":"Зимний минидом","dim":"Минидом + терраса 14 м²","lead":"Кухня-гостиная, спальня, санузел и терраса 14 м². Под ключ за 2 недели.","cover":"c12","photos":["h12-01","h12-02","h12-03","h12-04","h12-05"],"caps":["Терраса 14 м² перед большими окнами","Печь уже топится, в доме тепло","Кухня-гостиная: диван у больших окон","Кухня вдоль стены","Санузел с душем"],"plans":["h12-06"],"specs":[["Терраса","14 м²"],["Спальня","1"],["Изготовление","2 недели"],["Сдан","март 2026"]],"quote":["Какой очаровательный и удобный домик! Компактный такой!","Алла, ВКонтакте"],"inside":["Кухня-гостиная 11,4 м²","Спальня 5,8 м²","Санузел","Прихожая","Терраса 14 м²"]},{"id":"dom-40","name":"Зимний дом 40 м²","dim":"30 м² + терраса 10 м²","lead":"Дом 30 м² и крытая терраса 10 м². Изготовление 3 недели, установка 1 день.","cover":"c15","photos":["h15-01","h15-02","h15-03","h15-04","h15-05","h15-06"],"caps":["Зимний дом 40 м² вместе с террасой: дом 30 м² и крытая терраса 10 м²","Терраса под общей крышей, у входа горит свет","Прихожая: входная дверь с зеркалом и шкаф с жалюзийными дверцами","Тёмные двери и дровяная печь в углу","Комната с двумя окнами и печью","Санузел: душ, водонагреватель и фильтры для воды"],"plans":[],"specs":[["Площадь дома","30 м²"],["Терраса","10 м², крытая"],["Изготовление","3 недели"],["Сдан","декабрь 2025"]],"inside":["Прихожая со шкафом","Комната с дровяной печью","Санузел с душем","Крытая терраса 10 м²"]},{"id":"dom-72","name":"Дом на вырост, 72 м²","dim":"60 м² + терраса 12 м²","lead":"Три модуля: 60 м² и терраса 12 м². Раньше здесь стоял один модуль 27 м².","cover":"c13","photos":["h13-01","h13-02","h13-03","h13-04","h13-05","h13-06","h13-07","h13-08","h13-09"],"caps":["Дом на вырост: 60 м² и терраса 12 м², три модуля","Терраса 12 м² у входа","Входная дверь не промерзает зимой","Прихожая со шкафом","В прихожей есть окно","Шкаф сделан под заказ","Кухня-гостиная: кухонная зона и печь","Кухня-гостиная: зона отдыха","Спальня родителей"],"plans":[],"specs":[["Площадь дома","60 м²"],["Терраса","12 м²"],["Сдан","октябрь 2025"]],"quote":["Юля, Юра и всей вашей команде огромное спасибо! …С вами просто замечательно работать! В доме тепло, просторно, светло… Не верится, что один модуль превратился в такую красоту.","Олеся, заказчица"],"inside":["Прихожая с окном и шкафом под заказ","Кухня-гостиная с печью","Спальня родителей","Терраса 12 м²"]}];
+const IMG = "../img/";
+const bArea = (b) => { for (const [k, v] of b.specs) { const m = /(\d+(?:,\d+)?)\s*м²/.exec(v); if (m && /площад|размер/i.test(k)) return parseFloat(m[1].replace(",", ".")); } const m = /(\d+(?:,\d+)?)\s*м²/.exec(b.dim); return m ? parseFloat(m[1].replace(",", ".")) : 48; };
+// похожий дом из каталога — подобран вручную по размеру; бани и дома без размеров — без ссылки
+const NEAR = {"chernyj-6x8":"36","dacha-3x9":"27","dom-48-ugol":"48","dom-69-terrasa":"66","studio-27":"27","dom-48-zelenyj":"48","dom-48-ryzhij":"48","dom-54":"54","dom-40":"40","dom-72":"66"};
+let tab = "katalog";
+
 
 // ---------- фильтр ----------
 const FILTERS = [["all","Все"],["b0","Студия"],["b1","1 спальня"],["b2","2 спальни"],["b3","3 спальни"],["ter","С террасой"]];
@@ -187,7 +238,26 @@ document.getElementById("chips").addEventListener("click", (e) => {
 
 // ---------- лента ----------
 function renderList() {
+  document.getElementById("chips").classList.toggle("hidden", tab === "built");
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-pressed", String(t.dataset.t === tab)));
+  if (tab === "built") {
+    const short = (q) => q.length > 72 ? q.slice(0, 70).replace(/\s\S*$/, "") + "…" : q;
+    document.getElementById("list").innerHTML = B.map(b => `
+    <button class="card" data-b="${b.id}">
+      <div class="photo"><img src="${IMG}${b.cover}.webp" alt="" loading="lazy"></div>
+      <div class="cap">
+        <div class="row"><span class="name">${b.name}</span></div>
+        <div class="dim">${b.dim}</div>
+        ${b.quote ? `<div class="q">«${short(b.quote[0])}» <span>— ${b.quote[1]}</span></div>` : ""}
+      </div>
+    </button>`).join("") + `<div class="facts bottom">
+      <div class="fact"><b>До 4 нед.</b><span>изготовление под ключ</span></div>
+      <div class="fact"><b>1–2 дня</b><span>установка на участке</span></div>
+      <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div></div>`;
+    queue(); return;
+  }
   const items = H.filter(pass);
+
   document.getElementById("list").innerHTML = items.length ? items.map(h => `
     <button class="card" data-id="${h.id}">
       <div class="photo"><img src="img/${h.id}-render.webp" alt="" loading="lazy"></div>
@@ -199,7 +269,12 @@ function renderList() {
   queue();
 }
 document.getElementById("list").addEventListener("click", (e) => {
-  const c = e.target.closest(".card"); if (c) location.hash = "#d/" + c.dataset.id;
+  const c = e.target.closest(".card"); if (!c) return;
+  location.hash = c.dataset.b ? "#b/" + c.dataset.b : "#d/" + c.dataset.id;
+});
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const t = e.target.closest(".tab"); if (!t || t.dataset.t === tab) return;
+  location.hash = t.dataset.t === "built" ? "#built" : "#katalog";
 });
 
 // центральный дом крупнее и светлее
@@ -255,6 +330,7 @@ function renderHouse(id) {
     <div class="gal">
       <div class="track" id="track">${slides.map(([c, s]) => `<div class="slide ${c}"><img src="${s}" alt=""></div>`).join("")}</div>
       <span class="lbl" id="lbl"></span>
+      <span class="zoomhint">нажмите, чтобы увеличить</span>
       <div class="dots" id="dots">${slides.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>
     </div>
     <div class="sec">
@@ -268,7 +344,7 @@ function renderHouse(id) {
       <div class="inc"><h3>Что входит</h3><div id="inc">${incRows(h)}</div></div>
     </div>
     <a class="link" href="#how">Как построен каждый дом</a>
-    <button class="ask" id="ask">Спросить про этот дом<small>${h.name}, ${kit === "warm" ? "тёплый контур" : "чистовая отделка"}</small></button>
+    ${contactBlock()}
     <p class="note">Цены по каталогу производителя. Точную стоимость с доставкой уточняйте.</p>`;
   el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "");
   el.querySelector(".prices").onclick = (e) => {
@@ -276,16 +352,8 @@ function renderHouse(id) {
     kit = b.dataset.k;
     el.querySelectorAll(".pbtn").forEach(x => x.setAttribute("aria-pressed", x.dataset.k === kit));
     el.querySelector("#inc").innerHTML = incRows(h);
-    el.querySelector("#ask small").textContent = `${h.name}, ${kit === "warm" ? "тёплый контур" : "чистовая отделка"}`;
   };
-  el.querySelector("#ask").onclick = () => {
-    const text = `Здравствуйте! Интересует ${h.name} (${h.box} м), ${kit === "warm" ? "тёплый контур" : "чистовая отделка"}.`;
-    if (MANAGER) {
-      const url = `https://t.me/${MANAGER}?text=${encodeURIComponent(text)}`;
-      try { if (T && T.platform && T.platform !== "unknown") { T.openTelegramLink(url); return; } } catch (e) {}
-      window.open(url, "_blank");
-    } else location.href = "tel:" + PHONE;
-  };
+  bindContact(el, () => `Здравствуйте! Интересует ${h.name}, ${kit === "warm" ? "тёплый контур" : "чистовая отделка"}.`);
   // точки и подпись галереи
   const track = el.querySelector("#track"), dots = el.querySelectorAll("#dots i"), lbl = el.querySelector("#lbl");
   const setDot = () => {
@@ -295,6 +363,101 @@ function renderHouse(id) {
   };
   track.addEventListener("scroll", () => requestAnimationFrame(setDot), { passive: true });
   setDot();
+  track.onclick = (e) => { const sl = e.target.closest(".slide"); if (!sl) return; const i = [...track.children].indexOf(sl); lbOpen(slides.map(([, src, l]) => [src, l || h.name]), i); };
+}
+
+// ---------- просмотр фото: двумя пальцами увеличить, листать свайпом, свайп вниз — закрыть ----------
+const lb = document.getElementById("lb"), lbImg = document.getElementById("lb-img"), lbN = document.getElementById("lb-n");
+const L = { list: [], i: 0, s: 1, x: 0, y: 0, pts: new Map(), d0: 0, s0: 1, c0: null, sx: 0, sy: 0, moved: false, t0: 0, lastTap: 0, pinched: false };
+function lbOpen(list, i) { L.list = list; L.i = i; lb.classList.add("on"); document.body.style.overflow = "hidden"; lbShow(); }
+function lbClose() { lb.classList.remove("on"); document.body.style.overflow = ""; L.pts.clear(); }
+function lbShow() { L.s = 1; L.x = 0; L.y = 0; lbImg.style.opacity = ""; lbImg.src = L.list[L.i][0];
+  lbN.textContent = (L.list[L.i][1] || "") + (L.list.length > 1 ? `   ${L.i + 1} / ${L.list.length}` : ""); lbApply(); }
+function lbApply() { lbImg.style.transform = `translate(${L.x}px,${L.y}px) scale(${L.s})`; }
+function lbClamp() { const W = lb.clientWidth, Hh = lb.clientHeight;
+  L.x = Math.min(0, Math.max(W - W * L.s, L.x)); L.y = Math.min(0, Math.max(Hh - Hh * L.s, L.y)); }
+function lbZoomAt(cx, cy, ns) { ns = Math.min(5, Math.max(1, ns)); L.x = cx - (cx - L.x) * ns / L.s; L.y = cy - (cy - L.y) * ns / L.s; L.s = ns; if (L.s === 1) { L.x = 0; L.y = 0; } lbClamp(); lbApply(); }
+function lbStep(d) { if (L.list.length > 1) { L.i = (L.i + d + L.list.length) % L.list.length; lbShow(); } }
+document.getElementById("lb-x").addEventListener("click", (e) => { e.stopPropagation(); lbClose(); });
+document.getElementById("lb-x").addEventListener("pointerdown", (e) => e.stopPropagation());
+lb.addEventListener("pointerdown", (e) => {
+  try { lb.setPointerCapture(e.pointerId); } catch (_) {}
+  L.pts.set(e.pointerId, [e.clientX, e.clientY]);
+  if (L.pts.size === 1) { L.sx = e.clientX; L.sy = e.clientY; L.moved = false; L.pinched = false; L.t0 = Date.now(); L.bx = L.x; L.by = L.y; }
+  if (L.pts.size === 2) { const [a, b] = [...L.pts.values()]; L.d0 = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1; L.s0 = L.s;
+    L.c0 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, L.x, L.y]; L.pinched = true; lbImg.style.opacity = ""; }
+});
+lb.addEventListener("pointermove", (e) => {
+  if (!L.pts.has(e.pointerId)) return;
+  L.pts.set(e.pointerId, [e.clientX, e.clientY]);
+  if (L.pts.size >= 2) {
+    const [a, b] = [...L.pts.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+    const ns = Math.min(5, Math.max(1, L.s0 * d / L.d0)); const cx = (a[0] + b[0]) / 2, cy = (a[1] + b[1]) / 2;
+    L.x = cx - (L.c0[0] - L.c0[2]) * ns / L.s0; L.y = cy - (L.c0[1] - L.c0[3]) * ns / L.s0; L.s = ns; lbClamp(); lbApply(); L.moved = true;
+  } else {
+    const dx = e.clientX - L.sx, dy = e.clientY - L.sy;
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) L.moved = true;
+    if (L.s > 1.01) { L.x = L.bx + dx; L.y = L.by + dy; lbClamp(); lbApply(); }
+    else if (!L.pinched) { if (Math.abs(dy) > Math.abs(dx)) { L.x = 0; L.y = dy * 0.7; lbImg.style.opacity = String(Math.max(.35, 1 - Math.abs(dy) / 320)); } else { L.y = 0; L.x = dx * 0.5; } lbApply(); }
+  }
+});
+function lbUp(e) {
+  if (!L.pts.has(e.pointerId)) return;
+  L.pts.delete(e.pointerId);
+  if (L.pts.size === 1) { const [a] = [...L.pts.values()]; L.sx = a[0]; L.sy = a[1]; L.bx = L.x; L.by = L.y; return; }
+  if (L.pts.size) return;
+  const dx = e.clientX - L.sx, dy = e.clientY - L.sy, dt = Date.now() - L.t0;
+  if (L.s <= 1.01 && !L.pinched) {
+    lbImg.style.opacity = "";
+    if (dy > 100 && Math.abs(dy) > Math.abs(dx)) { lbClose(); return; }
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) { lbStep(dx < 0 ? 1 : -1); return; }
+    L.s = 1; L.x = 0; L.y = 0; lbApply();
+  }
+  if (!L.moved && dt < 300) {
+    const now = Date.now();
+    if (now - L.lastTap < 320) { L.s > 1.01 ? lbZoomAt(e.clientX, e.clientY, 1) : lbZoomAt(e.clientX, e.clientY, 2.5); L.lastTap = 0; }
+    else L.lastTap = now;
+  }
+}
+lb.addEventListener("pointerup", lbUp); lb.addEventListener("pointercancel", lbUp);
+lb.addEventListener("wheel", (e) => { e.preventDefault(); lbZoomAt(e.clientX, e.clientY, L.s * (e.deltaY < 0 ? 1.15 : 0.87)); }, { passive: false });
+addEventListener("keydown", (e) => { if (!lb.classList.contains("on")) return;
+  if (e.key === "Escape") lbClose(); if (e.key === "ArrowRight") lbStep(1); if (e.key === "ArrowLeft") lbStep(-1); });
+
+// ---------- страница построенного дома ----------
+function renderBuilt(id) {
+  const b = B.find(x => x.id === id); if (!b) { location.hash = "#built"; return; }
+  const el = document.getElementById("v-house");
+  const plans = b.plans || [];
+  const photos = b.photos.map((p, i) => [IMG + p + ".webp", b.caps[i] || b.name]).concat(plans.map(p => [IMG + p + ".webp", "Планировка"]));
+  el.innerHTML = `
+    <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${b.name}</span></div>
+    <div class="bphotos" id="bphotos">
+      ${b.photos.map((p, i) => `<figure data-i="${i}"><img src="${IMG}${p}.webp" alt="" loading="${i ? "lazy" : "eager"}"><figcaption>${b.caps[i] || ""}</figcaption></figure>`).join("")}
+      ${plans.map((p, i) => `<figure class="bplan" data-i="${b.photos.length + i}"><img src="${IMG}${p}.webp" alt="" loading="lazy"><figcaption>Планировка</figcaption></figure>`).join("")}
+    </div>
+    <div class="sec">
+      <h2 class="h-name">${b.name}</h2>
+      <div class="h-dim">${b.dim}</div>
+      ${b.lead ? `<p style="margin:12px 0 0;font-size:15px">${b.lead}</p>` : ""}
+      <div class="specs">${b.specs.map(([k, v]) => `<div class="r"><span class="k">${k}</span><span class="v">${v}</span></div>`).join("")}</div>
+      ${b.inside && b.inside.length ? `<div class="inside">${b.inside.map(x => `<span>${x}</span>`).join("")}</div>` : ""}
+    </div>
+    ${b.quote ? `<div class="bquote">«${b.quote[0]}»<span>${b.quote[1]}</span></div>` : ""}
+    ${contactBlock()}`;
+  el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "#built");
+  el.querySelector("#bphotos").onclick = (e) => { const f = e.target.closest("figure"); if (f) lbOpen(photos, +f.dataset.i); };
+  bindContact(el, () => `Здравствуйте! Посмотрел(а) в каталоге «${b.name}», хочу обсудить похожий дом.`);
+}
+const ICON_TG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.9 4.6 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.2L5.9 13.5l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.5 3.1c.9-.3 1.7.2 1.4 1.5z"/></svg>';
+const ICON_PH = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.7.5 2.6.7a2 2 0 0 1 1.7 2z"/></svg>';
+// одинаковый блок связи на любой странице дома
+function contactBlock() { return `<div class="contact"><div class="t">Обсудим ваш дом?</div><div class="bt"><a class="tg" href="#" data-act="tg">${ICON_TG}Написать</a><a class="ph" href="tel:${PHONE}">${ICON_PH}Позвонить</a></div></div>`; }
+function bindContact(el, text) { const a = el.querySelector('[data-act="tg"]'); if (a) a.onclick = (e) => { e.preventDefault(); tgOpen(text()); }; }
+function tgOpen(text) {
+  const url = MANAGER ? `https://t.me/${MANAGER}?text=${encodeURIComponent(text)}` : `https://t.me/${PHONE}`;
+  try { if (T && T.platform && T.platform !== "unknown") { T.openTelegramLink(url); return; } } catch (e) {}
+  window.open(url, "_blank");
 }
 
 // ---------- переходы ----------
@@ -303,14 +466,21 @@ let listScroll = 0;
 function route() {
   const h = location.hash;
   const show = (v) => Object.values(views).forEach(id => document.getElementById(id).classList.toggle("hidden", id !== v));
-  if (h.startsWith("#d/")) { if (!document.getElementById("v-list").classList.contains("hidden")) listScroll = scrollY; renderHouse(h.slice(3)); show(views.house); scrollTo(0, 0); }
+  const listShown = !document.getElementById("v-list").classList.contains("hidden");
+  if (h.startsWith("#d/")) { if (listShown) listScroll = scrollY; renderHouse(h.slice(3)); show(views.house); scrollTo(0, 0); }
+  else if (h.startsWith("#b/")) { if (listShown) listScroll = scrollY; renderBuilt(h.slice(3)); show(views.house); scrollTo(0, 0); }
   else if (h === "#how") { show(views.how); scrollTo(0, 0); }
-  else { show(views.list); scrollTo(0, listScroll); queue(); }
-  try { if (T && T.BackButton) { h ? T.BackButton.show() : T.BackButton.hide(); } } catch (e) {}
+  else {
+    const nt = h === "#built" ? "built" : "katalog";
+    if (nt !== tab) { tab = nt; renderList(); if (listShown) { const t = document.getElementById("tabs").getBoundingClientRect().top + scrollY - 60; listScroll = Math.min(scrollY, Math.max(0, t)); } }
+    show(views.list); scrollTo(0, listScroll); queue();
+  }
+  try { if (T && T.BackButton) { (h && h !== "#built" && h !== "#katalog") ? T.BackButton.show() : T.BackButton.hide(); } } catch (e) {}
 }
 try { T && T.BackButton && T.BackButton.onClick(() => history.back()); } catch (e) {}
 document.getElementById("how-back").onclick = () => history.back();
 addEventListener("hashchange", route);
+document.getElementById("tgbtn").addEventListener("click", (e) => { e.preventDefault(); tgOpen("Здравствуйте! Пишу из каталога домов."); });
 renderChips(); renderList(); route();
 </script>
 </body>
