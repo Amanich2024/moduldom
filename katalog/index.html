@@ -385,8 +385,13 @@ function renderHouse(id) {
 // ---------- просмотр фото: двумя пальцами увеличить, листать свайпом, свайп вниз — закрыть ----------
 const lb = document.getElementById("lb"), lbImg = document.getElementById("lb-img"), lbN = document.getElementById("lb-n");
 const L = { list: [], i: 0, s: 1, x: 0, y: 0, pts: new Map(), d0: 0, s0: 1, c0: null, sx: 0, sy: 0, moved: false, t0: 0, lastTap: 0, pinched: false };
-function lbOpen(list, i) { L.list = list; L.i = i; lb.classList.add("on"); document.body.style.overflow = "hidden"; lbShow(); }
-function lbClose() { lb.classList.remove("on"); document.body.style.overflow = ""; L.pts.clear(); }
+function lbOpen(list, i) { L.list = list; L.i = i; lb.classList.add("on"); document.body.style.overflow = "hidden"; lbShow();
+  // просмотр фото — отдельный шаг истории: «назад» сначала закрывает фото
+  try { history.pushState({ lb: 1 }, ""); } catch (e) {}
+  try { T && T.BackButton && T.BackButton.show(); } catch (e) {} }
+function lbHide() { lb.classList.remove("on"); document.body.style.overflow = ""; L.pts.clear(); }
+function lbClose() { if (!lb.classList.contains("on")) return; if (history.state && history.state.lb) history.back(); else lbHide(); }
+addEventListener("popstate", () => { if (lb.classList.contains("on")) { lbHide(); try { if (T && T.BackButton && !(location.hash && location.hash !== "#built" && location.hash !== "#katalog")) T.BackButton.hide(); } catch (e) {} } });
 function lbShow() { L.s = 1; L.x = 0; L.y = 0; lbImg.style.opacity = ""; lbImg.src = L.list[L.i][0];
   lbN.textContent = (L.list[L.i][1] || "") + (L.list.length > 1 ? `   ${L.i + 1} / ${L.list.length}` : ""); lbApply(); }
 function lbApply() { lbImg.style.transform = `translate(${L.x}px,${L.y}px) scale(${L.s})`; }
