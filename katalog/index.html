@@ -44,6 +44,19 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .cap .q { margin-top:4px; font-size:13px; color:var(--ink); font-style:italic; }
 .cap .q span { color:var(--muted); font-style:normal; }
 /* ---------- построенный дом ---------- */
+.bgal .slide { aspect-ratio:4/3; background:#DDD8CA; }
+.bgal .slide.plan { background:#fff; }
+.bgal .dots { flex-wrap:wrap; padding:10px 24px 0; }
+.thumbs { display:flex; gap:6px; overflow-x:auto; padding:8px 16px 2px; scrollbar-width:none; }
+.thumbs::-webkit-scrollbar { display:none; }
+.thumb { flex:0 0 58px; height:44px; border-radius:8px; overflow:hidden; border:2px solid transparent; padding:0; background:var(--line); cursor:pointer; opacity:.6; transition:opacity .2s; }
+.thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.thumb[aria-current="true"] { border-color:var(--green); opacity:1; }
+.bcap { margin:6px 16px 0; min-height:19px; font-size:13px; color:var(--muted); text-align:center; }
+.bgal .zoomhint { bottom:auto; top:10px; }
+.pinch-veil { position:fixed; inset:0; z-index:90; background:rgba(0,0,0,0); pointer-events:none; transition:background .2s; }
+.pinch-clone { position:fixed; z-index:91; pointer-events:none; object-fit:cover; transform-origin:0 0; will-change:transform; box-shadow:0 20px 60px rgba(0,0,0,.35); }
+.pinch-clone.back { transition:transform .25s ease; }
 .bphotos figure { margin:0 0 12px; cursor:zoom-in; }
 .bphotos img { width:100%; display:block; aspect-ratio:4/3; object-fit:cover; background:#DDD8CA; }
 .bphotos figcaption { padding:6px 16px 0; font-size:13px; color:var(--muted); }
@@ -77,6 +90,7 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .list { padding:8px 0 0; }
 .card { display:block; width:100%; text-align:left; border:0; background:none; padding:0; margin:0 0 22px; color:inherit; cursor:pointer; transform:scale(var(--s,1)); transform-origin:50% 50%; }
 .photo { position:relative; aspect-ratio:16/9; overflow:hidden; background:#DDD8CA; border-radius:calc(var(--radius) * var(--r,1)); }
+.photo.built { aspect-ratio:4/3; }
 .photo img { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(var(--b,1)); }
 .cap { padding:8px 16px 0; opacity:var(--o,1); }
 .cap .row { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
@@ -244,7 +258,7 @@ function renderList() {
     const short = (q) => q.length > 72 ? q.slice(0, 70).replace(/\s\S*$/, "") + "…" : q;
     document.getElementById("list").innerHTML = B.map(b => `
     <button class="card" data-b="${b.id}">
-      <div class="photo"><img src="${IMG}${b.cover}.webp" alt="" loading="lazy"></div>
+      <div class="photo built"><img src="${IMG}${b.cover}.webp" alt="" loading="lazy"${b.cover === "hero-1" ? ' style="object-position:50% 30%"' : ""}></div>
       <div class="cap">
         <div class="row"><span class="name">${b.name}</span></div>
         <div class="dim">${b.dim}</div>
@@ -424,6 +438,42 @@ lb.addEventListener("wheel", (e) => { e.preventDefault(); lbZoomAt(e.clientX, e.
 addEventListener("keydown", (e) => { if (!lb.classList.contains("on")) return;
   if (e.key === "Escape") lbClose(); if (e.key === "ArrowRight") lbStep(1); if (e.key === "ArrowLeft") lbStep(-1); });
 
+// ---------- увеличение двумя пальцами прямо на странице (как в Instagram) ----------
+(function () {
+  let P = null;
+  const dist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  const mid = (t) => [(t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2];
+  document.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 2 || P || lb.classList.contains("on")) return;
+    const img = e.target.closest && e.target.closest(".photo img, .gal .slide img"); if (!img) return;
+    const r = img.getBoundingClientRect(); const cs = getComputedStyle(img);
+    const c = document.createElement("img"); c.src = img.currentSrc || img.src; c.className = "pinch-clone";
+    Object.assign(c.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", objectFit: cs.objectFit, borderRadius: cs.borderRadius, background: cs.backgroundColor });
+    const v = document.createElement("div"); v.className = "pinch-veil";
+    document.body.append(v, c); img.style.visibility = "hidden";
+    const m = mid(e.touches);
+    P = { img, c, v, r, d0: dist(e.touches), m0: m, ox: m[0] - r.left, oy: m[1] - r.top };
+    requestAnimationFrame(() => { v.style.background = "rgba(0,0,0,.55)"; });
+    e.preventDefault();
+  }, { passive: false });
+  document.addEventListener("touchmove", (e) => {
+    if (!P) return; e.preventDefault();
+    if (e.touches.length < 2) return;
+    const s = Math.max(1, Math.min(4, dist(e.touches) / P.d0)); const m = mid(e.touches);
+    const tx = m[0] - P.m0[0] + P.ox * (1 - s), ty = m[1] - P.m0[1] + P.oy * (1 - s);
+    P.c.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+  }, { passive: false });
+  const end = (e) => {
+    if (!P || (e.touches && e.touches.length >= 2)) return;
+    const Q = P; P = null;
+    Q.c.classList.add("back"); Q.c.style.transform = "translate(0,0) scale(1)"; Q.v.style.background = "rgba(0,0,0,0)";
+    setTimeout(() => { Q.img.style.visibility = ""; Q.c.remove(); Q.v.remove(); }, 260);
+    // чтобы после щипка не сработало нажатие (не открылся просмотр)
+    const block = (ev) => { ev.stopPropagation(); ev.preventDefault(); }; document.addEventListener("click", block, true); setTimeout(() => document.removeEventListener("click", block, true), 400);
+  };
+  document.addEventListener("touchend", end); document.addEventListener("touchcancel", end);
+})();
+
 // ---------- страница построенного дома ----------
 function renderBuilt(id) {
   const b = B.find(x => x.id === id); if (!b) { location.hash = "#built"; return; }
@@ -432,9 +482,11 @@ function renderBuilt(id) {
   const photos = b.photos.map((p, i) => [IMG + p + ".webp", b.caps[i] || b.name]).concat(plans.map(p => [IMG + p + ".webp", "Планировка"]));
   el.innerHTML = `
     <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${b.name}</span></div>
-    <div class="bphotos" id="bphotos">
-      ${b.photos.map((p, i) => `<figure data-i="${i}"><img src="${IMG}${p}.webp" alt="" loading="${i ? "lazy" : "eager"}"><figcaption>${b.caps[i] || ""}</figcaption></figure>`).join("")}
-      ${plans.map((p, i) => `<figure class="bplan" data-i="${b.photos.length + i}"><img src="${IMG}${p}.webp" alt="" loading="lazy"><figcaption>Планировка</figcaption></figure>`).join("")}
+    <div class="gal bgal">
+      <div class="track" id="track">${photos.map(([src], i) => `<div class="slide ${i < b.photos.length ? "render" : "plan"}"><img src="${src}" alt="" loading="${i < 2 ? "eager" : "lazy"}"></div>`).join("")}</div>
+      <span class="zoomhint">нажмите, чтобы увеличить</span>
+      <div class="thumbs" id="thumbs">${photos.map(([src], i) => `<button class="thumb" type="button" data-i="${i}" aria-current="${i === 0}"><img src="${src}" alt="" loading="lazy"></button>`).join("")}</div>
+      <p class="bcap" id="bcap"></p>
     </div>
     <div class="sec">
       <h2 class="h-name">${b.name}</h2>
@@ -446,7 +498,16 @@ function renderBuilt(id) {
     ${b.quote ? `<div class="bquote">«${b.quote[0]}»<span>${b.quote[1]}</span></div>` : ""}
     ${contactBlock()}`;
   el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "#built");
-  el.querySelector("#bphotos").onclick = (e) => { const f = e.target.closest("figure"); if (f) lbOpen(photos, +f.dataset.i); };
+  const track = el.querySelector("#track"), thumbs = [...el.querySelectorAll(".thumb")], strip = el.querySelector("#thumbs"), bcap = el.querySelector("#bcap");
+  let cur = -1;
+  const setDot = () => { const i = Math.max(0, Math.min(photos.length - 1, Math.round(track.scrollLeft / (track.clientWidth || 1))));
+    if (i === cur) return; cur = i;
+    thumbs.forEach((t, j) => t.setAttribute("aria-current", String(j === i)));
+    const t = thumbs[i]; strip.scrollTo({ left: t.offsetLeft - strip.clientWidth / 2 + t.offsetWidth / 2, behavior: "smooth" });
+    bcap.textContent = photos[i][1] === b.name ? "" : photos[i][1]; };
+  thumbs.forEach(t => t.addEventListener("click", () => track.scrollTo({ left: track.clientWidth * +t.dataset.i, behavior: "smooth" })));
+  track.addEventListener("scroll", () => requestAnimationFrame(setDot), { passive: true }); setDot();
+  track.onclick = (e) => { const sl = e.target.closest(".slide"); if (sl) lbOpen(photos, [...track.children].indexOf(sl)); };
   bindContact(el, () => `Здравствуйте! Посмотрел(а) в каталоге «${b.name}», хочу обсудить похожий дом.`);
 }
 const ICON_TG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.9 4.6 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.2L5.9 13.5l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.5 3.1c.9-.3 1.7.2 1.4 1.5z"/></svg>';
