@@ -197,6 +197,8 @@ const MANAGER = "";            // @username Юлии без «@»; пока пу
 const PHONE = "+79111422642";
 const T = window.Telegram && window.Telegram.WebApp;
 try { T && T.ready(); T && T.expand(); } catch (e) {}
+// жест «вниз» не должен сворачивать приложение (Telegram 7.7+)
+try { if (T && T.disableVerticalSwipes) T.disableVerticalSwipes(); } catch (e) {}
 
 // Площади комнат — по чертежам в каталоге. Цены — из каталога, две комплектации.
 const H = [
@@ -474,6 +476,22 @@ addEventListener("keydown", (e) => { if (!lb.classList.contains("on")) return;
   document.addEventListener("touchend", end); document.addEventListener("touchcancel", end);
 })();
 
+// ---------- свайп от левого края вправо — назад (в просмотре фото — закрыть) ----------
+(function () {
+  let E = null;
+  document.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) { E = null; return; }
+    const t = e.touches[0];
+    E = t.clientX < 28 ? { x: t.clientX, y: t.clientY } : null;
+  }, { passive: true });
+  document.addEventListener("touchend", (e) => {
+    if (!E) return; const t = e.changedTouches[0]; const dx = t.clientX - E.x, dy = Math.abs(t.clientY - E.y); E = null;
+    if (dx < 70 || dy > dx * 0.7) return;
+    if (lb.classList.contains("on")) { lbClose(); return; }
+    if (location.hash && location.hash !== "#built" && location.hash !== "#katalog") history.back();
+  }, { passive: true });
+})();
+
 // ---------- страница построенного дома ----------
 function renderBuilt(id) {
   const b = B.find(x => x.id === id); if (!b) { location.hash = "#built"; return; }
@@ -483,9 +501,9 @@ function renderBuilt(id) {
   el.innerHTML = `
     <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${b.name}</span></div>
     <div class="gal bgal">
-      <div class="track" id="track">${photos.map(([src], i) => `<div class="slide ${i < b.photos.length ? "render" : "plan"}"><img src="${src}" alt="" loading="${i < 2 ? "eager" : "lazy"}"></div>`).join("")}</div>
+      <div class="track" id="track">${photos.map(([src], i) => `<div class="slide ${i < b.photos.length ? "render" : "plan"}"><img src="${src}" alt="" decoding="async"></div>`).join("")}</div>
       <span class="zoomhint">нажмите, чтобы увеличить</span>
-      <div class="thumbs" id="thumbs">${photos.map(([src], i) => `<button class="thumb" type="button" data-i="${i}" aria-current="${i === 0}"><img src="${src}" alt="" loading="lazy"></button>`).join("")}</div>
+      <div class="thumbs" id="thumbs">${photos.map(([src], i) => `<button class="thumb" type="button" data-i="${i}" aria-current="${i === 0}"><img src="${src}" alt="" decoding="async"></button>`).join("")}</div>
       <p class="bcap" id="bcap"></p>
     </div>
     <div class="sec">
