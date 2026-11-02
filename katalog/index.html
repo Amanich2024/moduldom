@@ -129,7 +129,8 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .inc h3 { font-size:16px; padding:10px 0 6px; }
 .inc .r { display:grid; grid-template-columns:110px 1fr; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
 .inc .r .k { color:var(--muted); }
-.inc .r.off .v { color:#A8A69E; }
+.inc s { color:#A8A69E; text-decoration-color:#A8A69E; }
+.incnote { margin:0; padding:8px 0 10px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); }
 .inc .r.off .v small { display:block; color:var(--green-2); font-size:12px; margin-top:2px; }
 .link { display:block; margin:14px 16px 0; padding:14px 16px; background:var(--card); border-radius:14px; color:var(--ink); text-decoration:none; font-size:15px; }
 .link::after { content:"›"; float:right; color:var(--muted); font-size:20px; line-height:1; }
@@ -181,19 +182,6 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 <section id="v-house" class="hidden"></section>
 <div class="lb" id="lb"><img id="lb-img" alt=""><button class="x" id="lb-x" aria-label="Закрыть">×</button><div class="n" id="lb-n"></div></div>
 
-<section id="v-how" class="hidden">
-  <div class="back"><button id="how-back" aria-label="Назад">‹</button><span class="t">Как построен каждый дом</span></div>
-  <div class="how">
-    <div class="b"><h3>Каркас</h3><p>Стены из сухой доски 40×100 мм, лаги пола и стропила — 40×150 мм. Сухая доска не ведёт и не трескается после сборки.</p></div>
-    <div class="b"><h3>Утепление</h3><p>Каменная вата: 150 мм в полу и кровле, 100 мм в стенах. Дом для круглого года, не только для лета.</p></div>
-    <div class="b"><h3>Защита от влаги</h3><p>Снаружи ветро-влагозащитная мембрана, внутри пароизоляция, с обеих сторон вентиляционный зазор 25 мм — стены дышат и не отсыревают.</p></div>
-    <div class="b"><h3>Кровля</h3><p>Мягкая черепица с доборными элементами. Тихая в дождь, не гремит, как металл.</p></div>
-    <div class="b"><h3>Снаружи</h3><p>Имитация бруса сорта AB, окрашена в два слоя. Цвет выбираете вы.</p></div>
-    <div class="b"><h3>Внутри (чистовая отделка)</h3><p>Вагонка штиль сорта AB, окрашена в один слой, на полу ламинат 33 класса. Цвета на выбор. Межкомнатные двери МДФ.</p></div>
-    <div class="b"><h3>Окна и дверь</h3><p>Окна ПВХ, белые. Входная дверь металлическая, утеплённая.</p></div>
-    <div class="b"><h3>Терраса</h3><p>Палубная доска, антисептированная, ограждение по периметру. У домов с крытой террасой — та же мягкая черепица.</p></div>
-  </div>
-</section>
 
 </div>
 <script>
@@ -324,20 +312,21 @@ addEventListener("resize", queue);
 // ---------- страница дома ----------
 let kit = "fin";
 function incRows(h) {
-  const off = kit === "warm";
+  // один список для обеих комплектаций; в «Тёплом контуре» то, что только в чистовой, зачёркнуто
+  const x = (t) => kit === "warm" ? `<s>${t}</s>` : t;
   const rows = [
     ["Стены", "Сухая доска 40×100, снаружи имитация бруса, окрашена в 2 слоя — цвет на выбор"],
     ["Утепление", "Каменная вата: пол и кровля 150 мм, стены 100 мм"],
+    ["Защита от влаги", "Мембраны снаружи и внутри"],
     ["Кровля", "Мягкая черепица"],
-    ["Внутри", off ? null : "Вагонка штиль, окрашена — цвет на выбор"],
-    ["Пол", off ? "Основание под чистовой пол (плиты Quick Deck)" : "Ламинат 33 класса — цвет на выбор"],
-    ["Двери", off ? "Входная металлическая, утеплённая" : `Входная металлическая, утеплённая; межкомнатные — ${h.doors}`],
+    ["Внутри", x("Вагонка штиль, окрашена — цвет на выбор")],
+    ["Пол", "Основание под плиты Quick Deck" + x("; ламинат 33 класса — цвет на выбор")],
+    ["Двери", "Входная металлическая, утеплённая" + x(`; межкомнатные — ${h.doors}`)],
     ["Окна", h.win + ", ПВХ, белые"],
   ];
   if (h.ter) rows.push(["Терраса", `${h.ter} м, палубная доска с ограждением, под крышей`]);
-  return rows.map(([k, v]) => v === null
-    ? `<div class="r off"><span class="k">${k}</span><span class="v">Стены без отделки<small>в «Чистовой отделке» — вагонка, окрашена</small></span></div>`
-    : `<div class="r"><span class="k">${k}</span><span class="v">${v}</span></div>`).join("");
+  return rows.map(([k, v]) => `<div class="r"><span class="k">${k}</span><span class="v">${v}</span></div>`).join("") +
+    (kit === "warm" ? `<p class="incnote">Зачёркнутое входит в «Чистовую отделку»</p>` : "");
 }
 function renderHouse(id) {
   const h = H.find(x => x.id === id); if (!h) { location.hash = ""; return; }
@@ -362,7 +351,6 @@ function renderHouse(id) {
       </div>
       <div class="inc"><h3>Что входит</h3><div id="inc">${incRows(h)}</div></div>
     </div>
-    <a class="link" href="#how">Как построен каждый дом</a>
     ${contactBlock()}
     <p class="note">Цены по каталогу производителя. Точную стоимость с доставкой уточняйте.</p>`;
   el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "");
@@ -553,7 +541,7 @@ function tgOpen(text) {
 }
 
 // ---------- переходы ----------
-const views = { list: "v-list", house: "v-house", how: "v-how" };
+const views = { list: "v-list", house: "v-house" };
 let listScroll = 0;
 function route() {
   const h = location.hash;
@@ -561,7 +549,6 @@ function route() {
   const listShown = !document.getElementById("v-list").classList.contains("hidden");
   if (h.startsWith("#d/")) { if (listShown) listScroll = scrollY; renderHouse(h.slice(3)); show(views.house); scrollTo(0, 0); }
   else if (h.startsWith("#b/")) { if (listShown) listScroll = scrollY; renderBuilt(h.slice(3)); show(views.house); scrollTo(0, 0); }
-  else if (h === "#how") { show(views.how); scrollTo(0, 0); }
   else {
     const nt = h === "#built" ? "built" : "katalog";
     if (nt !== tab) { tab = nt; renderList(); if (listShown) { const t = document.getElementById("tabs").getBoundingClientRect().top + scrollY - 60; listScroll = Math.min(scrollY, Math.max(0, t)); } }
@@ -570,7 +557,6 @@ function route() {
   try { if (T && T.BackButton) { (h && h !== "#built" && h !== "#katalog") ? T.BackButton.show() : T.BackButton.hide(); } } catch (e) {}
 }
 try { T && T.BackButton && T.BackButton.onClick(() => history.back()); } catch (e) {}
-document.getElementById("how-back").onclick = () => history.back();
 addEventListener("hashchange", route);
 document.getElementById("tgbtn").addEventListener("click", (e) => { e.preventDefault(); tgOpen("Здравствуйте! Пишу из каталога домов."); });
 document.querySelector(".facts .tap").addEventListener("click", () => tgOpen("Здравствуйте! Хочу приехать посмотреть производство."));
