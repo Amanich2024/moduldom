@@ -237,6 +237,7 @@ const bArea = (b) => { for (const [k, v] of b.specs) { const m = /(\d+(?:,\d+)?)
 // похожий дом из каталога — подобран вручную по размеру; бани и дома без размеров — без ссылки
 const NEAR = {"chernyj-6x8":"36","dacha-3x9":"27","dom-48-ugol":"48","dom-69-terrasa":"66","studio-27":"27","dom-48-zelenyj":"48","dom-48-ryzhij":"48","dom-54":"54","dom-40":"40","dom-72":"66"};
 let tab = "katalog";
+const tabPos = { katalog: null, built: null };
 
 
 // ---------- фильтр ----------
@@ -566,7 +567,13 @@ function route() {
   else if (h.startsWith("#b/")) { if (listShown) listScroll = scrollY; renderBuilt(h.slice(3)); show(views.house); scrollTo(0, 0); }
   else {
     const nt = h === "#built" ? "built" : "katalog";
-    if (nt !== tab) { tab = nt; renderList(); if (listShown) { const t = document.getElementById("tabs").getBoundingClientRect().top + scrollY - 60; listScroll = Math.min(scrollY, Math.max(0, t)); } }
+    if (nt !== tab) {
+      // у каждой вкладки своё место в ленте: уходя — запоминаем, возвращаясь — восстанавливаем
+      const start = Math.max(0, document.getElementById("list").offsetTop - document.getElementById("tabs").getBoundingClientRect().bottom - 8);
+      if (listShown) tabPos[tab] = scrollY;
+      tab = nt; renderList();
+      listScroll = tabPos[nt] != null ? tabPos[nt] : (listShown ? Math.min(scrollY, start) : 0);
+    }
     show(views.list); scrollTo(0, listScroll); queue();
   }
   try { if (T && T.BackButton) { (h && h !== "#built" && h !== "#katalog") ? T.BackButton.show() : T.BackButton.hide(); } } catch (e) {}
