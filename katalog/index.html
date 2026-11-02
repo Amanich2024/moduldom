@@ -129,8 +129,7 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .inc h3 { font-size:16px; padding:10px 0 6px; }
 .inc .r { display:grid; grid-template-columns:110px 1fr; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
 .inc .r .k { color:var(--muted); }
-.inc s { color:#A8A69E; text-decoration-color:#A8A69E; }
-.incnote { margin:0; padding:8px 0 10px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); }
+.inc .r.off .v { color:#A8A69E; }
 .inc .r.off .v small { display:block; color:var(--green-2); font-size:12px; margin-top:2px; }
 .link { display:block; margin:14px 16px 0; padding:14px 16px; background:var(--card); border-radius:14px; color:var(--ink); text-decoration:none; font-size:15px; }
 .link::after { content:"›"; float:right; color:var(--muted); font-size:20px; line-height:1; }
@@ -312,21 +311,21 @@ addEventListener("resize", queue);
 // ---------- страница дома ----------
 let kit = "fin";
 function incRows(h) {
-  // один список для обеих комплектаций; в «Тёплом контуре» то, что только в чистовой, зачёркнуто
-  const x = (t) => kit === "warm" ? `<s>${t}</s>` : t;
+  const off = kit === "warm";
   const rows = [
     ["Стены", "Сухая доска 40×100, снаружи имитация бруса, окрашена в 2 слоя — цвет на выбор"],
     ["Утепление", "Каменная вата: пол и кровля 150 мм, стены 100 мм"],
     ["Защита от влаги", "Мембраны снаружи и внутри"],
     ["Кровля", "Мягкая черепица"],
-    ["Внутри", x("Вагонка штиль, окрашена — цвет на выбор")],
-    ["Пол", "Основание под плиты Quick Deck" + x("; ламинат 33 класса — цвет на выбор")],
-    ["Двери", "Входная металлическая, утеплённая" + x(`; межкомнатные — ${h.doors}`)],
+    ["Внутри", off ? null : "Вагонка штиль, окрашена — цвет на выбор"],
+    ["Пол", off ? "Основание под чистовой пол (плиты Quick Deck)" : "Ламинат 33 класса — цвет на выбор"],
+    ["Двери", off ? "Входная металлическая, утеплённая" : `Входная металлическая, утеплённая; межкомнатные — ${h.doors}`],
     ["Окна", h.win + ", ПВХ, белые"],
   ];
   if (h.ter) rows.push(["Терраса", `${h.ter} м, палубная доска с ограждением, под крышей`]);
-  return rows.map(([k, v]) => `<div class="r"><span class="k">${k}</span><span class="v">${v}</span></div>`).join("") +
-    (kit === "warm" ? `<p class="incnote">Зачёркнутое входит в «Чистовую отделку»</p>` : "");
+  return rows.map(([k, v]) => v === null
+    ? `<div class="r off"><span class="k">${k}</span><span class="v">Стены без отделки<small>в «Чистовой отделке» — вагонка, окрашена</small></span></div>`
+    : `<div class="r"><span class="k">${k}</span><span class="v">${v}</span></div>`).join("");
 }
 function renderHouse(id) {
   const h = H.find(x => x.id === id); if (!h) { location.hash = ""; return; }
