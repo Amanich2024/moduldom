@@ -137,6 +137,9 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .contact { margin:20px 16px 0; }
 .endcta { margin:8px 16px 8px; padding:20px 16px; background:var(--card); border-radius:var(--radius); }
 .endcta .sub2 { margin:-4px 0 14px; font-size:14px; color:var(--muted); }
+.toast { position:fixed; left:16px; right:16px; max-width:488px; margin:0 auto; bottom:calc(24px + env(safe-area-inset-bottom,0px)); z-index:120; transform:translateY(20px); opacity:0; pointer-events:none;
+  background:rgba(30,36,32,.94); color:#fff; font-size:14px; padding:12px 16px; border-radius:12px; text-align:center; transition:opacity .25s, transform .25s; }
+.toast.on { opacity:1; transform:none; }
 .contact .t { font-family:"Oswald",sans-serif; font-weight:600; font-size:18px; margin-bottom:10px; }
 .contact .bt { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .contact a { display:flex; align-items:center; justify-content:center; gap:8px; padding:15px 10px; border-radius:14px; text-decoration:none; font-family:"Oswald",sans-serif; font-weight:600; font-size:17px; }
@@ -193,6 +196,7 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
   </div>
 <div style="height:28px"></div>
 </section>
+<div class="toast" id="toast"></div>
 <div class="lb" id="lb"><img id="lb-img" alt=""><button class="x" id="lb-x" aria-label="Закрыть">×</button><div class="n" id="lb-n"></div></div>
 
 
@@ -583,6 +587,15 @@ addEventListener("hashchange", route);
 document.getElementById("tgbtn").addEventListener("click", (e) => { e.preventDefault(); tgOpen("Здравствуйте! Пишу из каталога домов."); });
 document.querySelector(".facts .tap").addEventListener("click", () => tgOpen("Здравствуйте! Хочу приехать посмотреть производство."));
 document.getElementById("how-back").onclick = () => history.back();
+// ---------- заглушки связи (демо-версия): кнопки не звонят и не пишут ----------
+const STUB = true;
+const STUB_TEXT = "Демо-версия: кнопка заработает после подключения";
+let toastT = 0;
+function toast(t) { const el = document.getElementById("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("on"), 3000); }
+if (STUB) document.addEventListener("click", (e) => {
+  const a = e.target.closest('a[href^="tel:"], [data-act="tg"], #tgbtn, .facts .tap');
+  if (!a) return; e.preventDefault(); e.stopImmediatePropagation(); toast(STUB_TEXT);
+}, true);
 renderChips(); renderList(); route();
 </script>
 </body>
