@@ -573,10 +573,19 @@ function route() {
     const nt = h === "#built" ? "built" : "katalog";
     if (nt !== tab) {
       // у каждой вкладки своё место в ленте: уходя — запоминаем, возвращаясь — восстанавливаем
-      const start = Math.max(0, document.getElementById("list").offsetTop - document.getElementById("tabs").getBoundingClientRect().bottom - 8);
       if (listShown) tabPos[tab] = scrollY;
       tab = nt; renderList();
-      listScroll = tabPos[nt] != null ? tabPos[nt] : (listShown ? Math.min(scrollY, start) : 0);
+      if (tabPos[nt] != null) { listScroll = tabPos[nt]; show(views.list); scrollTo(0, listScroll); }
+      else {
+        // первый заход на вкладку — всегда «Список»: первый дом сразу под вкладками, шапка свёрнута
+        show(views.list);
+        // цель: шапка свёрнута, вкладки только что прилипли под ней — дальше первый дом (в каталоге — фильтры и первый дом)
+        const TB = document.getElementById("tabs"), FA = document.querySelector(".facts");
+        topEl.style.setProperty("--p", "1");
+        const cs = getComputedStyle(TB);
+        const y = FA.getBoundingClientRect().bottom + scrollY + (parseFloat(cs.marginTop) || 0) - (parseFloat(cs.top) || 0);
+        listScroll = Math.max(70, Math.round(y));
+      }
     }
     show(views.list); scrollTo(0, listScroll); queue();
   }
