@@ -82,8 +82,6 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:4px 16px 6px; }
 .fact { background:var(--card); border-radius:12px; padding:10px 10px 9px; min-width:0; }
 .fact b { display:block; font-family:"Oswald",sans-serif; font-weight:600; font-size:20px; line-height:1.1; color:var(--green); }
-.fact.tap { border:0; text-align:left; font:inherit; color:inherit; cursor:pointer; box-shadow:inset 0 0 0 1.5px var(--green); }
-.fact.tap span { color:var(--green); }
 .fact span { display:block; font-size:12px; line-height:1.3; color:var(--muted); margin-top:3px; }
 .chips { display:flex; gap:8px; padding:10px 16px 6px; overflow-x:auto; scrollbar-width:none; }
 .chips::-webkit-scrollbar { display:none; }
@@ -172,7 +170,7 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
   <div class="facts">
     <div class="fact"><b>До 4 нед.</b><span>изготовление под ключ</span></div>
     <div class="fact"><b>1–2 дня</b><span>установка на участке</span></div>
-    <button class="fact tap" type="button"><b>Свой цех</b><span>приезжайте, посмотрите ›</span></button>
+    <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div>
   </div>
   <nav class="tabs" id="tabs"><div class="in">
     <button class="tab" data-t="katalog" aria-pressed="true">Каталог</button>
@@ -594,7 +592,6 @@ function route() {
 try { T && T.BackButton && T.BackButton.onClick(() => history.back()); } catch (e) {}
 addEventListener("hashchange", route);
 document.getElementById("tgbtn").addEventListener("click", (e) => { e.preventDefault(); tgOpen("Здравствуйте! Пишу из каталога домов."); });
-document.querySelector(".facts .tap").addEventListener("click", () => tgOpen("Здравствуйте! Хочу приехать посмотреть производство."));
 document.getElementById("how-back").onclick = () => history.back();
 // ---------- заглушки связи (демо-версия): кнопки не звонят и не пишут ----------
 const STUB = true;
@@ -602,7 +599,7 @@ const STUB_TEXT = "Демо-версия: кнопка заработает по
 let toastT = 0;
 function toast(t) { const el = document.getElementById("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("on"), 3000); }
 if (STUB) document.addEventListener("click", (e) => {
-  const a = e.target.closest('a[href^="tel:"], [data-act="tg"], #tgbtn, .facts .tap');
+  const a = e.target.closest('a[href^="tel:"], [data-act="tg"], #tgbtn');
   if (!a) return; e.preventDefault(); e.stopImmediatePropagation(); toast(STUB_TEXT);
 }, true);
 renderChips(); renderList(); route();
