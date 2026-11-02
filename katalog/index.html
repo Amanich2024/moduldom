@@ -191,7 +191,7 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
     <div class="b"><h3>Собираем в цеху, а не под дождём</h3><p>Дом собирают в сухом тёплом цеху в любую погоду. Ни снег, ни дождь не попадают внутрь стен во время стройки. На участок привозим готовый дом и ставим за 1–2 дня.</p></div>
     <div class="b"><h3>Тихо в любую погоду</h3><p>Мягкая черепица гасит звук дождя и не гремит, как металл.</p></div>
   </div>
-  <div id="how-cta"></div>
+<div style="height:28px"></div>
 </section>
 <div class="lb" id="lb"><img id="lb-img" alt=""><button class="x" id="lb-x" aria-label="Закрыть">×</button><div class="n" id="lb-n"></div></div>
 
@@ -562,7 +562,7 @@ function route() {
   const show = (v) => Object.values(views).forEach(id => document.getElementById(id).classList.toggle("hidden", id !== v));
   const listShown = !document.getElementById("v-list").classList.contains("hidden");
   if (h.startsWith("#d/")) { if (listShown) listScroll = scrollY; renderHouse(h.slice(3)); show(views.house); scrollTo(0, 0); }
-  else if (h === "#how") { const c = document.getElementById("how-cta"); c.innerHTML = contactBlock(); bindContact(c, () => "Здравствуйте! Прочитал(а), как вы строите дома, хочу обсудить свой."); show(views.how); scrollTo(0, 0); }
+  else if (h === "#how") { show(views.how); scrollTo(0, 0); }
   else if (h.startsWith("#b/")) { if (listShown) listScroll = scrollY; renderBuilt(h.slice(3)); show(views.house); scrollTo(0, 0); }
   else {
     const nt = h === "#built" ? "built" : "katalog";
