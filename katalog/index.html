@@ -147,6 +147,7 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 
 /* ---------- как построено ---------- */
 .how { padding:0 16px; }
+.how-lead { margin:6px 0 0; font-size:16px; line-height:1.5; }
 .how .b { background:var(--card); border-radius:var(--radius); padding:14px 16px; margin-top:12px; }
 .how .b h3 { font-size:17px; margin-bottom:4px; }
 .how .b p { margin:0; font-size:14px; color:#3A3F3A; }
@@ -179,6 +180,19 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 </section>
 
 <section id="v-house" class="hidden"></section>
+<section id="v-how" class="hidden">
+  <div class="back"><button id="how-back" aria-label="Назад">‹</button><span class="t">Как построен каждый дом</span></div>
+  <div class="how">
+    <p class="how-lead">Мы строим по каркасной технологии, которую часто называют финской. Так строят в Финляндии и Скандинавии, где климат похож на наш: сыро, ветрено, зимой мороз сменяется оттепелью.</p>
+    <div class="b"><h3>Почему это подходит для Петербурга и области</h3><p>Здесь главный враг дома — не мороз, а сырость и перепады температуры. Каркасный дом устроен так, что влага не задерживается в стенах, а дерево и утеплитель остаются сухими годами.</p></div>
+    <div class="b"><h3>Тёплый с первого дня</h3><p>Каменная вата 150 мм в полу и кровле и 100 мм в стенах. Дом быстро прогревается и долго держит тепло. В нём можно жить круглый год, не только летом.</p></div>
+    <div class="b"><h3>Стены, которые не сыреют</h3><p>Стена собрана слоями. Снаружи ветрозащитная плёнка не пускает ветер и дождь, внутри пароизоляция не пускает пар из комнат в утеплитель. Между слоями оставлен воздушный зазор — через него выветривается случайная влага.</p></div>
+    <div class="b"><h3>Сухая доска</h3><p>Каркас из сухой доски: после сборки она не ведёт и не трескается, углы и стены остаются ровными.</p></div>
+    <div class="b"><h3>Собираем в цеху, а не под дождём</h3><p>Дом собирают в сухом тёплом цеху в любую погоду. Ни снег, ни дождь не попадают внутрь стен во время стройки. На участок привозим готовый дом и ставим за 1–2 дня.</p></div>
+    <div class="b"><h3>Тихо в любую погоду</h3><p>Мягкая черепица гасит звук дождя и не гремит, как металл.</p></div>
+  </div>
+  <div id="how-cta"></div>
+</section>
 <div class="lb" id="lb"><img id="lb-img" alt=""><button class="x" id="lb-x" aria-label="Закрыть">×</button><div class="n" id="lb-n"></div></div>
 
 
@@ -350,6 +364,7 @@ function renderHouse(id) {
       </div>
       <div class="inc"><h3>Что входит</h3><div id="inc">${incRows(h)}</div></div>
     </div>
+    <a class="link" href="#how">Как построен каждый дом</a>
     ${contactBlock()}
     <p class="note">Цены по каталогу производителя. Точную стоимость с доставкой уточняйте.</p>`;
   el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "");
@@ -540,13 +555,14 @@ function tgOpen(text) {
 }
 
 // ---------- переходы ----------
-const views = { list: "v-list", house: "v-house" };
+const views = { list: "v-list", house: "v-house", how: "v-how" };
 let listScroll = 0;
 function route() {
   const h = location.hash;
   const show = (v) => Object.values(views).forEach(id => document.getElementById(id).classList.toggle("hidden", id !== v));
   const listShown = !document.getElementById("v-list").classList.contains("hidden");
   if (h.startsWith("#d/")) { if (listShown) listScroll = scrollY; renderHouse(h.slice(3)); show(views.house); scrollTo(0, 0); }
+  else if (h === "#how") { const c = document.getElementById("how-cta"); c.innerHTML = contactBlock(); bindContact(c, () => "Здравствуйте! Прочитал(а), как вы строите дома, хочу обсудить свой."); show(views.how); scrollTo(0, 0); }
   else if (h.startsWith("#b/")) { if (listShown) listScroll = scrollY; renderBuilt(h.slice(3)); show(views.house); scrollTo(0, 0); }
   else {
     const nt = h === "#built" ? "built" : "katalog";
@@ -559,6 +575,7 @@ try { T && T.BackButton && T.BackButton.onClick(() => history.back()); } catch (
 addEventListener("hashchange", route);
 document.getElementById("tgbtn").addEventListener("click", (e) => { e.preventDefault(); tgOpen("Здравствуйте! Пишу из каталога домов."); });
 document.querySelector(".facts .tap").addEventListener("click", () => tgOpen("Здравствуйте! Хочу приехать посмотреть производство."));
+document.getElementById("how-back").onclick = () => history.back();
 renderChips(); renderList(); route();
 </script>
 </body>
