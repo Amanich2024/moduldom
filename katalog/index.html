@@ -384,7 +384,7 @@ function renderHouse(id) {
     </div>
     <a class="link" href="#how">Как построен каждый дом</a>
     ${contactBlock()}
-    <p class="note">Точную стоимость с доставкой уточняйте.</p>`;
+    <p class="note">Цены по каталогу производителя. Точную стоимость с доставкой уточняйте.</p>`;
   el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "");
   el.querySelector(".prices").onclick = (e) => {
     const b = e.target.closest(".pbtn"); if (!b) return;
