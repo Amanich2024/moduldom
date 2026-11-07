@@ -163,6 +163,16 @@ body.intg .back button { display:none; }
 .how .b h3 { font-size:17px; margin-bottom:4px; }
 .how .b p { margin:0; font-size:14px; color:var(--ink2); }
 </style>
+<!-- Yandex.Metrika counter -->
+<script>
+(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
+for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+ym(113657787,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/113657787" style="position:absolute;left:-9999px" alt=""></div></noscript>
+<!-- /Yandex.Metrika counter -->
 </head>
 <body>
 <div class="app">
@@ -647,6 +657,40 @@ if (STUB) document.addEventListener("click", (e) => {
 }, true);
 document.getElementById("chips").addEventListener("scroll", chipsFade, { passive: true });
 renderChips(); renderList(); route();
+
+// ---------- Яндекс.Метрика: цели и виртуальные просмотры ----------
+const YM_ID = 113657787;
+const ymGoal = (name, params) => { try { if (window.ym) ym(YM_ID, "reachGoal", name, params || {}); } catch (e) {} };
+const ymHit = (path, title) => { try { if (window.ym) ym(YM_ID, "hit", path, { title: title || document.title }); } catch (e) {} };
+const YM_PLATFORM = (T && T.platform && T.platform !== "unknown") ? T.platform : "web";
+try { ym(YM_ID, "params", { platform: YM_PLATFORM, where: inTG ? "telegram" : "browser" }); } catch (e) {}
+function trackRoute() {
+  const h = location.hash || "";
+  if (!h || h === "#katalog") return;
+  const base = location.pathname;
+  if (h.indexOf("#d/") === 0) {
+    const id = h.slice(3);
+    const item = H.find(x => x.id === id);
+    ymHit(base + h, item ? item.name + " — Загородная студия" : document.title);
+    ymGoal("open_house", { house: id });
+  } else if (h.indexOf("#b/") === 0) {
+    const id = h.slice(3);
+    const item = B.find(x => x.id === id);
+    ymHit(base + h, item ? item.name + " — Загородная студия" : document.title);
+    ymGoal("open_built", { built: id });
+  } else {
+    ymHit(base + h, document.title);
+  }
+}
+addEventListener("hashchange", trackRoute);
+addEventListener("click", (e) => {
+  const t = e.target;
+  if (!t || !t.closest) return;
+  if (t.closest('a[href^="tel:"]')) { ymGoal("call_click"); return; }
+  if (t.closest('[data-act="tg"], #tgbtn')) ymGoal("write_click");
+}, true);
+const _lbOpen = lbOpen;
+lbOpen = function (list, i) { ymGoal("photo_zoom"); return _lbOpen(list, i); };
 </script>
 </body>
 </html>
