@@ -117,6 +117,7 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .gal .slide { flex:0 0 100%; scroll-snap-align:start; aspect-ratio:16/11; background:var(--card); display:flex; align-items:center; justify-content:center; }
 .gal .slide img { max-width:100%; max-height:100%; object-fit:contain; display:block; }
 .gal .slide.render img { width:100%; height:100%; object-fit:cover; }
+.gal:not(.bgal) .slide.render img { object-fit:contain; }
 .gal .dots { display:flex; justify-content:center; gap:6px; padding:10px 0 0; }
 .gal .dots i { width:6px; height:6px; border-radius:50%; background:var(--dot); }
 .gal .dots i.on { background:var(--greenbtn); width:18px; border-radius:3px; }
@@ -320,7 +321,7 @@ function renderList() {
 
   document.getElementById("list").innerHTML = items.length ? items.map(h => `
     <button class="card" data-id="${h.id}">
-      <div class="photo"><img src="img/${h.id}-render.webp" alt="" loading="lazy"></div>
+      <div class="photo"><img src="img/${h.id}-render-framed.svg" alt="" loading="lazy"></div>
       <div class="cap">
         <div class="row"><span class="name">${h.name}</span><span class="price">от ${rub(h.warm)}</span></div>
         <div class="dim">${dimLine(h)}</div>
@@ -399,7 +400,7 @@ function incRows(h) {
 }
 function renderHouse(id) {
   const h = H.find(x => x.id === id); if (!h) { location.hash = ""; return; }
-  const slides = [["render", `img/${h.id}-render.webp`, ""], ["plan", `img/${h.id}-plan.webp`, "Планировка"], ["furn", `img/${h.id}-furn.webp`, "С мебелью"]];
+  const slides = [["render", `img/${h.id}-render-framed.svg`, ""], ["plan", `img/${h.id}-plan.webp`, "Планировка"], ["furn", `img/${h.id}-furn.webp`, "С мебелью"]];
   const rooms = h.rooms.map(([n, a]) => `<span>${n}${a ? ` <b>${m2(a)}</b>` : ""}</span>`).join("");
   const el = document.getElementById("v-house");
   el.innerHTML = `
