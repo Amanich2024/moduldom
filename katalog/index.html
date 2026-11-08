@@ -98,10 +98,10 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .chips::-webkit-scrollbar { display:none; }
 .chipswrap { position:relative; }
 .chipswrap.more::after { content:""; position:absolute; inset:0 0 0 auto; width:12px; background:linear-gradient(90deg,transparent,var(--bg)); pointer-events:none; }
-.chip { flex:none; min-width:48px; min-height:44px; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:5px 6px; font:inherit; font-size:12px; line-height:1.2; white-space:nowrap; color:var(--ink); cursor:pointer; user-select:none; }
+.chip { flex:none; min-width:44px; min-height:26px; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:1px 4px; font:inherit; font-size:12px; line-height:1.2; white-space:nowrap; color:var(--ink); cursor:pointer; user-select:none; }
 .chip[aria-pressed="true"] { background:var(--greenbtn); border-color:var(--greenbtn); color:#fff; }
 @media (max-width:420px) {
-  .chip:nth-child(-n+4) { flex-basis:calc((100% - 24px) / 4); min-width:max-content; }
+  .chip:nth-child(-n+4) { flex-basis:calc((100% - 32px) / 4); min-width:max-content; }
   .chipswrap.more::after { width:4px; }
 }
 .list { padding:8px 0 0; }
