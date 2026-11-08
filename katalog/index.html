@@ -265,30 +265,31 @@ const MANAGER = "";            // @username Юлии без «@»; пока пу
 const PHONE = "+79111422642";
 const T = window.Telegram && window.Telegram.WebApp;
 const launchParams = new URLSearchParams(location.search);
-const linenDesign = launchParams.get("design") === "linen" ||
-  launchParams.get("tgWebAppStartParam") === "linen" || T?.initDataUnsafe?.start_param === "linen";
+const linenDesign = launchParams.get("design") !== "classic";
 if (linenDesign) {
   document.documentElement.dataset.design = "linen";
   document.querySelector(".linen-hero").hidden = false;
   document.querySelector(".linen-hero img").src = "../img/hero-1.webp";
-  document.querySelector(".acts").innerHTML = '<button type="button" class="linen-button linen-secondary" id="linen-theme" aria-pressed="false">Сланец</button>';
 }
 try { T && T.ready(); T && T.expand(); } catch (e) {}
 // внутри Telegram свою кнопку «Назад» прячем — там нативная
 const inTG = !!(T && T.platform && T.platform !== "unknown");
 if (inTG) document.body.classList.add("intg");
-// тема: ?theme=dark|light в адресе принудительно, внутри Telegram — из настроек Telegram, вне — настройка системы
-const THEME_URL = (() => { try { return new URLSearchParams(location.search).get("theme"); } catch (e) { return null; } })();
+// В Telegram следуем его теме, в браузере учитываем ссылку для предпросмотра и тему системы.
+const previewTheme = launchParams.get("theme");
+const systemTheme = matchMedia("(prefers-color-scheme: dark)");
 function applyScheme() {
-  if (linenDesign) return;
-  let s = THEME_URL;
-  if (!s) { try { if (inTG && T && T.colorScheme) s = T.colorScheme; } catch (e) {} }
-  if (!s) { try { s = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } catch (e) {} }
-  document.body.classList.toggle("dark", s === "dark");
+  const theme = inTG ? T.colorScheme : previewTheme;
+  const dark = theme === "dark" || (theme !== "light" && systemTheme.matches);
+  if (linenDesign) {
+    document.documentElement.dataset.linenTheme = dark ? "slate" : "light";
+  } else {
+    document.body.classList.toggle("dark", dark);
+  }
 }
 applyScheme();
-try { T && T.onEvent && T.onEvent("themeChanged", applyScheme); } catch (e) {}
-try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyScheme); } catch (e) {}
+if (inTG) T.onEvent("themeChanged", applyScheme);
+systemTheme.addEventListener?.("change", applyScheme);
 // жест «вниз» не должен сворачивать приложение (Telegram 7.7+)
 try { if (T && T.disableVerticalSwipes) T.disableVerticalSwipes(); } catch (e) {}
 
@@ -765,14 +766,6 @@ function openLinenContact(intent, intro) {
   linenDialog.showModal();
 }
 if (linenDesign) {
-  const themeButton = document.getElementById("linen-theme");
-  function setLinenTheme(slate) {
-    document.documentElement.dataset.linenTheme = slate ? "slate" : "light";
-    themeButton.setAttribute("aria-pressed", String(slate));
-    themeButton.textContent = slate ? "Лён" : "Сланец";
-  }
-  setLinenTheme(false);
-  themeButton.addEventListener("click", () => setLinenTheme(themeButton.getAttribute("aria-pressed") !== "true"));
   document.querySelector("[data-linen-catalog]").addEventListener("click", event => {
     event.preventDefault();
     document.getElementById("tabs").scrollIntoView();
