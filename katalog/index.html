@@ -164,6 +164,7 @@ body.intg .back button { display:none; }
 .how .b h3 { font-size:17px; margin-bottom:4px; }
 .how .b p { margin:0; font-size:14px; color:var(--ink2); }
 </style>
+<link rel="stylesheet" href="linen.css?v=1">
 <!-- Yandex.Metrika counter -->
 <script>
 (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
@@ -188,6 +189,18 @@ ym(114125638,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webv
     </div>
     <div class="acts"><a class="call" href="https://t.me/+79111422642" id="tgbtn" aria-label="Написать в Telegram"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21.9 4.6 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.2L5.9 13.5l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.5 3.1c.9-.3 1.7.2 1.4 1.5z"/></svg></a><a class="call" href="tel:+79111422642" aria-label="Позвонить"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.7.5 2.6.7a2 2 0 0 1 1.7 2z"/></svg></a></div>
   </header>
+  <section class="linen-hero" aria-labelledby="linen-title" hidden>
+    <div class="linen-hero-copy">
+      <p class="linen-kicker">Своё производство · Санкт-Петербург</p>
+      <h2 id="linen-title">Дом за городом</h2>
+      <p>Выберите планировку и комплектацию. Посмотрите реальные дома и приезжайте в цех.</p>
+      <div class="linen-actions">
+        <a class="linen-button" href="#katalog" data-linen-catalog>Подобрать дом</a>
+        <a class="linen-button linen-secondary" href="#built">Построенные дома</a>
+      </div>
+    </div>
+    <figure><img alt="Построенный модульный дом с освещённой террасой" fetchpriority="high"><figcaption>Реальный дом «Загородной студии»</figcaption></figure>
+  </section>
   <div class="facts">
     <div class="fact"><b>До 4 нед.</b><span>изготовление под ключ</span></div>
     <div class="fact"><b>1–2 дня</b><span>установка на участке</span></div>
@@ -198,6 +211,7 @@ ym(114125638,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webv
     <button class="tab" data-t="built" aria-pressed="false">Построили</button>
   </div></nav>
   <div class="chipswrap" id="chipswrap"><div class="chips" id="chips"></div></div>
+  <p class="linen-list-note" hidden>Цены «от» указаны за тёплый контур.</p>
   <div class="list" id="list"></div>
 </section>
 
@@ -217,6 +231,32 @@ ym(114125638,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webv
 </section>
 <div class="toast" id="toast"></div>
 <div class="lb" id="lb"><img id="lb-img" alt=""><button class="x" id="lb-x" aria-label="Закрыть">×</button><div class="n" id="lb-n"></div></div>
+<dialog id="linen-contact" class="linen-contact" aria-labelledby="linen-contact-title">
+  <div class="linen-dialog-heading">
+    <h2 id="linen-contact-title">Обсудим ваш дом</h2>
+    <button type="button" class="linen-button linen-secondary" id="linen-close">Закрыть</button>
+  </div>
+  <div class="linen-actions" role="group" aria-label="Цель обращения">
+    <button type="button" class="linen-button linen-secondary" data-linen-intent="estimate" aria-pressed="true">Расчёт</button>
+    <button type="button" class="linen-button linen-secondary" data-linen-intent="visit" aria-pressed="false">Визит в цех</button>
+  </div>
+  <form id="linen-request">
+    <label for="linen-details">Населённый пункт или район</label>
+    <input id="linen-details" maxlength="120" required>
+    <button class="linen-button" type="submit">Подготовить сообщение</button>
+  </form>
+  <div id="linen-result" hidden>
+    <label for="linen-draft">Текст сообщения</label>
+    <textarea id="linen-draft" readonly rows="4"></textarea>
+    <p>Скопируйте текст и отправьте его студии в удобном канале.</p>
+    <button type="button" class="linen-button linen-secondary" id="linen-copy">Скопировать текст</button>
+    <span id="linen-status" role="status"></span>
+  </div>
+  <div class="linen-actions linen-channels">
+    <a href="https://www.avito.ru/brands/i16905878" target="_blank" rel="noopener noreferrer">Студия на Авито ↗</a>
+    <a href="https://vk.com/zagorodnaya_studia" target="_blank" rel="noopener noreferrer">Студия ВКонтакте ↗</a>
+  </div>
+</dialog>
 
 
 </div>
@@ -224,6 +264,15 @@ ym(114125638,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webv
 const MANAGER = "";            // @username Юлии без «@»; пока пусто — кнопка звонит
 const PHONE = "+79111422642";
 const T = window.Telegram && window.Telegram.WebApp;
+const launchParams = new URLSearchParams(location.search);
+const linenDesign = launchParams.get("design") === "linen" ||
+  launchParams.get("tgWebAppStartParam") === "linen" || T?.initDataUnsafe?.start_param === "linen";
+if (linenDesign) {
+  document.documentElement.dataset.design = "linen";
+  document.querySelector(".linen-hero").hidden = false;
+  document.querySelector(".linen-hero img").src = "../img/hero-1.webp";
+  document.querySelector(".acts").innerHTML = '<button type="button" class="linen-button linen-secondary" id="linen-theme" aria-pressed="false">Сланец</button>';
+}
 try { T && T.ready(); T && T.expand(); } catch (e) {}
 // внутри Telegram свою кнопку «Назад» прячем — там нативная
 const inTG = !!(T && T.platform && T.platform !== "unknown");
@@ -231,6 +280,7 @@ if (inTG) document.body.classList.add("intg");
 // тема: ?theme=dark|light в адресе принудительно, внутри Telegram — из настроек Telegram, вне — настройка системы
 const THEME_URL = (() => { try { return new URLSearchParams(location.search).get("theme"); } catch (e) { return null; } })();
 function applyScheme() {
+  if (linenDesign) return;
   let s = THEME_URL;
   if (!s) { try { if (inTG && T && T.colorScheme) s = T.colorScheme; } catch (e) {} }
   if (!s) { try { s = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } catch (e) {} }
@@ -289,7 +339,9 @@ function chipsFade() { const w = document.getElementById("chipswrap"); if (!w) r
   const c = document.getElementById("chips");
   w.classList.toggle("end", c.scrollLeft + c.clientWidth >= c.scrollWidth - 4); }
 function renderChips() {
-  document.getElementById("chips").innerHTML = FILTERS.map(([k,t]) => `<span class="chip" role="button" data-f="${k}" aria-pressed="${filter===k}">${t}</span>`).join("");
+  document.getElementById("chips").innerHTML = FILTERS.map(([k,t]) => linenDesign
+    ? `<button type="button" class="chip" data-f="${k}" aria-pressed="${filter===k}">${t}</button>`
+    : `<span class="chip" role="button" data-f="${k}" aria-pressed="${filter===k}">${t}</span>`).join("");
   chipsFade();
 }
 document.getElementById("chips").addEventListener("click", (e) => {
@@ -301,6 +353,8 @@ document.getElementById("chips").addEventListener("click", (e) => {
 
 // ---------- лента ----------
 function renderList() {
+  if (linenDesign) document.querySelector(".linen-hero").hidden = tab === "built";
+  if (linenDesign) document.querySelector(".linen-list-note").hidden = tab === "built";
   document.getElementById("chipswrap").classList.toggle("hidden", tab === "built");
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-pressed", String(t.dataset.t === tab)));
   if (tab === "built") {
@@ -309,6 +363,7 @@ function renderList() {
     <button class="card" data-b="${b.id}">
       <div class="photo built"><img src="${IMG}${b.cover}.webp" alt="" loading="lazy"${b.cover === "hero-1" ? ' style="object-position:50% 30%"' : ""}></div>
       <div class="cap">
+        ${linenDesign ? '<span class="linen-kicker">Реальный объект</span>' : ""}
         <div class="row"><span class="name">${b.name}</span></div>
         <div class="dim">${b.dim}</div>
         ${b.quote ? `<div class="q">«${short(b.quote[0])}» <span>— ${b.quote[1]}</span></div>` : ""}
@@ -323,8 +378,10 @@ function renderList() {
     <button class="card" data-id="${h.id}">
       <div class="photo"><img src="img/${h.id}-render-framed.svg" alt="" loading="lazy"></div>
       <div class="cap">
+        ${linenDesign ? '<span class="linen-kicker">Визуализация проекта</span>' : ""}
         <div class="row"><span class="name">${h.name}</span><span class="price">от ${rub(h.warm)}</span></div>
         <div class="dim">${dimLine(h)}</div>
+        ${linenDesign ? '<div class="linen-card-link">Планировка и комплектации →</div>' : ""}
       </div>
     </button>`).join("") + endCta() : `<div class="empty">Таких домов нет. Выберите другое.</div>`;
   bindContact(document.getElementById("list"), () => "Здравствуйте! Посмотрел(а) каталог, хочу обсудить дом.");
@@ -343,6 +400,7 @@ document.getElementById("tabs").addEventListener("click", (e) => {
 let raf = 0;
 function update() {
   raf = 0;
+  if (linenDesign) return;
   const VH = innerHeight, mid = VH * 0.5, reach = VH * 0.42, flat = 0.1;
   for (const c of document.querySelectorAll("#v-list .card")) {
     const ph = c.querySelector(".photo"), r = ph.getBoundingClientRect();
@@ -400,6 +458,8 @@ function incRows(h) {
 }
 function renderHouse(id) {
   const h = H.find(x => x.id === id); if (!h) { location.hash = ""; return; }
+  if (linenDesign) kit = "warm";
+  const related = linenDesign ? B.find(b => NEAR[b.id] === h.id) : null;
   const slides = [["render", `img/${h.id}-render-framed.svg`, ""], ["plan", `img/${h.id}-plan.webp`, "Планировка"], ["furn", `img/${h.id}-furn.webp`, "С мебелью"]];
   const rooms = h.rooms.map(([n, a]) => `<span>${n}${a ? ` <b>${m2(a)}</b>` : ""}</span>`).join("");
   const el = document.getElementById("v-house");
@@ -410,18 +470,22 @@ function renderHouse(id) {
       <span class="lbl" id="lbl"></span>
       <span class="zoomhint">нажмите, чтобы увеличить</span>
       <div class="dots" id="dots">${slides.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>
+      ${linenDesign ? `<div class="linen-gallery-tabs" role="group" aria-label="Вид проекта">${["Фасад", "Планировка", "С мебелью"].map((label, i) => `<button type="button" data-linen-slide="${i}" aria-pressed="${i === 0}">${label}</button>`).join("")}</div>` : ""}
     </div>
     <div class="sec">
       <h2 class="h-name">${h.name}</h2>
       <div class="h-dim">Дом ${h.box} м — ${m2(h.area)}${h.ter ? ` · терраса ${h.ter} м — ${m2(h.terArea)} под крышей` : ""}</div>
+      ${linenDesign && ["30", "36", "40", "48", "54", "66", "68"].includes(h.id) ? '<p class="linen-price-note">Размеры и состав помещений уточняйте по актуальному плану производителя.</p>' : ""}
       <div class="rooms">${rooms}</div>
       <div class="prices">
         <button class="pbtn" data-k="warm" aria-pressed="${kit==="warm"}"><span class="k">Тёплый контур</span><span class="v">${rub(h.warm)}</span></button>
         <button class="pbtn" data-k="fin" aria-pressed="${kit==="fin"}"><span class="k">Чистовая отделка</span><span class="v">${rub(h.fin)}</span></button>
       </div>
+      ${linenDesign ? '<p class="linen-price-note">Доставку уточняют по адресу участка.</p><button class="linen-button linen-price-action" type="button" data-linen-contact="estimate">Узнать цену с доставкой</button>' : ""}
       <div class="inc"><h3>Что входит</h3><div id="inc">${incRows(h)}</div></div>
     </div>
     <a class="link" href="#how">Как построен каждый дом</a>
+    ${related ? `<a class="link" href="#b/${related.id}">Похожий построенный дом · ${related.name}</a>` : ""}
     ${contactBlock()}
     <p class="note">Цены по каталогу производителя. Точную стоимость с доставкой уточняйте.</p>`;
   el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "");
@@ -434,9 +498,14 @@ function renderHouse(id) {
   bindContact(el, () => `Здравствуйте! Интересует ${h.name}, ${kit === "warm" ? "тёплый контур" : "чистовая отделка"}.`);
   // точки и подпись галереи
   const track = el.querySelector("#track"), dots = el.querySelectorAll("#dots i"), lbl = el.querySelector("#lbl");
+  const viewButtons = [...el.querySelectorAll("[data-linen-slide]")];
+  viewButtons.forEach(button => button.addEventListener("click", () => {
+    track.scrollTo({ left: track.clientWidth * Number(button.dataset.linenSlide) });
+  }));
   const setDot = () => {
     const i = Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / (track.clientWidth || 1))));
     dots.forEach((d, j) => d.classList.toggle("on", j === i));
+    viewButtons.forEach((button, j) => button.setAttribute("aria-pressed", String(j === i)));
     lbl.textContent = slides[i][2]; lbl.style.display = slides[i][2] ? "" : "none";
   };
   track.addEventListener("scroll", () => requestAnimationFrame(setDot), { passive: true });
@@ -581,6 +650,7 @@ function renderBuilt(id) {
       ${b.inside && b.inside.length ? `<div class="inside">${b.inside.map(x => `<span>${x}</span>`).join("")}</div>` : ""}
     </div>
     ${b.quote ? `<div class="bquote">«${b.quote[0]}»<span>${b.quote[1]}</span></div>` : ""}
+    ${linenDesign && BUILT_POSTS[b.id] ? `<a class="link" href="https://vk.com/wall-213255400_${BUILT_POSTS[b.id]}" target="_blank" rel="noopener noreferrer">Исходная публикация ВКонтакте</a>` : ""}
     ${contactBlock()}`;
   el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "#built");
   const track = el.querySelector("#track"), thumbs = [...el.querySelectorAll(".thumb")], strip = el.querySelector("#thumbs"), bcap = el.querySelector("#bcap");
@@ -600,9 +670,15 @@ const ICON_PH = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" str
 // одинаковый блок связи на любой странице дома
 const CTA_T = "Обсудим ваш дом";
 const CTA_S = "Ответим на вопросы и пригласим на производство — посмотреть дома в работе.";
-function endCta() { return `<div class="contact endcta"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="bt"><a class="tg" href="#" data-act="tg">${ICON_TG}Напишите нам</a><a class="ph" href="tel:${PHONE}">${ICON_PH}Позвонить</a></div></div>`; }
-function contactBlock() { return `<div class="contact endcta"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="bt"><a class="tg" href="#" data-act="tg">${ICON_TG}Напишите нам</a><a class="ph" href="tel:${PHONE}">${ICON_PH}Позвонить</a></div></div>`; }
+function endCta() { return contactBlock(); }
+function contactBlock() {
+  if (linenDesign) return `<div class="contact endcta linen-contact-block"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="linen-actions"><button class="linen-button" type="button" data-linen-contact="estimate">Запросить расчёт</button><button class="linen-button linen-secondary" type="button" data-linen-contact="visit">Договориться о визите</button></div><div class="linen-channels"><a href="https://t.me/modul_doma_SPb" target="_blank" rel="noopener noreferrer">Репортажи из цеха в Telegram ↗</a><a href="https://www.avito.ru/brands/i16905878" target="_blank" rel="noopener noreferrer">Профиль и отзывы на Авито ↗</a></div></div>`;
+  return `<div class="contact endcta"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="bt"><a class="tg" href="#" data-act="tg">${ICON_TG}Напишите нам</a><a class="ph" href="tel:${PHONE}">${ICON_PH}Позвонить</a></div></div>`;
+}
 function bindContact(el, text) { const a = el.querySelector('[data-act="tg"]'); if (a) a.onclick = (e) => { e.preventDefault(); tgOpen(text()); };
+  el.querySelectorAll("[data-linen-contact]").forEach(button => {
+    button.addEventListener("click", () => openLinenContact(button.dataset.linenContact, text()));
+  });
 }
 
 function tgOpen(text) {
@@ -628,6 +704,7 @@ function route() {
       if (listShown) tabPos[tab] = scrollY;
       tab = nt; renderList();
       if (tabPos[nt] != null) { listScroll = tabPos[nt]; show(views.list); scrollTo(0, listScroll); }
+      else if (linenDesign) listScroll = 0;
       else {
         // первый заход на вкладку — всегда «Список»: первый дом сразу под вкладками, шапка свёрнута
         show(views.list);
@@ -645,7 +722,7 @@ function route() {
 }
 try { T && T.BackButton && T.BackButton.onClick(() => history.back()); } catch (e) {}
 addEventListener("hashchange", route);
-document.getElementById("tgbtn").addEventListener("click", (e) => { e.preventDefault(); tgOpen("Здравствуйте! Пишу из каталога домов."); });
+document.getElementById("tgbtn")?.addEventListener("click", (e) => { e.preventDefault(); tgOpen("Здравствуйте! Пишу из каталога домов."); });
 document.getElementById("how-back").onclick = () => history.back();
 // ---------- заглушки связи (демо-версия): кнопки не звонят и не пишут ----------
 const STUB = true;
@@ -657,6 +734,73 @@ if (STUB) document.addEventListener("click", (e) => {
   if (!a) return; e.preventDefault(); e.stopImmediatePropagation(); toast(STUB_TEXT);
 }, true);
 document.getElementById("chips").addEventListener("scroll", chipsFade, { passive: true });
+const BUILT_POSTS = {
+  "chernyj-6x8":9192, "banya-s-komnatoj":9248, "dacha-3x9":9175, "banya-2x6":8987,
+  "dom-48-ugol":8933, "dom-69-terrasa":8565, "dom-s-banej":8426, "studio-27":8381,
+  "dom-48-zelenyj":8295, "dom-48-ryzhij":8232, "dom-54":8249, "minidom-zimnij":8209,
+  "dom-40":7844, "dom-72":7670
+};
+const linenDialog = document.getElementById("linen-contact");
+const linenDetails = document.getElementById("linen-details");
+const linenResult = document.getElementById("linen-result");
+const linenDraft = document.getElementById("linen-draft");
+const linenStatus = document.getElementById("linen-status");
+let linenIntent = "estimate";
+let linenIntro = "";
+function setLinenIntent(intent) {
+  linenIntent = intent;
+  const visit = intent === "visit";
+  document.querySelector('label[for="linen-details"]').textContent = visit ? "Когда вам удобно" : "Населённый пункт или район";
+  linenDetails.placeholder = visit ? "Например, в субботу после обеда" : "Например, Всеволожский район";
+  linenDialog.querySelectorAll("[data-linen-intent]").forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.linenIntent === intent));
+  });
+  linenDetails.value = "";
+  linenResult.hidden = true;
+  linenStatus.textContent = "";
+}
+function openLinenContact(intent, intro) {
+  linenIntro = intro;
+  setLinenIntent(intent);
+  linenDialog.showModal();
+}
+if (linenDesign) {
+  const themeButton = document.getElementById("linen-theme");
+  function setLinenTheme(slate) {
+    document.documentElement.dataset.linenTheme = slate ? "slate" : "light";
+    themeButton.setAttribute("aria-pressed", String(slate));
+    themeButton.textContent = slate ? "Лён" : "Сланец";
+  }
+  setLinenTheme(false);
+  themeButton.addEventListener("click", () => setLinenTheme(themeButton.getAttribute("aria-pressed") !== "true"));
+  document.querySelector("[data-linen-catalog]").addEventListener("click", event => {
+    event.preventDefault();
+    document.getElementById("tabs").scrollIntoView();
+  });
+  document.getElementById("linen-close").addEventListener("click", () => linenDialog.close());
+  linenDialog.querySelectorAll("[data-linen-intent]").forEach(button => {
+    button.addEventListener("click", () => setLinenIntent(button.dataset.linenIntent));
+  });
+  document.getElementById("linen-request").addEventListener("submit", event => {
+    event.preventDefault();
+    const details = linenDetails.value.trim();
+    if (!details) { linenDetails.focus(); return; }
+    linenDraft.value = linenIntent === "visit"
+      ? `Здравствуйте! Хочу приехать на производство «Загородной студии». Мне удобно: ${details}.`
+      : `${linenIntro} Подскажите стоимость с доставкой. Участок: ${details}.`;
+    linenResult.hidden = false;
+    linenStatus.textContent = "";
+  });
+  document.getElementById("linen-copy").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(linenDraft.value);
+      linenStatus.textContent = "Текст скопирован";
+    } catch {
+      linenDraft.select();
+      linenStatus.textContent = "Скопируйте выделенный текст";
+    }
+  });
+}
 renderChips(); renderList(); route();
 
 // ---------- Яндекс.Метрика: цели и виртуальные просмотры ----------
