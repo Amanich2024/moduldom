@@ -129,7 +129,18 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .gal .dots { display:flex; justify-content:center; gap:6px; padding:10px 0 0; }
 .gal .dots i { width:6px; height:6px; border-radius:50%; background:var(--dot); }
 .gal .dots i.on { background:var(--greenbtn); width:18px; border-radius:3px; }
-.gal .lbl { position:absolute; left:12px; bottom:28px; background:rgba(30,36,32,.75); color:#fff; font-size:12px; padding:4px 10px; border-radius:999px; pointer-events:none; }
+#v-house .gal:not(.bgal) .zoomhint { bottom:auto; top:8px; }
+.gallery-views {
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px;
+  margin-top:6px; padding:4px; border:1px solid var(--line); border-radius:10px; background:var(--tabbg);
+}
+.gallery-views button {
+  min-height:32px; padding:2px 4px; border:0; border-radius:6px;
+  background:transparent; color:var(--ink); font:inherit; font-size:13px; line-height:1.2; white-space:nowrap; cursor:pointer;
+}
+.gallery-views button[aria-pressed="true"] { background:var(--greenbtn); color:#fff; }
+.gallery-views button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
+.gal:has(.gallery-views) + .sec { padding-top:8px; }
 .sec { padding:14px 16px 0; }
 .h-name { font-size:26px; }
 .h-dim { color:var(--muted); font-size:14px; margin-top:2px; }
@@ -472,17 +483,19 @@ function renderHouse(id) {
   const h = H.find(x => x.id === id); if (!h) { location.hash = ""; return; }
   if (linenDesign) kit = "warm";
   const related = linenDesign ? B.find(b => NEAR[b.id] === h.id) : null;
-  const slides = [["render", `img/${h.id}-render-framed.svg`, ""], ["plan", `img/${h.id}-plan.webp`, "Планировка"], ["furn", `img/${h.id}-furn.webp`, "С мебелью"]];
+  const slides = [
+    ["render", `img/${h.id}-render-framed.svg`, "Дом"],
+    ["plan", `img/${h.id}-plan.webp`, "План"],
+    ["furn", `img/${h.id}-furn.webp`, "С мебелью"],
+  ];
   const rooms = h.rooms.map(([n, a]) => `<span>${n}${a ? ` <b>${m2(a)}</b>` : ""}</span>`).join("");
   const el = document.getElementById("v-house");
   el.innerHTML = `
     <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${h.name}</span></div>
     <div class="gal">
-      <div class="track" id="track">${slides.map(([c, s]) => `<div class="slide ${c}"><img src="${s}" alt=""></div>`).join("")}</div>
-      <span class="lbl" id="lbl"></span>
+      <div class="track" id="track">${slides.map(([c, s, label]) => `<div class="slide ${c}"><img src="${s}" alt="${label}"></div>`).join("")}</div>
       <span class="zoomhint">нажмите, чтобы увеличить</span>
-      <div class="dots" id="dots">${slides.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>
-      ${linenDesign ? `<div class="linen-gallery-tabs" role="group" aria-label="Вид проекта">${["Фасад", "Планировка", "С мебелью"].map((label, i) => `<button type="button" data-linen-slide="${i}" aria-pressed="${i === 0}">${label}</button>`).join("")}</div>` : ""}
+      <div class="gallery-views" role="group" aria-label="Изображения проекта">${slides.map(([, , label], i) => `<button type="button" data-gallery-slide="${i}" aria-pressed="${i === 0}">${label}</button>`).join("")}</div>
     </div>
     <div class="sec">
       <h2 class="h-name">${h.name}</h2>
@@ -507,21 +520,17 @@ function renderHouse(id) {
     el.querySelector("#inc").innerHTML = incRows(h);
   };
   bindContact(el, () => `Здравствуйте! Интересует ${h.name}, ${kit === "warm" ? "тёплый контур" : "чистовая отделка"}.`);
-  // точки и подпись галереи
-  const track = el.querySelector("#track"), dots = el.querySelectorAll("#dots i"), lbl = el.querySelector("#lbl");
-  const viewButtons = [...el.querySelectorAll("[data-linen-slide]")];
+  const track = el.querySelector("#track");
+  const viewButtons = el.querySelectorAll("[data-gallery-slide]");
   viewButtons.forEach(button => button.addEventListener("click", () => {
-    track.scrollTo({ left: track.clientWidth * Number(button.dataset.linenSlide) });
+    track.scrollTo({ left: track.clientWidth * Number(button.dataset.gallerySlide) });
   }));
-  const setDot = () => {
+  const syncGallerySelection = () => {
     const i = Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / (track.clientWidth || 1))));
-    dots.forEach((d, j) => d.classList.toggle("on", j === i));
     viewButtons.forEach((button, j) => button.setAttribute("aria-pressed", String(j === i)));
-    lbl.textContent = slides[i][2]; lbl.style.display = slides[i][2] ? "" : "none";
   };
-  track.addEventListener("scroll", () => requestAnimationFrame(setDot), { passive: true });
-  setDot();
-  track.onclick = (e) => { const sl = e.target.closest(".slide"); if (!sl) return; const i = [...track.children].indexOf(sl); lbOpen(slides.map(([, src, l]) => [src, l || h.name]), i); };
+  track.addEventListener("scroll", () => requestAnimationFrame(syncGallerySelection), { passive: true });
+  track.onclick = (e) => { const sl = e.target.closest(".slide"); if (!sl) return; const i = [...track.children].indexOf(sl); lbOpen(slides.map(([type, src, label]) => [src, type === "render" ? h.name : label]), i); };
 }
 
 // ---------- просмотр фото: двумя пальцами увеличить, листать свайпом, свайп вниз — закрыть ----------
