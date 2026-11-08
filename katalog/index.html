@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 /* Травертин */
@@ -18,11 +18,12 @@
 body.dark { --bg:#242324; --card:#302E2F; --ink:#F5EEE6; --muted:#C1BBB6; --green:#E5C5A7; --green-2:#E9CFB7; --greenbtn:#674B39; --line:#514F4E;
   --top1:#443F3C; --top2:#302E2F; --tabbg:#2C2A2B; --backbg:#242324E6; --photobg:#302E2F; --dot:#6F6B6A;
   --selbg:#463A33; --muteda:#B6B1AC; --ink2:#DAD4CD; --factbg:#302E2F; }
+:root { --display-font:Georgia,"Times New Roman",serif; }
 * { box-sizing:border-box; }
 html,body { margin:0; overflow-anchor:none; }
 body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.45; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
 .app { max-width:520px; margin:0 auto; padding:0 0 calc(24px + env(safe-area-inset-bottom,0px)); }
-h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-spacing:.01em; }
+h1,h2,h3 { font-family:var(--display-font); font-weight:400; margin:0; letter-spacing:-.025em; }
 .hidden { display:none !important; }
 
 /* ---------- лента ---------- */
@@ -40,7 +41,7 @@ body.dark .top { border-color:var(--line); box-shadow:0 6px 18px #0003; }
 @media (prefers-reduced-motion: reduce) { .top::after { animation:none; } }
 .logo { display:block; box-shadow:0 2px 8px rgba(0,0,0,.18); width:calc(48px - 16px * var(--p)); height:calc(48px - 16px * var(--p)); border-radius:calc(12px - 4px * var(--p)); flex:0 0 auto; }
 .top-text { min-width:0; }
-.brand { font-size:calc(20px - 2px * var(--p)); color:var(--green); line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.brand { font-size:calc(20px - 2px * var(--p)); color:var(--green); line-height:1.1; overflow-wrap:anywhere; }
 .sub { color:var(--muted); font-size:14px; line-height:1.3; margin:3px 0 0; max-height:calc(80px * (1 - var(--p))); opacity:calc(1 - var(--p) * 1.6); overflow:hidden; transition:none; }
 .sub b { color:var(--green); font-weight:600; }
 .acts { margin-left:auto; display:flex; gap:6px; flex:0 0 auto; }
@@ -48,7 +49,7 @@ body.dark .top { border-color:var(--line); box-shadow:0 6px 18px #0003; }
 body.dark .call { box-shadow:0 2px 8px #0004; }
 .tabs { position:sticky; top:52px; z-index:5; margin:6px 0 4px; padding:4px 12px 8px; background:var(--bg); }
 .tabs .in { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; background:var(--tabbg); border-radius:14px; }
-.tab { min-height:44px; border:1px solid var(--green); background:var(--card); border-radius:11px; padding:10px 8px; font-family:"Oswald",sans-serif; font-weight:600; font-size:16px; letter-spacing:.02em; color:var(--green); cursor:pointer; }
+.tab { min-height:44px; border:1px solid var(--green); background:var(--card); border-radius:11px; padding:10px 8px; font-family:inherit; font-weight:600; font-size:16px; letter-spacing:.02em; color:var(--green); cursor:pointer; }
 .tab[aria-pressed="true"] { border-color:var(--greenbtn); background:var(--greenbtn); color:#fff; }
 .tab:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 .cap .q { margin-top:4px; font-size:13px; color:var(--ink); font-style:italic; }
@@ -91,7 +92,7 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 
 .facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:4px 16px 6px; }
 .fact { background:var(--factbg); border-radius:12px; padding:10px 10px 9px; min-width:0; }
-.fact b { display:block; font-family:"Oswald",sans-serif; font-weight:600; font-size:20px; line-height:1.1; color:var(--green); }
+.fact b { display:block; font-family:inherit; font-weight:600; font-size:17px; line-height:1.1; color:var(--green); }
 .fact span { display:block; font-size:12px; line-height:1.3; color:var(--muted); margin-top:3px; }
 .chips { display:flex; gap:4px; padding:8px 10px 6px; overflow-x:auto; scrollbar-width:none; }
 .chips::-webkit-scrollbar { display:none; }
@@ -110,15 +111,15 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .photo img { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(var(--b,1)); }
 .cap { padding:8px 16px 0; opacity:var(--o,1); }
 .cap .row { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
-.cap .name { font-family:"Oswald",sans-serif; font-weight:600; font-size:19px; }
-.cap .price { font-family:"Oswald",sans-serif; font-weight:500; font-size:16px; color:var(--green); white-space:nowrap; }
+.cap .name { font-family:var(--display-font); font-weight:400; font-size:22px; letter-spacing:-.025em; }
+.cap .price { font-family:inherit; font-weight:500; font-size:16px; color:var(--green); white-space:nowrap; }
 .cap .dim { color:var(--muted); font-size:13px; margin-top:1px; }
 .empty { padding:40px 16px; color:var(--muted); text-align:center; }
 
 /* ---------- дом ---------- */
 .back { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--backbg); backdrop-filter:blur(8px); }
 .back button { border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; width:38px; height:38px; font-size:20px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.08); }
-.back .t { font-family:"Oswald",sans-serif; font-weight:600; font-size:17px; }
+.back .t { font-family:var(--display-font); font-weight:400; font-size:19px; }
 .gal { position:relative; }
 .gal .track { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; }
 .gal .track::-webkit-scrollbar { display:none; }
@@ -142,15 +143,15 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .gallery-views button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 .gal:has(.gallery-views) + .sec { padding-top:8px; }
 .sec { padding:14px 16px 0; }
-.h-name { font-size:26px; }
+.h-name { font-size:32px; line-height:1.15; }
 .h-dim { color:var(--muted); font-size:14px; margin-top:2px; }
 .rooms { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:12px; font-size:14px; }
 .rooms span b { font-weight:500; color:var(--muted); }
 .prices { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px; }
-.pbtn { border:2px solid var(--line); background:var(--card); border-radius:14px; padding:12px 12px 10px; text-align:left; cursor:pointer; color:inherit; }
+.pbtn { border:2px solid var(--line); background:var(--card); border-radius:14px; padding:12px 12px 10px; text-align:left; cursor:pointer; color:inherit; font-family:inherit; }
 .pbtn[aria-pressed="true"] { border-color:var(--green); background:var(--selbg); }
 .pbtn .k { display:block; font-size:12px; color:var(--muted); white-space:nowrap; }
-.pbtn .v { display:block; font-family:"Oswald",sans-serif; font-weight:600; font-size:19px; margin-top:2px; color:var(--green); white-space:nowrap; }
+.pbtn .v { display:block; font-family:inherit; font-weight:600; font-size:19px; margin-top:2px; color:var(--green); white-space:nowrap; }
 .inc { margin-top:16px; background:var(--card); border-radius:var(--radius); padding:6px 16px; }
 .inc h3 { font-size:16px; padding:10px 0 6px; }
 .inc .r { display:grid; grid-template-columns:110px 1fr; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
@@ -159,7 +160,7 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .inc .r.off .v small { display:block; color:var(--green-2); font-size:12px; margin-top:2px; }
 .link { display:block; margin:14px 16px 0; padding:14px 16px; background:var(--card); border-radius:14px; color:var(--ink); text-decoration:none; font-size:15px; }
 .link::after { content:"›"; float:right; color:var(--muted); font-size:20px; line-height:1; }
-.ask { display:block; margin:18px 16px 0; padding:16px; background:var(--greenbtn); color:#fff; border-radius:14px; text-align:center; font-family:"Oswald",sans-serif; font-weight:600; font-size:18px; text-decoration:none; border:0; width:calc(100% - 32px); cursor:pointer; }
+.ask { display:block; margin:18px 16px 0; padding:16px; background:var(--greenbtn); color:#fff; border-radius:14px; text-align:center; font-family:inherit; font-weight:600; font-size:18px; text-decoration:none; border:0; width:calc(100% - 32px); cursor:pointer; }
 .contact { margin:20px 16px 0; }
 .endcta { margin:8px 16px 8px; padding:20px 16px; background:var(--card); border-radius:var(--radius); }
 .endcta .sub2 { margin:-4px 0 14px; font-size:14px; color:var(--muted); }
@@ -168,11 +169,19 @@ body.intg .back button { display:none; }
 .toast { position:fixed; left:16px; right:16px; max-width:488px; margin:0 auto; bottom:calc(24px + env(safe-area-inset-bottom,0px)); z-index:120; transform:translateY(20px); opacity:0; pointer-events:none;
   background:rgba(30,36,32,.94); color:#fff; font-size:14px; padding:12px 16px; border-radius:12px; text-align:center; transition:opacity .25s, transform .25s; }
 .toast.on { opacity:1; transform:none; }
-.contact .t { font-family:"Oswald",sans-serif; font-weight:600; font-size:18px; margin-bottom:10px; }
+.contact .t { font-family:var(--display-font); font-weight:400; font-size:22px; margin-bottom:10px; }
 .contact .bt { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.contact a { display:flex; align-items:center; justify-content:center; gap:8px; padding:15px 10px; border-radius:14px; text-decoration:none; font-family:"Oswald",sans-serif; font-weight:600; font-size:17px; }
+.contact a { display:flex; align-items:center; justify-content:center; gap:8px; padding:15px 10px; border-radius:14px; text-decoration:none; font-family:inherit; font-weight:600; font-size:15px; }
 .contact a.tg { background:var(--greenbtn); color:#fff; }
 .contact a.ph { background:var(--card); color:var(--green); border:2px solid var(--green); }
+.contact .external-studio-links {
+  display:flex; flex-wrap:wrap; column-gap:16px; margin-top:9px;
+}
+.contact .external-studio-links a {
+  display:inline-flex; align-items:center; justify-content:flex-start; min-height:32px;
+  padding:4px 0; border-radius:0; color:var(--green);
+  font-family:inherit; font-size:13px; line-height:1.3; text-decoration:underline; text-underline-offset:3px;
+}
 .ask small { display:block; font-family:"Onest",sans-serif; font-weight:400; font-size:13px; opacity:.85; margin-top:2px; }
 .note { padding:14px 16px 0; color:var(--muted); font-size:12px; }
 
@@ -692,8 +701,12 @@ const CTA_T = "Обсудим ваш дом";
 const CTA_S = "Ответим на вопросы и пригласим на производство — посмотреть дома в работе.";
 function endCta() { return contactBlock(); }
 function contactBlock() {
-  if (linenDesign) return `<div class="contact endcta linen-contact-block"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="linen-actions"><button class="linen-button" type="button" data-linen-contact="estimate">Запросить расчёт</button><button class="linen-button linen-secondary" type="button" data-linen-contact="visit">Договориться о визите</button></div><div class="linen-channels"><a href="https://t.me/modul_doma_SPb" target="_blank" rel="noopener noreferrer">Репортажи из цеха в Telegram ↗</a><a href="https://www.avito.ru/brands/i16905878" target="_blank" rel="noopener noreferrer">Профиль и отзывы на Авито ↗</a></div></div>`;
-  return `<div class="contact endcta"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="bt"><a class="tg" href="#" data-act="tg">${ICON_TG}Напишите нам</a><a class="ph" href="tel:${PHONE}">${ICON_PH}Позвонить</a></div></div>`;
+  const studioLinks = `<div class="external-studio-links">
+    <a href="https://t.me/modul_doma_SPb" target="_blank" rel="noopener noreferrer">Репортажи из цеха в Telegram ↗</a>
+    <a href="https://www.avito.ru/brands/i16905878" target="_blank" rel="noopener noreferrer">Профиль и отзывы на Авито ↗</a>
+  </div>`;
+  if (linenDesign) return `<div class="contact endcta linen-contact-block"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="linen-actions"><button class="linen-button" type="button" data-linen-contact="estimate">Запросить расчёт</button><button class="linen-button linen-secondary" type="button" data-linen-contact="visit">Договориться о визите</button></div>${studioLinks}</div>`;
+  return `<div class="contact endcta"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="bt"><a class="tg" href="#" data-act="tg">${ICON_TG}Напишите нам</a><a class="ph" href="tel:${PHONE}">${ICON_PH}Позвонить</a></div>${studioLinks}</div>`;
 }
 function bindContact(el, text) { const a = el.querySelector('[data-act="tg"]'); if (a) a.onclick = (e) => { e.preventDefault(); tgOpen(text()); };
   el.querySelectorAll("[data-linen-contact]").forEach(button => {
