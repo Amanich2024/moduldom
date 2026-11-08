@@ -126,6 +126,7 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .gal .slide { flex:0 0 100%; scroll-snap-align:start; aspect-ratio:16/11; background:var(--card); display:flex; align-items:center; justify-content:center; }
 .gal .slide img { max-width:100%; max-height:100%; object-fit:contain; display:block; }
 .gal .slide.render img { width:100%; height:100%; object-fit:cover; }
+.bgal[data-built-id="dom-72"] .slide.render:first-child img { object-position:center 88%; }
 .gal:not(.bgal) .slide.render img { object-fit:contain; }
 .gal .dots { display:flex; justify-content:center; gap:6px; padding:10px 0 0; }
 .gal .dots i { width:6px; height:6px; border-radius:50%; background:var(--dot); }
@@ -152,6 +153,13 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .pbtn[aria-pressed="true"] { border-color:var(--green); background:var(--selbg); }
 .pbtn .k { display:block; font-size:12px; color:var(--muted); white-space:nowrap; }
 .pbtn .v { display:block; font-family:inherit; font-weight:600; font-size:19px; margin-top:2px; color:var(--green); white-space:nowrap; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn .v { color:var(--ink); }
+html:not([data-design="linen"]) body:not(.dark) .pbtn { background:var(--bg); }
+html:not([data-design="linen"]) body:not(.dark) .pbtn { border-width:1px; padding:13px 13px 11px; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn[aria-pressed="true"] { border-color:#b49a84; background:var(--card); box-shadow:0 2px 5px #563b301a; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn[aria-pressed="true"] .k { color:var(--green); font-weight:600; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn[aria-pressed="false"] { border-color:#b9a695; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn[aria-pressed="false"] .k { color:var(--ink2); font-weight:500; }
 .inc { margin-top:16px; background:var(--card); border-radius:var(--radius); padding:6px 16px; }
 .inc h3 { font-size:16px; padding:10px 0 6px; }
 .inc .r { display:grid; grid-template-columns:110px 1fr; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
@@ -493,8 +501,8 @@ function renderHouse(id) {
   const related = linenDesign ? B.find(b => NEAR[b.id] === h.id) : null;
   const slides = [
     ["render", `img/${h.id}-render-framed.svg`, "Дом"],
-    ["plan", `img/${h.id}-plan.webp`, "План"],
-    ["furn", `img/${h.id}-furn.webp`, "С мебелью"],
+    ["plan", `img/${h.id}-plan-clean.jpg`, "План"],
+    ["furn", `img/${h.id}-furn-clean.jpg`, "С мебелью"],
   ];
   const rooms = h.rooms.map(([n, a]) => `<span>${n}${a ? ` <b>${m2(a)}</b>` : ""}</span>`).join("");
   const el = document.getElementById("v-house");
@@ -664,7 +672,7 @@ function renderBuilt(id) {
   const photos = b.photos.map((p, i) => [IMG + p + ".webp", b.caps[i] || b.name]).concat(plans.map(p => [IMG + p + ".webp", "Планировка"]));
   el.innerHTML = `
     <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${b.name}</span></div>
-    <div class="gal bgal">
+    <div class="gal bgal" data-built-id="${b.id}">
       <div class="track" id="track">${photos.map(([src], i) => `<div class="slide ${i < b.photos.length ? "render" : "plan"}"><img src="${src}" alt="" decoding="async"></div>`).join("")}</div>
       <span class="zoomhint">нажмите, чтобы увеличить</span>
       <div class="thumbs" id="thumbs">${photos.map(([src], i) => `<button class="thumb" type="button" data-i="${i}" aria-current="${i === 0}"><img src="${src}" alt="" decoding="async"></button>`).join("")}</div>
