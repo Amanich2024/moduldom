@@ -156,8 +156,7 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .inc h3 { font-size:16px; padding:10px 0 6px; }
 .inc .r { display:grid; grid-template-columns:110px 1fr; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
 .inc .r .k { color:var(--muted); }
-.inc .r.off .v { color:var(--muteda); }
-.inc .r.off .v small { display:block; color:var(--green-2); font-size:12px; margin-top:2px; }
+.inc .r .v small { display:block; color:var(--muted); font-size:12px; margin-top:2px; }
 .link { display:block; margin:14px 16px 0; padding:14px 16px; background:var(--card); border-radius:14px; color:var(--ink); text-decoration:none; font-size:15px; }
 .link::after { content:"›"; float:right; color:var(--muted); font-size:20px; line-height:1; }
 .ask { display:block; margin:18px 16px 0; padding:16px; background:var(--greenbtn); color:#fff; border-radius:14px; text-align:center; font-family:inherit; font-weight:600; font-size:18px; text-decoration:none; border:0; width:calc(100% - 32px); cursor:pointer; }
@@ -485,7 +484,7 @@ function incRows(h) {
   ];
   if (h.ter) rows.push(["Терраса", `${h.ter} м, палубная доска с ограждением, под крышей`]);
   return rows.map(([k, v]) => v === null
-    ? `<div class="r off"><span class="k">${k}</span><span class="v">Стены без отделки<small>в «Чистовой отделке» — евровагонка штиль, покраска</small></span></div>`
+    ? `<div class="r"><span class="k">${k}</span><span class="v">Стены без отделки<small>в «Чистовой отделке» — евровагонка штиль, покраска</small></span></div>`
     : `<div class="r"><span class="k">${k}</span><span class="v">${v}</span></div>`).join("");
 }
 function renderHouse(id) {
