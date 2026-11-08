@@ -10,12 +10,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-:root { --bg:#F4F1E8; --card:#FFFFFF; --ink:#1E2420; --muted:#5A605A; --green:#2F4A33; --green-2:#3E5F43; --greenbtn:#2F4A33; --line:#E3DFD3; --radius:16px;
-  --top1:#E3E7DE; --top2:#D3DACF; --tabbg:#E6E4DB; --taboff:#575D55; --backbg:rgba(244,241,232,.9); --photobg:#DDD8CA; --dot:#CFCABC;
-  --selbg:#EEF3EC; --muteda:#767C74; --ink2:#3A3F3A; --factbg:#ECE9DE; }
-body.dark { --bg:#151814; --card:#1F2521; --ink:#E9E7E0; --muted:#9AA29B; --green:#8FBC9A; --green-2:#A8CCB1; --greenbtn:#3A5A41; --line:#2C332E;
-  --top1:#242C26; --top2:#1B211C; --tabbg:#242B26; --taboff:#AEB6AD; --backbg:rgba(21,24,20,.9); --photobg:#222823; --dot:#3A423C;
-  --selbg:#22352A; --muteda:#6E7770; --ink2:#C4C8C0; --factbg:#1E241F; }
+/* Травертин */
+:root { --bg:#F4EFE7; --card:#FFFCF7; --ink:#302720; --muted:#6B635C; --green:#563B30; --green-2:#4D362C; --greenbtn:#563B30; --line:#D8CBBE; --radius:16px;
+  --top1:#F0E9E1; --top2:#E2D8CD; --tabbg:#E6DDD3; --backbg:#F4EFE7E6; --photobg:#D8CBBE; --dot:#D8CBBE;
+  --selbg:#EEE9E3; --muteda:#6D655E; --ink2:#4F4740; --factbg:#E8E0D6; }
+/* Графит и песок */
+body.dark { --bg:#242324; --card:#302E2F; --ink:#F5EEE6; --muted:#C1BBB6; --green:#E5C5A7; --green-2:#E9CFB7; --greenbtn:#674B39; --line:#514F4E;
+  --top1:#443F3C; --top2:#302E2F; --tabbg:#2C2A2B; --backbg:#242324E6; --photobg:#302E2F; --dot:#6F6B6A;
+  --selbg:#463A33; --muteda:#B6B1AC; --ink2:#DAD4CD; --factbg:#302E2F; }
 * { box-sizing:border-box; }
 html,body { margin:0; overflow-anchor:none; }
 body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.45; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
@@ -28,7 +30,8 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .top { --p:0; position:sticky; top:calc(8px - 8px * var(--p)); z-index:6; display:flex; align-items:center; gap:12px; overflow:hidden;
   margin:8px calc(12px - 12px * var(--p)) 6px; padding:calc(14px - 6px * var(--p)) 14px calc(12px - 4px * var(--p));
   border-radius:calc(16px - 16px * var(--p)); background:linear-gradient(135deg,var(--top1),var(--top2));
-  border:1px solid rgba(255,255,255,.8); box-shadow:0 6px 18px rgba(47,74,51,.10), inset 0 1px 0 rgba(255,255,255,.9); }
+  border:1px solid rgba(255,255,255,.8); box-shadow:0 6px 18px #3027201A, inset 0 1px 0 rgba(255,255,255,.9); }
+body.dark .top { border-color:var(--line); box-shadow:0 6px 18px #0003; }
 /* солнечный блик по стеклу — при открытии и потом раз в 30 с (запускает скрипт, класс .shine) */
 .top::after { content:""; position:absolute; top:-60%; bottom:-60%; left:-90%; width:85%; pointer-events:none; transform:skewX(-20deg);
   background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,252,240,.18) 30%,rgba(255,255,255,.55) 50%,rgba(255,252,240,.18) 70%,rgba(255,255,255,0) 100%); }
@@ -41,11 +44,13 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .sub { color:var(--muted); font-size:14px; line-height:1.3; margin:3px 0 0; max-height:calc(80px * (1 - var(--p))); opacity:calc(1 - var(--p) * 1.6); overflow:hidden; transition:none; }
 .sub b { color:var(--green); font-weight:600; }
 .acts { margin-left:auto; display:flex; gap:6px; flex:0 0 auto; }
-.call { flex:0 0 auto; width:calc(38px - 4px * var(--p)); height:calc(38px - 4px * var(--p)); border-radius:50%; background:var(--greenbtn); color:#fff; display:grid; place-items:center; text-decoration:none; box-shadow:0 2px 8px rgba(47,74,51,.25); }
+.call { flex:0 0 auto; width:calc(38px - 4px * var(--p)); height:calc(38px - 4px * var(--p)); border-radius:50%; background:var(--greenbtn); color:#fff; display:grid; place-items:center; text-decoration:none; box-shadow:0 2px 8px #30272040; }
+body.dark .call { box-shadow:0 2px 8px #0004; }
 .tabs { position:sticky; top:52px; z-index:5; margin:6px 0 4px; padding:4px 12px 8px; background:var(--bg); }
 .tabs .in { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; background:var(--tabbg); border-radius:14px; }
-.tab { border:0; background:transparent; border-radius:11px; padding:11px 8px; font-family:"Oswald",sans-serif; font-weight:600; font-size:16px; letter-spacing:.02em; color:var(--taboff); cursor:pointer; }
-.tab[aria-pressed="true"] { background:var(--card); color:var(--green); box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.tab { min-height:44px; border:1px solid var(--green); background:var(--card); border-radius:11px; padding:10px 8px; font-family:"Oswald",sans-serif; font-weight:600; font-size:16px; letter-spacing:.02em; color:var(--green); cursor:pointer; }
+.tab[aria-pressed="true"] { border-color:var(--greenbtn); background:var(--greenbtn); color:#fff; }
+.tab:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 .cap .q { margin-top:4px; font-size:13px; color:var(--ink); font-style:italic; }
 .cap .q span { color:var(--muted); font-style:normal; }
 /* ---------- построенный дом ---------- */
@@ -88,13 +93,16 @@ h1,h2,h3 { font-family:"Oswald",sans-serif; font-weight:600; margin:0; letter-sp
 .fact { background:var(--factbg); border-radius:12px; padding:10px 10px 9px; min-width:0; }
 .fact b { display:block; font-family:"Oswald",sans-serif; font-weight:600; font-size:20px; line-height:1.1; color:var(--green); }
 .fact span { display:block; font-size:12px; line-height:1.3; color:var(--muted); margin-top:3px; }
-.chips { display:flex; gap:8px; padding:10px 16px 6px; overflow-x:auto; scrollbar-width:none; }
+.chips { display:flex; gap:4px; padding:8px 10px 6px; overflow-x:auto; scrollbar-width:none; }
 .chips::-webkit-scrollbar { display:none; }
 .chipswrap { position:relative; }
-.chipswrap::after { content:""; position:absolute; right:0; top:0; bottom:0; width:38px; background:linear-gradient(90deg, transparent, var(--bg)); pointer-events:none; transition:opacity .25s; }
-.chipswrap.end::after { opacity:0; }
-.chip { flex:0 0 auto; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:7px 14px; font-size:14px; color:var(--ink); cursor:pointer; user-select:none; }
+.chipswrap.more::after { content:""; position:absolute; inset:0 0 0 auto; width:12px; background:linear-gradient(90deg,transparent,var(--bg)); pointer-events:none; }
+.chip { flex:none; min-width:48px; min-height:44px; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:5px 6px; font:inherit; font-size:12px; line-height:1.2; white-space:nowrap; color:var(--ink); cursor:pointer; user-select:none; }
 .chip[aria-pressed="true"] { background:var(--greenbtn); border-color:var(--greenbtn); color:#fff; }
+@media (max-width:420px) {
+  .chip:nth-child(-n+4) { flex-basis:calc((100% - 24px) / 4); min-width:max-content; }
+  .chipswrap.more::after { width:4px; }
+}
 .list { padding:8px 0 0; }
 .card { display:block; width:100%; text-align:left; border:0; background:none; padding:0; margin:0 0 22px; color:inherit; cursor:pointer; transform:scale(var(--s,1)); transform-origin:50% 50%; }
 .photo { position:relative; aspect-ratio:16/9; overflow:hidden; background:var(--photobg); border-radius:calc(var(--radius) * var(--r,1)); }
@@ -210,7 +218,7 @@ ym(114125638,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webv
     <button class="tab" data-t="katalog" aria-pressed="true">Каталог</button>
     <button class="tab" data-t="built" aria-pressed="false">Построили</button>
   </div></nav>
-  <div class="chipswrap" id="chipswrap"><div class="chips" id="chips"></div></div>
+  <div class="chipswrap" id="chipswrap"><div class="chips" id="chips" role="group" aria-label="Фильтры каталога"></div></div>
   <p class="linen-list-note" hidden>Цены «от» указаны за тёплый контур.</p>
   <div class="list" id="list"></div>
 </section>
@@ -223,7 +231,7 @@ ym(114125638,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webv
     <div class="b"><h3>Почему это подходит для Петербурга и области</h3><p>Главный враг дома здесь — сырость и перепады температуры. Каркасный дом устроен так, что влага не задерживается в стенах, а дерево и утеплитель остаются сухими годами.</p></div>
     <div class="b"><h3>Тёплый с первого дня</h3><p>Каменная вата 150 мм в полу и кровле и 100 мм в стенах. Дом быстро прогревается и долго держит тепло. В нём можно жить круглый год, не только летом.</p></div>
     <div class="b"><h3>Стены, которые не сыреют</h3><p>Стена собрана слоями. Снаружи ветрозащитная плёнка не пускает ветер и дождь, внутри пароизоляция не пускает пар из комнат в утеплитель. Между слоями оставлен воздушный зазор — через него выветривается случайная влага.</p></div>
-    <div class="b"><h3>Сухая доска</h3><p>Каркас из сухой доски: после сборки она не ведёт и не трескается, углы и стены остаются ровными.</p></div>
+    <div class="b"><h3>Сухая доска</h3><p>Каркас из сухой доски.</p></div>
     <div class="b"><h3>Собираем в цеху, а не под дождём</h3><p>Дом собирают в сухом тёплом цеху в любую погоду. Ни снег, ни дождь не попадают внутрь стен во время стройки. На участок привозим готовый дом и ставим за 1–2 дня.</p></div>
     <div class="b"><h3>Тихо в любую погоду</h3><p>Мягкая черепица гасит звук дождя и не гремит, как металл.</p></div>
   </div>
@@ -335,18 +343,22 @@ function pass(h) {
   if (filter === "ter") return !!h.ter;
   return h.beds === +filter.slice(1);
 }
-function chipsFade() { const w = document.getElementById("chipswrap"); if (!w) return;
-  const c = document.getElementById("chips");
-  w.classList.toggle("end", c.scrollLeft + c.clientWidth >= c.scrollWidth - 4); }
-function renderChips() {
-  document.getElementById("chips").innerHTML = FILTERS.map(([k,t]) => linenDesign
-    ? `<button type="button" class="chip" data-f="${k}" aria-pressed="${filter===k}">${t}</button>`
-    : `<span class="chip" role="button" data-f="${k}" aria-pressed="${filter===k}">${t}</span>`).join("");
-  chipsFade();
+const chips = document.getElementById("chips");
+function updateChipsEdge() {
+  chips.parentElement.classList.toggle("more", chips.scrollLeft + chips.clientWidth < chips.scrollWidth - 1);
 }
-document.getElementById("chips").addEventListener("click", (e) => {
+function renderChips() {
+  chips.innerHTML = FILTERS.map(([k,t]) =>
+    `<button type="button" class="chip" data-f="${k}" aria-pressed="${filter===k}">${t}</button>`).join("");
+  updateChipsEdge();
+}
+chips.addEventListener("scroll", updateChipsEdge, { passive:true });
+new ResizeObserver(updateChipsEdge).observe(chips);
+chips.addEventListener("click", (e) => {
   const c = e.target.closest(".chip"); if (!c) return;
-  filter = c.dataset.f; renderChips(); renderList();
+  filter = c.dataset.f;
+  for (const button of e.currentTarget.children) button.setAttribute("aria-pressed", String(button === c));
+  renderList();
   const top = document.getElementById("chips").getBoundingClientRect().top + scrollY - 8;
   if (scrollY > top) scrollTo({ top, behavior: "smooth" });
 });
@@ -441,7 +453,7 @@ let kit = "fin";
 function incRows(h) {
   const off = kit === "warm";
   const rows = [
-    ["Каркас", "Сухая доска 40×100, не ведёт и не трескается"],
+    ["Каркас", "Сухая доска 40×100"],
     ["Снаружи", "Имитация бруса, покраска в 2&nbsp;слоя — цвет на выбор"],
     ["Утепление", "Каменная вата: 15 см в полу и крыше, 10 см в стенах"],
     ["Защита от влаги", "Мембраны снаружи и внутри"],
@@ -484,7 +496,6 @@ function renderHouse(id) {
       ${linenDesign ? '<p class="linen-price-note">Доставку уточняют по адресу участка.</p><button class="linen-button linen-price-action" type="button" data-linen-contact="estimate">Узнать цену с доставкой</button>' : ""}
       <div class="inc"><h3>Что входит</h3><div id="inc">${incRows(h)}</div></div>
     </div>
-    <a class="link" href="#how">Как построен каждый дом</a>
     ${related ? `<a class="link" href="#b/${related.id}">Похожий построенный дом · ${related.name}</a>` : ""}
     ${contactBlock()}
     <p class="note">Цены по каталогу производителя. Точную стоимость с доставкой уточняйте.</p>`;
@@ -733,7 +744,6 @@ if (STUB) document.addEventListener("click", (e) => {
   const a = e.target.closest('a[href^="tel:"], [data-act="tg"], #tgbtn');
   if (!a) return; e.preventDefault(); e.stopImmediatePropagation(); toast(STUB_TEXT);
 }, true);
-document.getElementById("chips").addEventListener("scroll", chipsFade, { passive: true });
 const BUILT_POSTS = {
   "chernyj-6x8":9192, "banya-s-komnatoj":9248, "dacha-3x9":9175, "banya-2x6":8987,
   "dom-48-ugol":8933, "dom-69-terrasa":8565, "dom-s-banej":8426, "studio-27":8381,
