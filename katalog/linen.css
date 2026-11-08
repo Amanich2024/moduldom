@@ -73,17 +73,8 @@ html[data-design="linen"][data-linen-theme="slate"] {
 [data-design="linen"] .gal { margin:0 14px; }
 [data-design="linen"] .gal .track { border-radius:15px; overflow-y:hidden; }
 [data-design="linen"] .gal .slide.render img { object-fit:contain; }
-[data-design="linen"] .gal .dots, [data-design="linen"] .gal .lbl { display:none !important; }
+[data-design="linen"] .gal .dots { display:none !important; }
 [data-design="linen"] .gal .zoomhint { bottom:auto; top:8px; right:8px; }
-[data-design="linen"] .linen-gallery-tabs {
-  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px;
-  margin-top:7px; padding:4px; border-radius:10px; background:var(--tabbg);
-}
-[data-design="linen"] .linen-gallery-tabs button {
-  min-height:44px; padding:3px; border:1px solid transparent; border-radius:7px;
-  background:none; color:var(--ink); font:600 13px/1.2 system-ui,sans-serif; cursor:pointer;
-}
-[data-design="linen"] .linen-gallery-tabs button[aria-pressed="true"] { background:var(--card); color:var(--green); border-color:var(--line); }
 [data-design="linen"] .h-name { font-size:clamp(31px,6vw,45px); }
 [data-design="linen"] .pbtn .k { white-space:normal; font-size:13px; }
 [data-design="linen"] .pbtn .v { font-size:clamp(16px,4vw,22px); }
