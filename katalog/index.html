@@ -200,6 +200,7 @@ body.intg .back button { display:none; }
 .how .b { background:var(--card); border-radius:var(--radius); padding:14px 16px; margin-top:12px; }
 .how .b h3 { font-size:17px; margin-bottom:4px; }
 .how .b p { margin:0; font-size:14px; color:var(--ink2); }
+.built-date { position:absolute; top:10px; left:10px; background:#302720ed; color:#fff; padding:4px 9px; border-radius:7px; font-size:14px; font-weight:600; line-height:1.4; }
 </style>
 <link rel="stylesheet" href="linen.css?v=1">
 <!-- Yandex.Metrika counter -->
@@ -393,6 +394,15 @@ chips.addEventListener("click", (e) => {
 });
 
 // ---------- лента ----------
+const completionMonths = "январь февраль март апрель май июнь июль август сентябрь октябрь ноябрь декабрь".split(" ");
+function completionDate(house) {
+  const row = house.specs.find(([label]) => label === "Сдан" || label === "Сдана");
+  if (!row) return { caption: "", order: 0 };
+  const [label, date] = row;
+  const [month, year] = date.split(" ");
+  return { caption: label + " · " + date, order: Number(year) * 12 + completionMonths.indexOf(month) };
+}
+
 function renderList() {
   if (linenDesign) document.querySelector(".linen-hero").hidden = tab === "built";
   if (linenDesign) document.querySelector(".linen-list-note").hidden = tab === "built";
@@ -400,9 +410,9 @@ function renderList() {
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-pressed", String(t.dataset.t === tab)));
   if (tab === "built") {
     const short = (q) => q.length > 72 ? q.slice(0, 70).replace(/\s\S*$/, "") + "…" : q;
-    document.getElementById("list").innerHTML = B.map(b => `
+    document.getElementById("list").innerHTML = B.map(b => ({ b, ...completionDate(b) })).sort((a, b) => b.order - a.order).map(({ b, caption }) => `
     <button class="card" data-b="${b.id}">
-      <div class="photo built"><img src="${IMG}${b.cover}.webp" alt="" loading="lazy"${b.cover === "hero-1" ? ' style="object-position:50% 30%"' : ""}></div>
+      <div class="photo built"><img src="${IMG}${b.cover}.webp" alt="" loading="lazy"${b.cover === "hero-1" ? ' style="object-position:50% 30%"' : ""}>${caption ? `<span class="built-date">${caption}</span>` : ""}</div>
       <div class="cap">
         ${linenDesign ? '<span class="linen-kicker">Реальный объект</span>' : ""}
         <div class="row"><span class="name">${b.name}</span></div>
