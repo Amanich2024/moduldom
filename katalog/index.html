@@ -90,6 +90,8 @@ body.dark .call { box-shadow:0 2px 8px #0004; }
 .lb .x { position:absolute; top:calc(10px + env(safe-area-inset-top,0px)); right:12px; width:42px; height:42px; border-radius:50%; border:0; background:rgba(255,255,255,.2); color:#fff; font-size:26px; line-height:42px; text-align:center; cursor:pointer; z-index:2; }
 .lb .n { position:absolute; left:0; right:0; bottom:calc(16px + env(safe-area-inset-bottom,0px)); text-align:center; color:#fff; font-size:13px; opacity:.85; padding:0 48px; }
 
+.studio-intro { margin:10px 16px 12px; font-size:15px; line-height:1.5; }
+[data-design="linen"] .studio-intro { display:none; }
 .facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:4px 16px 6px; }
 .fact { background:var(--factbg); border-radius:12px; padding:10px 10px 9px; min-width:0; }
 .fact b { display:block; font-family:inherit; font-weight:600; font-size:17px; line-height:1.1; color:var(--green); }
@@ -241,6 +243,7 @@ ym(114125638,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webv
     <div class="fact"><b>1–2 дня</b><span>установка на участке</span></div>
     <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div>
   </div>
+  <p class="studio-intro"><strong>Каждый дом делаем под того, кто будет в нём жить:</strong> планировку, размеры и цвета выбираете вы. Всё продумываем вместе ещё до начала производства, чтобы в готовом доме было удобно с первого дня.</p>
   <nav class="tabs" id="tabs"><div class="in">
     <button class="tab" data-t="katalog" aria-pressed="true">Каталог</button>
     <button class="tab" data-t="built" aria-pressed="false">Построили</button>
@@ -750,10 +753,10 @@ function route() {
         // первый заход на вкладку — всегда «Список»: первый дом сразу под вкладками, шапка свёрнута
         show(views.list);
         // цель: шапка свёрнута, вкладки только что прилипли под ней — дальше первый дом (в каталоге — фильтры и первый дом)
-        const TB = document.getElementById("tabs"), FA = document.querySelector(".facts");
+        const TB = document.getElementById("tabs");
         topEl.style.setProperty("--p", "1");
         const cs = getComputedStyle(TB);
-        const y = FA.getBoundingClientRect().bottom + scrollY + (parseFloat(cs.marginTop) || 0) - (parseFloat(cs.top) || 0);
+        const y = TB.getBoundingClientRect().top + scrollY - (parseFloat(cs.top) || 0);
         listScroll = Math.max(70, Math.round(y));
       }
     }
