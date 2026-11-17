@@ -6,6 +6,10 @@
 <title>Юлия и Юрий · дома</title>
 <script>
 (function () {
+  if (["zagorodnaya-studiya.ru", "www.zagorodnaya-studiya.ru"].includes(location.hostname)) {
+    location.replace("open.html" + location.search + location.hash);
+    return;
+  }
   try {
     if (location.hash || /[?&](tgWebApp|catalog)/i.test(location.search)) return;
     try { if (sessionStorage.getItem("__telegram__initParams")) return; } catch (e) {}
