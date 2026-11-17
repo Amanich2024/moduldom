@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Загородная студия · дома и цены</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+/* Травертин */
+:root { --bg:#F4EFE7; --card:#FFFCF7; --ink:#302720; --muted:#6B635C; --green:#563B30; --green-2:#4D362C; --greenbtn:#563B30; --line:#D8CBBE; --radius:16px;
+  --top1:#F0E9E1; --top2:#E2D8CD; --tabbg:#E6DDD3; --backbg:#F4EFE7E6; --photobg:#D8CBBE; --dot:#D8CBBE;
+  --selbg:#EEE9E3; --muteda:#6D655E; --ink2:#4F4740; --factbg:#E8E0D6; }
+/* Графит и песок */
+body.dark { --bg:#242324; --card:#302E2F; --ink:#F5EEE6; --muted:#C1BBB6; --green:#E5C5A7; --green-2:#E9CFB7; --greenbtn:#674B39; --line:#514F4E;
+  --top1:#443F3C; --top2:#302E2F; --tabbg:#2C2A2B; --backbg:#242324E6; --photobg:#302E2F; --dot:#6F6B6A;
+  --selbg:#463A33; --muteda:#B6B1AC; --ink2:#DAD4CD; --factbg:#302E2F; }
+:root { --display-font:Georgia,"Times New Roman",serif; }
+* { box-sizing:border-box; }
+html,body { margin:0; overflow-anchor:none; }
+body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.45; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+.app { max-width:520px; margin:0 auto; padding:0 0 calc(24px + env(safe-area-inset-bottom,0px)); }
+h1,h2,h3 { font-family:var(--display-font); font-weight:400; margin:0; letter-spacing:-.025em; }
+.hidden { display:none !important; }
+
+/* ---------- лента ---------- */
+.top-mark { display:block; height:0; }
+.top { --p:0; position:sticky; top:calc(8px - 8px * var(--p)); z-index:6; display:flex; align-items:center; gap:12px; overflow:hidden;
+  margin:8px calc(12px - 12px * var(--p)) 6px; padding:calc(14px - 6px * var(--p)) 14px calc(12px - 4px * var(--p));
+  border-radius:calc(16px - 16px * var(--p)); background:linear-gradient(135deg,var(--top1),var(--top2));
+  border:1px solid rgba(255,255,255,.8); box-shadow:0 6px 18px #3027201A, inset 0 1px 0 rgba(255,255,255,.9); }
+body.dark .top { border-color:var(--line); box-shadow:0 6px 18px #0003; }
+/* солнечный блик по стеклу — при открытии и потом раз в 30 с (запускает скрипт, класс .shine) */
+.top::after { content:""; position:absolute; top:-60%; bottom:-60%; left:-90%; width:85%; pointer-events:none; transform:skewX(-20deg);
+  background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,252,240,.18) 30%,rgba(255,255,255,.55) 50%,rgba(255,252,240,.18) 70%,rgba(255,255,255,0) 100%); }
+.top.shine::after { animation:shine 4.5s cubic-bezier(.45,0,.35,1) 0s 1 both; }
+@keyframes shine { to { transform:skewX(-20deg) translateX(230%); } }
+@media (prefers-reduced-motion: reduce) { .top::after { animation:none; } }
+.logo { display:block; box-shadow:0 2px 8px rgba(0,0,0,.18); width:calc(48px - 16px * var(--p)); height:calc(48px - 16px * var(--p)); border-radius:calc(12px - 4px * var(--p)); flex:0 0 auto; }
+.top-text { min-width:0; }
+.brand { font-size:calc(20px - 2px * var(--p)); color:var(--green); line-height:1.1; overflow-wrap:anywhere; }
+.sub { color:var(--muted); font-size:14px; line-height:1.3; margin:3px 0 0; max-height:calc(80px * (1 - var(--p))); opacity:calc(1 - var(--p) * 1.6); overflow:hidden; transition:none; }
+.sub b { color:var(--green); font-weight:600; }
+.acts { margin-left:auto; display:flex; gap:6px; flex:0 0 auto; }
+.call { flex:0 0 auto; width:calc(38px - 4px * var(--p)); height:calc(38px - 4px * var(--p)); border-radius:50%; background:var(--greenbtn); color:#fff; display:grid; place-items:center; text-decoration:none; box-shadow:0 2px 8px #30272040; }
+body.dark .call { box-shadow:0 2px 8px #0004; }
+.tabs { position:sticky; top:52px; z-index:5; margin:6px 0 4px; padding:4px 12px 8px; background:var(--bg); }
+.tabs .in { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; background:var(--tabbg); border-radius:14px; }
+.tab { min-height:44px; border:1px solid var(--green); background:var(--card); border-radius:11px; padding:10px 8px; font-family:inherit; font-weight:600; font-size:16px; letter-spacing:.02em; color:var(--green); cursor:pointer; }
+.tab[aria-pressed="true"] { border-color:var(--greenbtn); background:var(--greenbtn); color:#fff; }
+.tab:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
+.cap .q { margin-top:4px; font-size:13px; color:var(--ink); font-style:italic; }
+.cap .q span { color:var(--muted); font-style:normal; }
+/* ---------- построенный дом ---------- */
+.bgal .slide { aspect-ratio:4/3; background:var(--photobg); }
+.bgal .slide.plan { background:#fff; }
+.bgal .dots { flex-wrap:wrap; padding:10px 24px 0; }
+.thumbs { display:flex; gap:6px; overflow-x:auto; padding:8px 16px 2px; scrollbar-width:none; }
+.thumbs::-webkit-scrollbar { display:none; }
+.thumb { flex:0 0 58px; height:44px; border-radius:8px; overflow:hidden; border:2px solid transparent; padding:0; background:var(--line); cursor:pointer; opacity:.6; transition:opacity .2s; }
+.thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.thumb[aria-current="true"] { border-color:var(--green); opacity:1; }
+.bcap { margin:6px 16px 0; min-height:19px; font-size:13px; color:var(--muted); text-align:center; }
+.bgal .zoomhint { bottom:auto; top:10px; }
+.pinch-veil { position:fixed; inset:0; z-index:90; background:rgba(0,0,0,0); pointer-events:none; transition:background .2s; }
+.pinch-clone { position:fixed; z-index:91; pointer-events:none; object-fit:cover; transform-origin:0 0; will-change:transform; box-shadow:0 20px 60px rgba(0,0,0,.35); }
+.pinch-clone.back { transition:transform .25s ease; }
+.bphotos figure { margin:0 0 12px; cursor:zoom-in; }
+.bphotos img { width:100%; display:block; aspect-ratio:4/3; object-fit:cover; background:var(--photobg); }
+.bphotos figcaption { padding:6px 16px 0; font-size:13px; color:var(--muted); }
+.bphotos .bplan img { aspect-ratio:auto; max-height:70vh; object-fit:contain; background:#fff; }
+.specs { margin-top:14px; background:var(--card); border-radius:var(--radius); padding:4px 16px; }
+.specs .r { display:grid; grid-template-columns:120px 1fr; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
+.specs .r:first-child { border-top:0; }
+.specs .r .k { color:var(--muted); }
+.inside { margin-top:14px; display:flex; flex-wrap:wrap; gap:6px; }
+.inside span { background:var(--card); border-radius:999px; padding:6px 12px; font-size:13px; }
+.bquote { margin:18px 16px 0; padding:14px 16px; border-left:3px solid var(--green); background:var(--card); border-radius:0 14px 14px 0; font-style:italic; font-size:15px; }
+.bquote span { display:block; margin-top:6px; font-style:normal; font-size:12px; color:var(--muted); }
+.facts.bottom { padding-top:18px; }
+.gal .slide { cursor:zoom-in; }
+.zoomhint { position:absolute; right:12px; bottom:28px; background:rgba(30,36,32,.75); color:#fff; font-size:12px; padding:4px 10px; border-radius:999px; pointer-events:none; }
+/* ---------- просмотр фото ---------- */
+.lb { position:fixed; inset:0; z-index:100; background:#000; display:none; touch-action:none; user-select:none; -webkit-user-select:none; overflow:hidden; }
+.lb.on { display:block; }
+.lb img { position:absolute; left:0; top:0; width:100%; height:100%; object-fit:contain; transform-origin:0 0; will-change:transform; pointer-events:none; }
+.lb .x { position:absolute; top:calc(10px + env(safe-area-inset-top,0px)); right:12px; width:42px; height:42px; border-radius:50%; border:0; background:rgba(255,255,255,.2); color:#fff; font-size:26px; line-height:42px; text-align:center; cursor:pointer; z-index:2; }
+.lb .n { position:absolute; left:0; right:0; bottom:calc(16px + env(safe-area-inset-bottom,0px)); text-align:center; color:#fff; font-size:13px; opacity:.85; padding:0 48px; }
+
+.studio-intro { margin:10px 16px 12px; font-size:15px; line-height:1.5; }
+[data-design="linen"] .studio-intro { display:none; }
+.facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; padding:4px 16px 6px; }
+.fact { background:var(--factbg); border-radius:12px; padding:10px 10px 9px; min-width:0; }
+.fact b { display:block; font-family:inherit; font-weight:600; font-size:17px; line-height:1.1; color:var(--green); }
+.fact span { display:block; font-size:12px; line-height:1.3; color:var(--muted); margin-top:3px; }
+.chips { display:flex; gap:4px; padding:8px 10px 6px; overflow-x:auto; scrollbar-width:none; }
+.chips::-webkit-scrollbar { display:none; }
+.chipswrap { position:relative; }
+.chipswrap.more::after { content:""; position:absolute; inset:0 0 0 auto; width:12px; background:linear-gradient(90deg,transparent,var(--bg)); pointer-events:none; }
+.chip { flex:none; min-width:44px; min-height:26px; border:1px solid var(--line); background:var(--card); border-radius:999px; padding:1px 4px; font:inherit; font-size:12px; line-height:1.2; white-space:nowrap; color:var(--ink); cursor:pointer; user-select:none; }
+.chip[aria-pressed="true"] { background:var(--greenbtn); border-color:var(--greenbtn); color:#fff; }
+@media (max-width:420px) {
+  .chip:nth-child(-n+4) { flex-basis:calc((100% - 32px) / 4); min-width:max-content; }
+  .chipswrap.more::after { width:4px; }
+}
+.list { padding:8px 0 0; }
+.card { display:block; width:100%; text-align:left; border:0; background:none; padding:0; margin:0 0 22px; color:inherit; cursor:pointer; transform:scale(var(--s,1)); transform-origin:50% 50%; }
+.photo { position:relative; aspect-ratio:16/9; overflow:hidden; background:var(--photobg); border-radius:calc(var(--radius) * var(--r,1)); }
+.photo.built { aspect-ratio:4/3; }
+.photo img { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(var(--b,1)); }
+.cap { padding:8px 16px 0; opacity:var(--o,1); }
+.cap .row { display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
+.cap .name { font-family:var(--display-font); font-weight:400; font-size:22px; letter-spacing:-.025em; }
+.cap .price { font-family:inherit; font-weight:500; font-size:16px; color:var(--green); white-space:nowrap; }
+.cap .dim { color:var(--muted); font-size:13px; margin-top:1px; }
+.empty { padding:40px 16px; color:var(--muted); text-align:center; }
+
+/* ---------- дом ---------- */
+.back { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--backbg); backdrop-filter:blur(8px); }
+.back button { border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; width:38px; height:38px; font-size:20px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.back .t { font-family:var(--display-font); font-weight:400; font-size:19px; }
+.gal { position:relative; }
+.gal .track { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; }
+.gal .track::-webkit-scrollbar { display:none; }
+.gal .slide { flex:0 0 100%; scroll-snap-align:start; aspect-ratio:16/11; background:var(--card); display:flex; align-items:center; justify-content:center; }
+.gal .slide img { max-width:100%; max-height:100%; object-fit:contain; display:block; }
+.gal .slide.render img { width:100%; height:100%; object-fit:cover; }
+.bgal[data-built-id="dom-72"] .slide.render:first-child img { object-position:center 88%; }
+.gal:not(.bgal) .slide.render img { object-fit:contain; }
+.gal .dots { display:flex; justify-content:center; gap:6px; padding:10px 0 0; }
+.gal .dots i { width:6px; height:6px; border-radius:50%; background:var(--dot); }
+.gal .dots i.on { background:var(--greenbtn); width:18px; border-radius:3px; }
+#v-house .gal:not(.bgal) .zoomhint { bottom:auto; top:8px; }
+.gallery-views {
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px;
+  margin-top:6px; padding:4px; border:1px solid var(--line); border-radius:10px; background:var(--tabbg);
+}
+.gallery-views button {
+  min-height:32px; padding:2px 4px; border:0; border-radius:6px;
+  background:transparent; color:var(--ink); font:inherit; font-size:13px; line-height:1.2; white-space:nowrap; cursor:pointer;
+}
+.gallery-views button[aria-pressed="true"] { background:var(--greenbtn); color:#fff; }
+.gallery-views button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
+.gal:has(.gallery-views) + .sec { padding-top:8px; }
+.sec { padding:14px 16px 0; }
+.h-name { font-size:32px; line-height:1.15; }
+.h-dim { color:var(--muted); font-size:14px; margin-top:2px; }
+.rooms { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:12px; font-size:14px; }
+.rooms span b { font-weight:500; color:var(--muted); }
+.prices { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px; }
+.pbtn { border:2px solid var(--line); background:var(--card); border-radius:14px; padding:12px 12px 10px; text-align:left; cursor:pointer; color:inherit; font-family:inherit; }
+.pbtn[aria-pressed="true"] { border-color:var(--green); background:var(--selbg); }
+.pbtn .k { display:block; font-size:12px; color:var(--muted); white-space:nowrap; }
+.pbtn .v { display:block; font-family:inherit; font-weight:600; font-size:19px; margin-top:2px; color:var(--green); white-space:nowrap; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn .v { color:var(--ink); }
+html:not([data-design="linen"]) body:not(.dark) .pbtn { background:var(--bg); }
+html:not([data-design="linen"]) body:not(.dark) .pbtn { border-width:1px; padding:13px 13px 11px; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn[aria-pressed="true"] { border-color:#b49a84; background:var(--card); box-shadow:0 2px 5px #563b301a; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn[aria-pressed="true"] .k { color:var(--green); font-weight:600; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn[aria-pressed="false"] { border-color:#b9a695; }
+html:not([data-design="linen"]) body:not(.dark) .pbtn[aria-pressed="false"] .k { color:var(--ink2); font-weight:500; }
+.inc { margin-top:16px; background:var(--card); border-radius:var(--radius); padding:6px 16px; }
+.inc h3 { font-size:16px; padding:10px 0 6px; }
+.inc .r { display:grid; grid-template-columns:110px 1fr; gap:10px; padding:9px 0; border-top:1px solid var(--line); font-size:14px; }
+.inc .r .k { color:var(--muted); }
+.inc .r .v small { display:block; color:var(--muted); font-size:12px; margin-top:2px; }
+.link { display:block; margin:14px 16px 0; padding:14px 16px; background:var(--card); border-radius:14px; color:var(--ink); text-decoration:none; font-size:15px; }
+.link::after { content:"›"; float:right; color:var(--muted); font-size:20px; line-height:1; }
+.ask { display:block; margin:18px 16px 0; padding:16px; background:var(--greenbtn); color:#fff; border-radius:14px; text-align:center; font-family:inherit; font-weight:600; font-size:18px; text-decoration:none; border:0; width:calc(100% - 32px); cursor:pointer; }
+.contact { margin:20px 16px 0; }
+.endcta { margin:8px 16px 8px; padding:20px 16px; background:var(--card); border-radius:var(--radius); }
+.endcta .sub2 { margin:-4px 0 14px; font-size:14px; color:var(--muted); }
+/* внутри Telegram своя кнопка «Назад» не нужна — там нативная */
+body.intg .back button { display:none; }
+.toast { position:fixed; left:16px; right:16px; max-width:488px; margin:0 auto; bottom:calc(24px + env(safe-area-inset-bottom,0px)); z-index:120; transform:translateY(20px); opacity:0; pointer-events:none;
+  background:rgba(30,36,32,.94); color:#fff; font-size:14px; padding:12px 16px; border-radius:12px; text-align:center; transition:opacity .25s, transform .25s; }
+.toast.on { opacity:1; transform:none; }
+.contact .t { font-family:var(--display-font); font-weight:400; font-size:22px; margin-bottom:10px; }
+.contact .bt { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.contact a { display:flex; align-items:center; justify-content:center; gap:8px; padding:15px 10px; border-radius:14px; text-decoration:none; font-family:inherit; font-weight:600; font-size:15px; }
+.contact a.tg { background:var(--greenbtn); color:#fff; }
+.contact a.ph { background:var(--card); color:var(--green); border:2px solid var(--green); }
+.contact .external-studio-links {
+  display:flex; flex-wrap:wrap; column-gap:16px; margin-top:9px;
+}
+.contact .external-studio-links a {
+  display:inline-flex; align-items:center; justify-content:flex-start; min-height:32px;
+  padding:4px 0; border-radius:0; color:var(--green);
+  font-family:inherit; font-size:13px; line-height:1.3; text-decoration:underline; text-underline-offset:3px;
+}
+.ask small { display:block; font-family:"Onest",sans-serif; font-weight:400; font-size:13px; opacity:.85; margin-top:2px; }
+.note { padding:14px 16px 0; color:var(--muted); font-size:12px; }
+
+/* ---------- как построено ---------- */
+.how { padding:0 16px; }
+.how-lead { margin:6px 0 0; font-size:16px; line-height:1.5; }
+.how .b { background:var(--card); border-radius:var(--radius); padding:14px 16px; margin-top:12px; }
+.how .b h3 { font-size:17px; margin-bottom:4px; }
+.how .b p { margin:0; font-size:14px; color:var(--ink2); }
+.seal{box-sizing:border-box;width:148px;height:148px;max-width:100%;aspect-ratio:1;margin:auto;position:relative;border-radius:50%;background:var(--blue,#192d4b);color:var(--gold,#f6dca7);border:3px solid var(--blue,#192d4b);box-shadow:inset 0 0 0 2px currentColor,0 5px 14px #17243838;display:grid;place-content:center}.seal:before{content:"";position:absolute;inset:8px;border:2px dotted currentColor;opacity:.48;border-radius:50%}.mark{width:70px;height:57px;margin:auto;position:relative;transform:rotate(-8deg)}.roof{position:absolute;width:42px;height:42px;left:13px;top:14px;border-top:6px solid;border-left:6px solid;transform:rotate(45deg);box-sizing:border-box}.mark:before{content:"";position:absolute;right:13px;top:7px;width:7px;height:19px;background:currentColor}.mark:after{content:"";position:absolute;bottom:2px;left:14px;right:14px;height:13px;border:5px solid;border-top:0}.words{position:relative;transform:rotate(var(--angle,-8deg));font-family:"Bahnschrift Condensed","Arial Narrow",sans-serif;font-weight:800;letter-spacing:2px}.ribbon{background:var(--gold,#f6dca7);color:var(--blue,#192d4b);padding:2px var(--pad,9px);border-radius:2px;font-size:var(--label,19px)}.words strong{display:block;font-size:var(--years,22px);margin-top:4px}
+.seal{float:right;zoom:.68;text-align:center;margin:0 0 8px 16px}.seal .words{width:max-content;margin-inline:auto;text-align:center;line-height:1.05}.seal .words strong{margin:4px 0 0;padding:0;text-align:center}.seal ~ .rooms { display:block; margin-top:8px; } .seal ~ .rooms span { display:inline-block; margin:0 12px 4px 0; } .seal ~ .prices { clear:both; }
+.seal { display:block; }
+.seal > .mark { position:absolute; left:50%; top:17px; margin:0; transform:translateX(-50%) rotate(-8deg); }
+.seal > .words { position:absolute; top:74px; left:50%; margin:0; transform:translateX(-50%) rotate(-8deg); text-align:center; }
+.seal .words strong { margin-top:6px; }.seal > .words { position:static; transform:none; }
+.seal .ribbon,.seal .words strong { position:absolute; left:50%; width:max-content; margin:0; transform:translateX(-50%) rotate(-8deg); }
+.seal .ribbon { top:73px; }
+.seal .words strong { top:103px; }.seal > .mark { top:15px; transform:translateX(-50%); } .seal .ribbon { top:75px; transform:translateX(-50%) rotate(-5deg); } .seal .words strong { top:106px; transform:translateX(-50%); }
+.seal{transform:rotate(-8deg)} .seal .ribbon{transform:translateX(-50%)}
+
+.seal ~ .specs { clear:both; }
+.seal ~ .h-name { overflow-wrap:anywhere; }
+</style>
+<link rel="stylesheet" href="linen.css?v=1">
+<!-- Yandex.Metrika counter -->
+<script>
+(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
+for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+(window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+ym(114125638,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/114125638" style="position:absolute;left:-9999px" alt=""></div></noscript>
+<!-- /Yandex.Metrika counter -->
+</head>
+<body>
+<div class="app">
+
+<section id="v-list">
+  <i class="top-mark" id="top-mark"></i>
+  <header class="top" id="top">
+    <img class="logo" src="img/logo.png" alt="">
+    <div class="top-text">
+      <h1 class="brand">Загородная студия</h1>
+      <p class="sub"><b>Открыто и честно</b> строим у себя в цеху&nbsp;— приезжайте, покажем</p>
+    </div>
+    <div class="acts"><a class="call" href="${STUDIO_DATA.contacts.telegram}" target="_blank" rel="noopener noreferrer" id="tgbtn" aria-label="Написать в Telegram"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21.9 4.6 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.2L5.9 13.5l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.5 3.1c.9-.3 1.7.2 1.4 1.5z"/></svg></a><a class="call" href="tel:+79111422642" aria-label="Позвонить"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.7.5 2.6.7a2 2 0 0 1 1.7 2z"/></svg></a></div>
+  </header>
+  <section class="linen-hero" aria-labelledby="linen-title" hidden>
+    <div class="linen-hero-copy">
+      <p class="linen-kicker">Своё производство · Санкт-Петербург</p>
+      <h2 id="linen-title">Дом за городом</h2>
+      <p>Выберите планировку и комплектацию. Посмотрите реальные дома и приезжайте в цех.</p>
+      <div class="linen-actions">
+        <a class="linen-button" href="#katalog" data-linen-catalog>Подобрать дом</a>
+        <a class="linen-button linen-secondary" href="#built">Построенные дома</a>
+      </div>
+    </div>
+    <figure><img alt="Построенный модульный дом с освещённой террасой" fetchpriority="high"><figcaption>Реальный дом «Загородной студии»</figcaption></figure>
+  </section>
+  <div class="facts">
+    <div class="fact"><b>До 4 нед.</b><span>изготовление под ключ</span></div>
+    <div class="fact"><b>1–2 дня</b><span>установка на участке</span></div>
+    <div class="fact"><b>Свой цех</b><span>в Санкт-Петербурге</span></div>
+  </div>
+  <p class="studio-intro"><strong>Каждый дом делаем под того, кто будет в нём жить:</strong> планировку, размеры и цвета выбираете вы. Всё продумываем вместе ещё до начала производства, чтобы в готовом доме было удобно с первого дня.</p>
+  <nav class="tabs" id="tabs"><div class="in">
+    <button class="tab" data-t="katalog" aria-pressed="true">Каталог</button>
+    <button class="tab" data-t="built" aria-pressed="false">Построили</button>
+  </div></nav>
+  <div class="chipswrap" id="chipswrap"><div class="chips" id="chips" role="group" aria-label="Фильтры каталога"></div></div>
+  <p class="linen-list-note" hidden>Цены «от» указаны за тёплый контур.</p>
+  <div class="list" id="list"></div>
+</section>
+
+<section id="v-house" class="hidden"></section>
+<section id="v-how" class="hidden">
+  <div class="back"><button id="how-back" aria-label="Назад">‹</button><span class="t">Как построен каждый дом</span></div>
+  <div class="how">
+    <p class="how-lead">Мы строим по каркасной технологии, которую часто называют финской. Так строят в Финляндии и Скандинавии, где климат похож на наш: сыро, ветрено, зимой мороз сменяется оттепелью.</p>
+    <div class="b"><h3>Почему это подходит для Петербурга и области</h3><p>Главный враг дома здесь — сырость и перепады температуры. Каркасный дом устроен так, что влага не задерживается в стенах, а дерево и утеплитель остаются сухими годами.</p></div>
+    <div class="b"><h3>Тёплый с первого дня</h3><p>Каменная вата 150 мм в полу и кровле и 100 мм в стенах. Дом быстро прогревается и долго держит тепло. В нём можно жить круглый год, не только летом.</p></div>
+    <div class="b"><h3>Стены, которые не сыреют</h3><p>Стена собрана слоями. Снаружи ветрозащитная плёнка не пускает ветер и дождь, внутри пароизоляция не пускает пар из комнат в утеплитель. Между слоями оставлен воздушный зазор — через него выветривается случайная влага.</p></div>
+    <div class="b"><h3>Сухая доска</h3><p>Каркас из сухой доски.</p></div>
+    <div class="b"><h3>Собираем в цеху, а не под дождём</h3><p>Дом собирают в сухом тёплом цеху в любую погоду. Ни снег, ни дождь не попадают внутрь стен во время стройки. На участок привозим готовый дом и ставим за 1–2 дня.</p></div>
+    <div class="b"><h3>Тихо в любую погоду</h3><p>Мягкая черепица гасит звук дождя и не гремит, как металл.</p></div>
+  </div>
+<div style="height:28px"></div>
+</section>
+<div class="toast" id="toast"></div>
+<div class="lb" id="lb"><img id="lb-img" alt=""><button class="x" id="lb-x" aria-label="Закрыть">×</button><div class="n" id="lb-n"></div></div>
+<dialog id="linen-contact" class="linen-contact" aria-labelledby="linen-contact-title">
+  <div class="linen-dialog-heading">
+    <h2 id="linen-contact-title">Обсудим ваш дом</h2>
+    <button type="button" class="linen-button linen-secondary" id="linen-close">Закрыть</button>
+  </div>
+  <div class="linen-actions" role="group" aria-label="Цель обращения">
+    <button type="button" class="linen-button linen-secondary" data-linen-intent="estimate" aria-pressed="true">Расчёт</button>
+    <button type="button" class="linen-button linen-secondary" data-linen-intent="visit" aria-pressed="false">Визит в цех</button>
+  </div>
+  <form id="linen-request">
+    <label for="linen-details">Населённый пункт или район</label>
+    <input id="linen-details" maxlength="120" required>
+    <button class="linen-button" type="submit">Подготовить сообщение</button>
+  </form>
+  <div id="linen-result" hidden>
+    <label for="linen-draft">Текст сообщения</label>
+    <textarea id="linen-draft" readonly rows="4"></textarea>
+    <p>Скопируйте текст и отправьте его студии в удобном канале.</p>
+    <button type="button" class="linen-button linen-secondary" id="linen-copy">Скопировать текст</button>
+    <span id="linen-status" role="status"></span>
+  </div>
+  <div class="linen-actions linen-channels">
+    <a href="${STUDIO_DATA.contacts.avito}" target="_blank" rel="noopener noreferrer">Студия на Авито ↗</a>
+    <a href="https://vk.com/zagorodnaya_studia" target="_blank" rel="noopener noreferrer">Студия ВКонтакте ↗</a>
+  </div>
+</dialog>
+
+
+</div>
+<script src="../data/catalog.js?v=__DATA_REVISION__"></script>
+<script>
+const PHONE = STUDIO_DATA.contacts.phone;
+const T = window.Telegram && window.Telegram.WebApp;
+const launchParams = new URLSearchParams(location.search);
+const linenDesign = launchParams.get("design") === "linen" ||
+  launchParams.get("tgWebAppStartParam") === "linen" || T?.initDataUnsafe?.start_param === "linen";
+if (linenDesign) {
+  document.documentElement.dataset.design = "linen";
+  document.querySelector(".linen-hero").hidden = false;
+  document.querySelector(".linen-hero img").src = "../img/hero-1.webp";
+  document.querySelector(".acts").innerHTML = '<button type="button" class="linen-button linen-secondary" id="linen-theme" aria-pressed="false">Сланец</button>';
+}
+try { T && T.ready(); T && T.expand(); } catch (e) {}
+// внутри Telegram свою кнопку «Назад» прячем — там нативная
+const inTG = !!(T && T.platform && T.platform !== "unknown");
+if (inTG) document.body.classList.add("intg");
+// тема: ?theme=dark|light в адресе принудительно, внутри Telegram — из настроек Telegram, вне — настройка системы
+const THEME_URL = (() => { try { return new URLSearchParams(location.search).get("theme"); } catch (e) { return null; } })();
+function applyScheme() {
+  if (linenDesign) return;
+  let s = THEME_URL;
+  if (!s) { try { if (inTG && T && T.colorScheme) s = T.colorScheme; } catch (e) {} }
+  if (!s) { try { s = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } catch (e) {} }
+  document.body.classList.toggle("dark", s === "dark");
+}
+applyScheme();
+try { T && T.onEvent && T.onEvent("themeChanged", applyScheme); } catch (e) {}
+try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyScheme); } catch (e) {}
+// жест «вниз» не должен сворачивать приложение (Telegram 7.7+)
+try { if (T && T.disableVerticalSwipes) T.disableVerticalSwipes(); } catch (e) {}
+
+// Площади комнат — по чертежам в каталоге. Цены — из каталога, две комплектации.
+const H = STUDIO_DATA.projects;
+const rub = (n) => n.toLocaleString("ru-RU") + " ₽";
+const m2 = (n) => String(n).replace(".", ",") + " м²";
+const bedsWord = (n) => n === 0 ? "студия" : n === 1 ? "1 спальня" : `${n} спальни`;
+const dimLine = (h) => `${h.box} м` + (h.ter ? ` · терраса ${h.ter} м` : "") + ` · ${bedsWord(h.beds)}`;
+// Построенные дома — из основного приложения (фото лежат в ../img)
+const B = STUDIO_DATA.built;
+const IMG = "../img/";
+const bArea = (b) => { for (const [k, v] of b.specs) { const m = /(\d+(?:,\d+)?)\s*м²/.exec(v); if (m && /площад|размер/i.test(k)) return parseFloat(m[1].replace(",", ".")); } const m = /(\d+(?:,\d+)?)\s*м²/.exec(b.dim); return m ? parseFloat(m[1].replace(",", ".")) : 48; };
+// похожий дом из каталога — подобран вручную по размеру; бани и дома без размеров — без ссылки
+const NEAR = STUDIO_DATA.related;
+let tab = "katalog";
+const tabPos = { katalog: null, built: null };
+
+
+// ---------- фильтр ----------
+const FILTERS = [["all","Все"],["b0","Студия"],["b1","1 спальня"],["b2","2 спальни"],["b3","3 спальни"],["ter","С террасой"]];
+let filter = "all";
+function pass(h) {
+  if (filter === "all") return true;
+  if (filter === "ter") return !!h.ter;
+  return h.beds === +filter.slice(1);
+}
+const chips = document.getElementById("chips");
+function updateChipsEdge() {
+  chips.parentElement.classList.toggle("more", chips.scrollLeft + chips.clientWidth < chips.scrollWidth - 1);
+}
+function renderChips() {
+  chips.innerHTML = FILTERS.map(([k,t]) =>
+    `<button type="button" class="chip" data-f="${k}" aria-pressed="${filter===k}">${t}</button>`).join("");
+  updateChipsEdge();
+}
+chips.addEventListener("scroll", updateChipsEdge, { passive:true });
+new ResizeObserver(updateChipsEdge).observe(chips);
+chips.addEventListener("click", (e) => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  filter = c.dataset.f;
+  for (const button of e.currentTarget.children) button.setAttribute("aria-pressed", String(button === c));
+  renderList();
+  const top = document.getElementById("chips").getBoundingClientRect().top + scrollY - 8;
+  if (scrollY > top) scrollTo({ top, behavior: "smooth" });
+});
+
+// ---------- лента ----------
+const completionMonths = "январь февраль март апрель май июнь июль август сентябрь октябрь ноябрь декабрь".split(" ");
+function completionDate(house) {
+  const row = house.specs.find(([label]) => label === "Сдан" || label === "Сдана");
+  if (!row) return { caption: "", order: 0 };
+  const [label, date] = row;
+  const [month, year] = date.split(" ");
+  return { caption: label + " · " + date, order: Number(year) * 12 + completionMonths.indexOf(month) };
+}
+
+function renderList() {
+  if (linenDesign) document.querySelector(".linen-hero").hidden = tab === "built";
+  if (linenDesign) document.querySelector(".linen-list-note").hidden = tab === "built";
+  document.getElementById("chipswrap").classList.toggle("hidden", tab === "built");
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-pressed", String(t.dataset.t === tab)));
+  if (tab === "built") {
+    const short = (q) => q.length > 72 ? q.slice(0, 70).replace(/\s\S*$/, "") + "…" : q;
+    document.getElementById("list").innerHTML = B.map(b => ({ b, order: b.id === "chernyj-6x8" ? Infinity : completionDate(b).order })).sort((a, b) => b.order - a.order).map(({ b }) => `
+    <button class="card" data-b="${b.id}">
+      <div class="photo built"><img src="${IMG}${b.cover}.webp" alt="" loading="lazy"${b.cover === "hero-1" ? ' style="object-position:50% 30%"' : ""}></div>
+      <div class="cap">
+        ${linenDesign ? '<span class="linen-kicker">Реальный объект</span>' : ""}
+        <div class="row"><span class="name">${b.name}</span></div>
+        <div class="dim">${b.dim}</div>
+        ${b.quote ? `<div class="q">«${short(b.quote[0])}» <span>— ${b.quote[1]}</span></div>` : ""}
+      </div>
+    </button>`).join("") + endCta();
+    bindContact(document.getElementById("list"), () => "Здравствуйте! Посмотрел(а) построенные дома, хочу обсудить свой.");
+    queue(); return;
+  }
+  const items = H.filter(pass);
+
+  document.getElementById("list").innerHTML = items.length ? items.map(h => `
+    <button class="card" data-id="${h.id}">
+      <div class="photo"><img src="${h.media.render}" alt="" loading="lazy"></div>
+      <div class="cap">
+        ${linenDesign ? '<span class="linen-kicker">Визуализация проекта</span>' : ""}
+        <div class="row"><span class="name">${h.name}</span><span class="price">от ${rub(h.warm)}</span></div>
+        <div class="dim">${dimLine(h)}</div>
+        ${linenDesign ? '<div class="linen-card-link">Планировка и комплектации →</div>' : ""}
+      </div>
+    </button>`).join("") + endCta() : `<div class="empty">Таких домов нет. Выберите другое.</div>`;
+  bindContact(document.getElementById("list"), () => "Здравствуйте! Посмотрел(а) каталог, хочу обсудить дом.");
+  queue();
+}
+document.getElementById("list").addEventListener("click", (e) => {
+  const c = e.target.closest(".card"); if (!c) return;
+  location.hash = c.dataset.b ? "#b/" + c.dataset.b : "#d/" + c.dataset.id;
+});
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const t = e.target.closest(".tab"); if (!t || t.dataset.t === tab) return;
+  location.hash = t.dataset.t === "built" ? "#built" : "#katalog";
+});
+
+// центральный дом крупнее и светлее
+let raf = 0;
+function update() {
+  raf = 0;
+  if (linenDesign) return;
+  const VH = innerHeight, mid = VH * 0.5, reach = VH * 0.42, flat = 0.1;
+  for (const c of document.querySelectorAll("#v-list .card")) {
+    const ph = c.querySelector(".photo"), r = ph.getBoundingClientRect();
+    if (r.bottom < -VH || r.top > 2 * VH) continue;
+    const d = Math.max(0, Math.min(1, Math.abs(r.top + r.height / 2 - mid) / reach) - flat) / (1 - flat);
+    const k = 1 - d, e = k * k * (3 - 2 * k);
+    c.style.setProperty("--s", (0.9 + e * 0.1).toFixed(3));
+    ph.style.setProperty("--b", (0.82 + e * 0.18).toFixed(3));
+    ph.style.setProperty("--r", Math.min(1, (1 - e) / 0.35).toFixed(3));
+    c.querySelector(".cap").style.setProperty("--o", (0.65 + e * 0.35).toFixed(2));
+  }
+}
+const topEl = document.getElementById("top");
+function topCheck() {
+  const y = document.getElementById("v-list").classList.contains("hidden") ? 0 : scrollY;
+  topEl.style.setProperty("--p", Math.max(0, Math.min(1, y / 70)).toFixed(3));
+}
+const queue = () => { if (!raf) raf = requestAnimationFrame(() => { topCheck(); update(); }); };
+addEventListener("scroll", queue, { passive: true });
+// блик: первый через 0,5 с после открытия, дальше каждые 30 с.
+// Не начинаем, пока шапка на полпути между большой и маленькой, пока человек листает и пока приложение свёрнуто — ждём секунду и пробуем снова.
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  let lastScroll = 0;
+  addEventListener("scroll", () => { lastScroll = Date.now(); }, { passive: true });
+  function tryShine() {
+    const p = parseFloat(topEl.style.getPropertyValue("--p")) || 0;
+    if (document.hidden || (p > 0.02 && p < 0.98) || Date.now() - lastScroll < 800) { setTimeout(tryShine, 1000); return; }
+    topEl.classList.remove("shine"); void topEl.offsetWidth; topEl.classList.add("shine");
+    setTimeout(tryShine, 30000);
+  }
+  setTimeout(tryShine, 500);
+})();
+addEventListener("resize", queue);
+
+// ---------- страница дома ----------
+let kit = "fin";
+function incRows(h) {
+  const mode = kit === "warm" ? "warm" : "fin";
+  const expand = text => text.replaceAll("{doors}", h.doors).replaceAll("{windows}", h.win).replaceAll("{terrace}", h.ter || "");
+  const rows = STUDIO_DATA.equipment.map(row => [row.label, row[mode] === null ? null : expand(row[mode])]);
+  if (h.ter) rows.push([STUDIO_DATA.terrace.label, expand(STUDIO_DATA.terrace.description)]);
+  return rows.map(([label, value]) => value === null
+    ? `<div class="r"><span class="k">${label}</span><span class="v">${STUDIO_DATA.unfinished.title}<small>${STUDIO_DATA.unfinished.note}</small></span></div>`
+    : `<div class="r"><span class="k">${label}</span><span class="v">${value}</span></div>`).join("");
+}
+function renderHouse(id) {
+  const h = H.find(x => x.id === id); if (!h) { location.hash = ""; return; }
+  if (linenDesign) kit = "warm";
+  const related = linenDesign ? B.find(b => NEAR[b.id] === h.id) : null;
+  const slides = [
+    ["render", h.media.render, "Дом"],
+    ["plan", h.media.plan, "План"],
+    ["furn", h.media.furniture, "С мебелью"],
+  ];
+  const rooms = h.rooms.map(([n, a]) => `<span>${n}${a ? ` <b>${m2(a)}</b>` : ""}</span>`).join("");
+  const el = document.getElementById("v-house");
+  el.innerHTML = `
+    <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${h.name}</span></div>
+    <div class="gal">
+      <div class="track" id="track">${slides.map(([c, s, label]) => `<div class="slide ${c}"><img src="${s}" alt="${label}"></div>`).join("")}</div>
+      <span class="zoomhint">нажмите, чтобы увеличить</span>
+      <div class="gallery-views" role="group" aria-label="Изображения проекта">${slides.map(([, , label], i) => `<button type="button" data-gallery-slide="${i}" aria-pressed="${i === 0}">${label}</button>`).join("")}</div>
+    </div>
+    <div class="sec">
+      <div class="seal" style=""><div class="mark" aria-hidden="true"><i class="roof"></i></div><div class="words"><div class="ribbon">ГАРАНТИЯ</div><strong>3 ГОДА</strong></div></div>
+      <h2 class="h-name">${h.name}</h2>
+      <div class="h-dim">Дом ${h.box} м — ${m2(h.area)}${h.ter ? ` · терраса ${h.ter} м — ${m2(h.terArea)} под крышей` : ""}</div>
+      ${linenDesign && ["30", "36", "40", "48", "54", "66", "68"].includes(h.id) ? '<p class="linen-price-note">Размеры и состав помещений уточняйте по актуальному плану производителя.</p>' : ""}
+      <div class="rooms">${rooms}</div>
+      <div class="prices">
+        <button class="pbtn" data-k="warm" aria-pressed="${kit==="warm"}"><span class="k">Тёплый контур</span><span class="v">${rub(h.warm)}</span></button>
+        <button class="pbtn" data-k="fin" aria-pressed="${kit==="fin"}"><span class="k">Чистовая отделка</span><span class="v">${rub(h.fin)}</span></button>
+      </div>
+      ${linenDesign ? '<p class="linen-price-note">Доставку уточняют по адресу участка.</p><button class="linen-button linen-price-action" type="button" data-linen-contact="estimate">Узнать цену с доставкой</button>' : ""}
+      <div class="inc"><h3>Что входит</h3><div id="inc">${incRows(h)}</div></div>
+    </div>
+    ${related ? `<a class="link" href="#b/${related.id}">Похожий построенный дом · ${related.name}</a>` : ""}
+    ${contactBlock()}
+    <p class="note">Цены по каталогу производителя. Точную стоимость с доставкой уточняйте.</p>`;
+  el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "");
+  el.querySelector(".prices").onclick = (e) => {
+    const b = e.target.closest(".pbtn"); if (!b) return;
+    kit = b.dataset.k;
+    el.querySelectorAll(".pbtn").forEach(x => x.setAttribute("aria-pressed", x.dataset.k === kit));
+    el.querySelector("#inc").innerHTML = incRows(h);
+  };
+  bindContact(el, () => `Здравствуйте! Интересует ${h.name}, ${kit === "warm" ? "тёплый контур" : "чистовая отделка"}.`);
+  const track = el.querySelector("#track");
+  const viewButtons = el.querySelectorAll("[data-gallery-slide]");
+  viewButtons.forEach(button => button.addEventListener("click", () => {
+    track.scrollTo({ left: track.clientWidth * Number(button.dataset.gallerySlide) });
+  }));
+  const syncGallerySelection = () => {
+    const i = Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / (track.clientWidth || 1))));
+    viewButtons.forEach((button, j) => button.setAttribute("aria-pressed", String(j === i)));
+  };
+  track.addEventListener("scroll", () => requestAnimationFrame(syncGallerySelection), { passive: true });
+  track.onclick = (e) => { const sl = e.target.closest(".slide"); if (!sl) return; const i = [...track.children].indexOf(sl); lbOpen(slides.map(([type, src, label]) => [src, type === "render" ? h.name : label]), i); };
+}
+
+// ---------- просмотр фото: двумя пальцами увеличить, листать свайпом, свайп вниз — закрыть ----------
+const lb = document.getElementById("lb"), lbImg = document.getElementById("lb-img"), lbN = document.getElementById("lb-n");
+const L = { list: [], i: 0, s: 1, x: 0, y: 0, pts: new Map(), d0: 0, s0: 1, c0: null, sx: 0, sy: 0, moved: false, t0: 0, lastTap: 0, pinched: false };
+function lbOpen(list, i) { L.list = list; L.i = i; lb.classList.add("on"); document.body.style.overflow = "hidden"; lbShow();
+  // просмотр фото — отдельный шаг истории: «назад» сначала закрывает фото
+  try { history.pushState({ lb: 1 }, ""); } catch (e) {}
+  try { T && T.BackButton && T.BackButton.show(); } catch (e) {} }
+function lbHide() { lb.classList.remove("on"); document.body.style.overflow = ""; L.pts.clear(); }
+function lbClose() { if (!lb.classList.contains("on")) return; if (history.state && history.state.lb) history.back(); else lbHide(); }
+addEventListener("popstate", () => { if (lb.classList.contains("on")) { lbHide(); try { if (T && T.BackButton && !(location.hash && location.hash !== "#built" && location.hash !== "#katalog")) T.BackButton.hide(); } catch (e) {} } });
+function lbShow() { L.s = 1; L.x = 0; L.y = 0; lbImg.style.opacity = ""; lbImg.src = L.list[L.i][0];
+  lbN.textContent = (L.list[L.i][1] || "") + (L.list.length > 1 ? `   ${L.i + 1} / ${L.list.length}` : ""); lbApply(); }
+function lbApply() { lbImg.style.transform = `translate(${L.x}px,${L.y}px) scale(${L.s})`; }
+function lbClamp() { const W = lb.clientWidth, Hh = lb.clientHeight;
+  L.x = Math.min(0, Math.max(W - W * L.s, L.x)); L.y = Math.min(0, Math.max(Hh - Hh * L.s, L.y)); }
+function lbZoomAt(cx, cy, ns) { ns = Math.min(5, Math.max(1, ns)); L.x = cx - (cx - L.x) * ns / L.s; L.y = cy - (cy - L.y) * ns / L.s; L.s = ns; if (L.s === 1) { L.x = 0; L.y = 0; } lbClamp(); lbApply(); }
+function lbStep(d) { if (L.list.length > 1) { L.i = (L.i + d + L.list.length) % L.list.length; lbShow(); } }
+document.getElementById("lb-x").addEventListener("click", (e) => { e.stopPropagation(); lbClose(); });
+document.getElementById("lb-x").addEventListener("pointerdown", (e) => e.stopPropagation());
+lb.addEventListener("pointerdown", (e) => {
+  try { lb.setPointerCapture(e.pointerId); } catch (_) {}
+  L.pts.set(e.pointerId, [e.clientX, e.clientY]);
+  if (L.pts.size === 1) { L.sx = e.clientX; L.sy = e.clientY; L.moved = false; L.pinched = false; L.t0 = Date.now(); L.bx = L.x; L.by = L.y; }
+  if (L.pts.size === 2) { const [a, b] = [...L.pts.values()]; L.d0 = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1; L.s0 = L.s;
+    L.c0 = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, L.x, L.y]; L.pinched = true; lbImg.style.opacity = ""; }
+});
+lb.addEventListener("pointermove", (e) => {
+  if (!L.pts.has(e.pointerId)) return;
+  L.pts.set(e.pointerId, [e.clientX, e.clientY]);
+  if (L.pts.size >= 2) {
+    const [a, b] = [...L.pts.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+    const ns = Math.min(5, Math.max(1, L.s0 * d / L.d0)); const cx = (a[0] + b[0]) / 2, cy = (a[1] + b[1]) / 2;
+    L.x = cx - (L.c0[0] - L.c0[2]) * ns / L.s0; L.y = cy - (L.c0[1] - L.c0[3]) * ns / L.s0; L.s = ns; lbClamp(); lbApply(); L.moved = true;
+  } else {
+    const dx = e.clientX - L.sx, dy = e.clientY - L.sy;
+    if (Math.abs(dx) > 6 || Math.abs(dy) > 6) L.moved = true;
+    if (L.s > 1.01) { L.x = L.bx + dx; L.y = L.by + dy; lbClamp(); lbApply(); }
+    else if (!L.pinched) { if (Math.abs(dy) > Math.abs(dx)) { L.x = 0; L.y = dy * 0.7; lbImg.style.opacity = String(Math.max(.35, 1 - Math.abs(dy) / 320)); } else { L.y = 0; L.x = dx * 0.5; } lbApply(); }
+  }
+});
+function lbUp(e) {
+  if (!L.pts.has(e.pointerId)) return;
+  L.pts.delete(e.pointerId);
+  if (L.pts.size === 1) { const [a] = [...L.pts.values()]; L.sx = a[0]; L.sy = a[1]; L.bx = L.x; L.by = L.y; return; }
+  if (L.pts.size) return;
+  const dx = e.clientX - L.sx, dy = e.clientY - L.sy, dt = Date.now() - L.t0;
+  if (L.s <= 1.01 && !L.pinched) {
+    lbImg.style.opacity = "";
+    if (dy > 100 && Math.abs(dy) > Math.abs(dx)) { lbClose(); return; }
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) { lbStep(dx < 0 ? 1 : -1); return; }
+    L.s = 1; L.x = 0; L.y = 0; lbApply();
+  }
+  if (!L.moved && dt < 300) {
+    const now = Date.now();
+    if (now - L.lastTap < 320) { L.s > 1.01 ? lbZoomAt(e.clientX, e.clientY, 1) : lbZoomAt(e.clientX, e.clientY, 2.5); L.lastTap = 0; }
+    else L.lastTap = now;
+  }
+}
+lb.addEventListener("pointerup", lbUp); lb.addEventListener("pointercancel", lbUp);
+lb.addEventListener("wheel", (e) => { e.preventDefault(); lbZoomAt(e.clientX, e.clientY, L.s * (e.deltaY < 0 ? 1.15 : 0.87)); }, { passive: false });
+addEventListener("keydown", (e) => { if (!lb.classList.contains("on")) return;
+  if (e.key === "Escape") lbClose(); if (e.key === "ArrowRight") lbStep(1); if (e.key === "ArrowLeft") lbStep(-1); });
+
+// ---------- увеличение двумя пальцами прямо на странице (как в Instagram) ----------
+(function () {
+  let P = null;
+  const dist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  const mid = (t) => [(t[0].clientX + t[1].clientX) / 2, (t[0].clientY + t[1].clientY) / 2];
+  document.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 2 || P || lb.classList.contains("on")) return;
+    const img = e.target.closest && e.target.closest(".photo img, .gal .slide img"); if (!img) return;
+    const r = img.getBoundingClientRect(); const cs = getComputedStyle(img);
+    const c = document.createElement("img"); c.src = img.currentSrc || img.src; c.className = "pinch-clone";
+    Object.assign(c.style, { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", objectFit: cs.objectFit, borderRadius: cs.borderRadius, background: cs.backgroundColor });
+    const v = document.createElement("div"); v.className = "pinch-veil";
+    document.body.append(v, c); img.style.visibility = "hidden";
+    const m = mid(e.touches);
+    P = { img, c, v, r, d0: dist(e.touches), m0: m, ox: m[0] - r.left, oy: m[1] - r.top };
+    requestAnimationFrame(() => { v.style.background = "rgba(0,0,0,.55)"; });
+    e.preventDefault();
+  }, { passive: false });
+  document.addEventListener("touchmove", (e) => {
+    if (!P) return; e.preventDefault();
+    if (e.touches.length < 2) return;
+    const s = Math.max(1, Math.min(4, dist(e.touches) / P.d0)); const m = mid(e.touches);
+    const tx = m[0] - P.m0[0] + P.ox * (1 - s), ty = m[1] - P.m0[1] + P.oy * (1 - s);
+    P.c.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+  }, { passive: false });
+  const end = (e) => {
+    if (!P || (e.touches && e.touches.length >= 2)) return;
+    const Q = P; P = null;
+    Q.c.classList.add("back"); Q.c.style.transform = "translate(0,0) scale(1)"; Q.v.style.background = "rgba(0,0,0,0)";
+    setTimeout(() => { Q.img.style.visibility = ""; Q.c.remove(); Q.v.remove(); }, 260);
+    // чтобы после щипка не сработало нажатие (не открылся просмотр)
+    const block = (ev) => { ev.stopPropagation(); ev.preventDefault(); }; document.addEventListener("click", block, true); setTimeout(() => document.removeEventListener("click", block, true), 400);
+  };
+  document.addEventListener("touchend", end); document.addEventListener("touchcancel", end);
+})();
+
+// ---------- свайп от левого края вправо — назад (в просмотре фото — закрыть) ----------
+(function () {
+  let E = null;
+  document.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) { E = null; return; }
+    const t = e.touches[0];
+    E = t.clientX < 28 ? { x: t.clientX, y: t.clientY } : null;
+  }, { passive: true });
+  document.addEventListener("touchend", (e) => {
+    if (!E) return; const t = e.changedTouches[0]; const dx = t.clientX - E.x, dy = Math.abs(t.clientY - E.y); E = null;
+    if (dx < 70 || dy > dx * 0.7) return;
+    if (lb.classList.contains("on")) { lbClose(); return; }
+    if (location.hash && location.hash !== "#built" && location.hash !== "#katalog") history.back();
+  }, { passive: true });
+})();
+
+// ---------- страница построенного дома ----------
+function renderBuilt(id) {
+  const b = B.find(x => x.id === id); if (!b) { location.hash = "#built"; return; }
+  const el = document.getElementById("v-house");
+  const plans = b.plans || [];
+  const photos = b.photos.map((p, i) => [IMG + p + ".webp", b.caps[i] || b.name]).concat(plans.map(p => [IMG + p + ".webp", "Планировка"]));
+  el.innerHTML = `
+    <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${b.name}</span></div>
+    <div class="gal bgal" data-built-id="${b.id}">
+      <div class="track" id="track">${photos.map(([src], i) => `<div class="slide ${i < b.photos.length ? "render" : "plan"}"><img src="${src}" alt="" decoding="async"></div>`).join("")}</div>
+      <span class="zoomhint">нажмите, чтобы увеличить</span>
+      <div class="thumbs" id="thumbs">${photos.map(([src], i) => `<button class="thumb" type="button" data-i="${i}" aria-current="${i === 0}"><img src="${src}" alt="" decoding="async"></button>`).join("")}</div>
+      <p class="bcap" id="bcap"></p>
+    </div>
+    <div class="sec">
+      <div class="seal" style=""><div class="mark" aria-hidden="true"><i class="roof"></i></div><div class="words"><div class="ribbon">ГАРАНТИЯ</div><strong>3 ГОДА</strong></div></div>
+      <h2 class="h-name">${b.name}</h2>
+      <div class="h-dim">${b.dim}</div>
+      ${b.lead ? `<p style="margin:12px 0 0;font-size:15px">${b.lead}</p>` : ""}
+      <div class="specs">${b.specs.map(([k, v]) => `<div class="r"><span class="k">${k}</span><span class="v">${v}</span></div>`).join("")}</div>
+      ${b.inside && b.inside.length ? `<div class="inside">${b.inside.map(x => `<span>${x}</span>`).join("")}</div>` : ""}
+    </div>
+    ${b.quote ? `<div class="bquote">«${b.quote[0]}»<span>${b.quote[1]}</span></div>` : ""}
+    ${linenDesign && BUILT_POSTS[b.id] ? `<a class="link" href="https://vk.com/wall-213255400_${BUILT_POSTS[b.id]}" target="_blank" rel="noopener noreferrer">Исходная публикация ВКонтакте</a>` : ""}
+    ${contactBlock()}`;
+  el.querySelector("#h-back").onclick = () => history.length > 1 ? history.back() : (location.hash = "#built");
+  const track = el.querySelector("#track"), thumbs = [...el.querySelectorAll(".thumb")], strip = el.querySelector("#thumbs"), bcap = el.querySelector("#bcap");
+  let cur = -1;
+  const setDot = () => { const i = Math.max(0, Math.min(photos.length - 1, Math.round(track.scrollLeft / (track.clientWidth || 1))));
+    if (i === cur) return; cur = i;
+    thumbs.forEach((t, j) => t.setAttribute("aria-current", String(j === i)));
+    const t = thumbs[i]; strip.scrollTo({ left: t.offsetLeft - strip.clientWidth / 2 + t.offsetWidth / 2, behavior: "smooth" });
+    bcap.textContent = photos[i][1] === b.name ? "" : photos[i][1]; };
+  thumbs.forEach(t => t.addEventListener("click", () => track.scrollTo({ left: track.clientWidth * +t.dataset.i, behavior: "smooth" })));
+  track.addEventListener("scroll", () => requestAnimationFrame(setDot), { passive: true }); setDot();
+  track.onclick = (e) => { const sl = e.target.closest(".slide"); if (sl) lbOpen(photos, [...track.children].indexOf(sl)); };
+  bindContact(el, () => `Здравствуйте! Посмотрел(а) в каталоге «${b.name}», хочу обсудить похожий дом.`);
+}
+const ICON_TG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.9 4.6 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.2L5.9 13.5l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.5 3.1c.9-.3 1.7.2 1.4 1.5z"/></svg>';
+const ICON_PH = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.6a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.8.3 1.7.5 2.6.7a2 2 0 0 1 1.7 2z"/></svg>';
+// одинаковый блок связи на любой странице дома
+const CTA_T = STUDIO_DATA.callToAction.title;
+const CTA_S = STUDIO_DATA.callToAction.description;
+function endCta() { return contactBlock(); }
+function contactBlock() {
+  const studioLinks = `<div class="external-studio-links">
+    <a href="${STUDIO_DATA.contacts.channel}" target="_blank" rel="noopener noreferrer">Репортажи из цеха в Telegram ↗</a>
+    <a href="${STUDIO_DATA.contacts.avito}" target="_blank" rel="noopener noreferrer">Профиль и отзывы на Авито ↗</a>
+  </div>`;
+  if (linenDesign) return `<div class="contact endcta linen-contact-block"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="linen-actions"><button class="linen-button" type="button" data-linen-contact="estimate">Запросить расчёт</button><button class="linen-button linen-secondary" type="button" data-linen-contact="visit">Договориться о визите</button></div>${studioLinks}</div>`;
+  return `<div class="contact endcta"><div class="t">${CTA_T}</div><p class="sub2">${CTA_S}</p><div class="bt"><a class="tg" href="${STUDIO_DATA.contacts.telegram}" target="_blank" rel="noopener noreferrer" data-act="tg">${ICON_TG}Напишите нам</a><a class="ph" href="tel:${PHONE}">${ICON_PH}Позвонить</a></div>${studioLinks}</div>`;
+}
+function bindContact(el, text) { const a = el.querySelector('[data-act="tg"]'); if (a) a.onclick = openContactChat;
+  el.querySelectorAll("[data-linen-contact]").forEach(button => {
+    button.addEventListener("click", () => openLinenContact(button.dataset.linenContact, text()));
+  });
+}
+
+function openContactChat(event) {
+  if (!inTG || typeof T.openTelegramLink !== "function") return;
+  try {
+    T.openTelegramLink(event.currentTarget.href);
+    event.preventDefault();
+  } catch (e) {}
+}
+
+// ---------- переходы ----------
+const views = { list: "v-list", house: "v-house", how: "v-how" };
+let listScroll = 0;
+function route() {
+  const h = location.hash;
+  const show = (v) => Object.values(views).forEach(id => document.getElementById(id).classList.toggle("hidden", id !== v));
+  const listShown = !document.getElementById("v-list").classList.contains("hidden");
+  if (h.startsWith("#d/")) { if (listShown) listScroll = scrollY; renderHouse(h.slice(3)); show(views.house); scrollTo(0, 0); }
+  else if (h === "#how") { show(views.how); scrollTo(0, 0); }
+  else if (h.startsWith("#b/")) { if (listShown) listScroll = scrollY; renderBuilt(h.slice(3)); show(views.house); scrollTo(0, 0); }
+  else {
+    const nt = h === "#built" ? "built" : "katalog";
+    if (nt !== tab) {
+      // у каждой вкладки своё место в ленте: уходя — запоминаем, возвращаясь — восстанавливаем
+      if (listShown) tabPos[tab] = scrollY;
+      tab = nt; renderList();
+      if (tabPos[nt] != null) { listScroll = tabPos[nt]; show(views.list); scrollTo(0, listScroll); }
+      else if (linenDesign) listScroll = 0;
+      else {
+        // первый заход на вкладку — всегда «Список»: первый дом сразу под вкладками, шапка свёрнута
+        show(views.list);
+        // цель: шапка свёрнута, вкладки только что прилипли под ней — дальше первый дом (в каталоге — фильтры и первый дом)
+        const TB = document.getElementById("tabs");
+        topEl.style.setProperty("--p", "1");
+        const cs = getComputedStyle(TB);
+        const y = TB.getBoundingClientRect().top + scrollY - (parseFloat(cs.top) || 0);
+        listScroll = Math.max(70, Math.round(y));
+      }
+    }
+    show(views.list); scrollTo(0, listScroll); queue();
+  }
+  try { if (T && T.BackButton) { (h && h !== "#built" && h !== "#katalog") ? T.BackButton.show() : T.BackButton.hide(); } } catch (e) {}
+}
+try { T && T.BackButton && T.BackButton.onClick(() => history.back()); } catch (e) {}
+addEventListener("hashchange", route);
+document.getElementById("tgbtn")?.addEventListener("click", openContactChat);
+document.getElementById("how-back").onclick = () => history.back();
+const BUILT_POSTS = {
+  "chernyj-6x8":9192, "banya-s-komnatoj":9248, "dacha-3x9":9175, "banya-2x6":8987,
+  "dom-48-ugol":8933, "dom-69-terrasa":8565, "dom-s-banej":8426, "studio-27":8381,
+  "dom-48-zelenyj":8295, "dom-48-ryzhij":8232, "dom-54":8249, "minidom-zimnij":8209,
+  "dom-40":7844, "dom-72":7670
+};
+const linenDialog = document.getElementById("linen-contact");
+const linenDetails = document.getElementById("linen-details");
+const linenResult = document.getElementById("linen-result");
+const linenDraft = document.getElementById("linen-draft");
+const linenStatus = document.getElementById("linen-status");
+let linenIntent = "estimate";
+let linenIntro = "";
+function setLinenIntent(intent) {
+  linenIntent = intent;
+  const visit = intent === "visit";
+  document.querySelector('label[for="linen-details"]').textContent = visit ? "Когда вам удобно" : "Населённый пункт или район";
+  linenDetails.placeholder = visit ? "Например, в субботу после обеда" : "Например, Всеволожский район";
+  linenDialog.querySelectorAll("[data-linen-intent]").forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.linenIntent === intent));
+  });
+  linenDetails.value = "";
+  linenResult.hidden = true;
+  linenStatus.textContent = "";
+}
+function openLinenContact(intent, intro) {
+  linenIntro = intro;
+  setLinenIntent(intent);
+  linenDialog.showModal();
+}
+if (linenDesign) {
+  const themeButton = document.getElementById("linen-theme");
+  function setLinenTheme(slate) {
+    document.documentElement.dataset.linenTheme = slate ? "slate" : "light";
+    themeButton.setAttribute("aria-pressed", String(slate));
+    themeButton.textContent = slate ? "Лён" : "Сланец";
+  }
+  setLinenTheme(false);
+  themeButton.addEventListener("click", () => setLinenTheme(themeButton.getAttribute("aria-pressed") !== "true"));
+  document.querySelector("[data-linen-catalog]").addEventListener("click", event => {
+    event.preventDefault();
+    document.getElementById("tabs").scrollIntoView();
+  });
+  document.getElementById("linen-close").addEventListener("click", () => linenDialog.close());
+  linenDialog.querySelectorAll("[data-linen-intent]").forEach(button => {
+    button.addEventListener("click", () => setLinenIntent(button.dataset.linenIntent));
+  });
+  document.getElementById("linen-request").addEventListener("submit", event => {
+    event.preventDefault();
+    const details = linenDetails.value.trim();
+    if (!details) { linenDetails.focus(); return; }
+    linenDraft.value = linenIntent === "visit"
+      ? `Здравствуйте! Хочу приехать на производство «Загородной студии». Мне удобно: ${details}.`
+      : `${linenIntro} Подскажите стоимость с доставкой. Участок: ${details}.`;
+    linenResult.hidden = false;
+    linenStatus.textContent = "";
+  });
+  document.getElementById("linen-copy").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(linenDraft.value);
+      linenStatus.textContent = "Текст скопирован";
+    } catch {
+      linenDraft.select();
+      linenStatus.textContent = "Скопируйте выделенный текст";
+    }
+  });
+}
+renderChips(); renderList(); route();
+
+// ---------- Яндекс.Метрика: цели и виртуальные просмотры ----------
+const YM_ID = 114125638;
+const ymGoal = (name, params) => { try { if (window.ym) ym(YM_ID, "reachGoal", name, params || {}); } catch (e) {} };
+const ymHit = (path, title) => { try { if (window.ym) ym(YM_ID, "hit", path, { title: title || document.title }); } catch (e) {} };
+const YM_PLATFORM = (T && T.platform && T.platform !== "unknown") ? T.platform : "web";
+try { ym(YM_ID, "params", { platform: YM_PLATFORM, where: inTG ? "telegram" : "browser" }); } catch (e) {}
+function trackRoute() {
+  const h = location.hash || "";
+  if (!h || h === "#katalog") return;
+  const base = location.pathname;
+  if (h.indexOf("#d/") === 0) {
+    const id = h.slice(3);
+    const item = H.find(x => x.id === id);
+    ymHit(base + h, item ? item.name + " — Загородная студия" : document.title);
+    ymGoal("open_house", { house: id });
+  } else if (h.indexOf("#b/") === 0) {
+    const id = h.slice(3);
+    const item = B.find(x => x.id === id);
+    ymHit(base + h, item ? item.name + " — Загородная студия" : document.title);
+    ymGoal("open_built", { built: id });
+  } else {
+    ymHit(base + h, document.title);
+  }
+}
+addEventListener("hashchange", trackRoute);
+addEventListener("click", (e) => {
+  const t = e.target;
+  if (!t || !t.closest) return;
+  if (t.closest('a[href^="tel:"]')) { ymGoal("call_click"); return; }
+  if (t.closest('[data-act="tg"], #tgbtn')) ymGoal("write_click");
+}, true);
+const _lbOpen = lbOpen;
+lbOpen = function (list, i) { ymGoal("photo_zoom"); return _lbOpen(list, i); };
+</script>
+</body>
+</html>

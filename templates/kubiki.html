@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{text:pages/kubiki/copy/text0}}</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
+<style>
+:root { --bg:#EDEFEC; --ink:#1D2125; --muted:#5E666C; }
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+.app { max-width:520px; margin:0 auto; padding:14px 0 40vh; }
+.brand { font-family:"Oswald",sans-serif; font-weight:600; font-size:21px; margin:6px 16px 2px; }
+.sub { color:var(--muted); font-size:13px; margin:0 16px 4vh; }
+.card { width:100%; margin:0 auto 3vh; }
+canvas { display:block; width:100%; aspect-ratio:16/9; }
+.cap { margin:5px 16px 0; line-height:1.3; }
+.name { font-family:"Oswald",sans-serif; font-weight:600; font-size:15px; line-height:1.15; margin:5px 0 0; display:inline; }
+.dim { color:var(--muted); font-size:12px; margin:0; display:inline; }
+.dim::before { content:" · "; }
+.ticker { position:fixed; left:0; right:0; bottom:calc(44px + env(safe-area-inset-bottom,0px)); white-space:nowrap; pointer-events:none; font-family:"Oswald",sans-serif; font-weight:500; font-size:28px; letter-spacing:.02em; color:rgba(29,33,37,.35); text-transform:uppercase; }
+.ticker span { display:inline-block; transform:translateX(var(--tx,0)); will-change:transform; }
+.hint { position:fixed; left:0; right:0; bottom:0; padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); text-align:center; font-size:13px; color:#fff; background:rgba(20,24,30,.85); backdrop-filter:blur(6px); }
+</style>
+<script src="data/catalog.js?v=__DATA_REVISION__"></script>
+</head>
+<body>
+<div class="app">
+  <h1 class="brand">{{text:pages/kubiki/copy/text1}}</h1>
+  <p class="sub">{{text:pages/kubiki/copy/text2}}</p>
+  <div id="list"></div>
+</div>
+<div class="ticker"><span id="tick"></span></div>
+<div class="hint">{{text:pages/kubiki/copy/text3}}</div>
+<script>
+const HOUSES = [
+  {a:"hero-1", name:"Чёрный снаружи, белый внутри", dim:"6×8,5 м: дом 6×6 м и терраса 2,5×6 м"},
+  {a:"c2",     name:"Баня с жилой комнатой", dim:"31,5 м² + терраса 12 м²"},
+  {a:"c3",     name:"Дачный дом 3×9 с хозблоком", dim:"3×9 м + хозблок"},
+  {a:"c8",     name:"Дом-студия 27 м²", dim:"27 м²"},
+  {a:"c10",    name:"Дом 48 м², рыжий с графитом", dim:"48 м², 6×8 м"},
+];
+document.getElementById('list').innerHTML = HOUSES.map(h => `
+  <div class="card">
+    <canvas></canvas>
+    <p class="cap"><span class="name">${h.name}</span><span class="dim">${h.dim}</span></p>
+  </div>`).join('');
+document.getElementById('tick').textContent = HOUSES.map(h => h.name).join('   /   ') + '   /   ';
+
+const COLS = 12, ROWS = 7;  // 12 в ряд → кубик ~32 px на телефоне; при 16:9 почти квадратные
+// случайные, но постоянные множители для каждого кубика: кто разлетается дальше, кто ближе
+const seeds = []; let s = 7;
+for (let i = 0; i < COLS * ROWS; i++){ s = (s * 9301 + 49297) % 233280; seeds.push(s / 233280); }
+
+const cards = [...document.querySelectorAll('.card')].map((el, i) => {
+  const cv = el.querySelector('canvas'), img = new Image();
+  img.src = 'img/' + HOUSES[i].a + '.webp';
+  img.onload = queue;
+  return {el, cv, ctx: cv.getContext('2d'), img, last: null};
+});
+const dpr = Math.min(2, devicePixelRatio || 1);
+function size(){ for (const c of cards){ const w = c.cv.clientWidth; c.cv.width = w * dpr; c.cv.height = w * 9 / 16 * dpr; c.last = null; } }
+
+function draw(c, top){
+  // top — положение верха холста на экране (px). Кубик портится тем сильнее, чем он ближе к верхнему или нижнему краю экрана.
+  const {ctx, img, cv} = c, W = cv.width, H = cv.height, VH = innerHeight;
+  ctx.clearRect(0, 0, W, H);
+  if (!img.complete || !img.naturalWidth) return;
+  const ir = img.naturalWidth / img.naturalHeight, cr = W / H;
+  let sw, sh; if (ir > cr){ sh = img.naturalHeight; sw = sh * cr; } else { sw = img.naturalWidth; sh = sw / cr; }
+  const sx = (img.naturalWidth - sw) / 2, sy = (img.naturalHeight - sh) / 2;
+  const tw = W / COLS, th = H / ROWS, stw = sw / COLS, sth = sh / ROWS;
+  const cssH = cv.clientHeight, zone = VH * 0.13;               // полоса у края экрана, где кубики портятся: ~13% высоты сверху и снизу
+  const center = Math.abs(top + cssH / 2 - VH / 2) / (VH / 2);   // 0 — карточка в центре
+  const dimAll = 1;                 // дальняя карточка темнее целиком
+  for (let r = 0; r < ROWS; r++){
+    const yCss = top + (r + 0.5) * (cssH / ROWS);
+    const dist = Math.min(yCss, VH - yCss);                      // до ближайшего края экрана
+    const f = Math.max(0, Math.min(1, (zone - dist) / zone));    // 0 — далеко от края, 1 — у самого края
+    for (let q = 0; q < COLS; q++){
+      const k = seeds[r * COLS + q], k2 = seeds[(r * COLS + q + 37) % seeds.length];
+      const big = f > 0 && k2 > 0.8 && q < COLS - 1;               // каждый пятый кубик у края — двойной ширины
+      if (f > 0 && q > 0 && seeds[(r * COLS + q - 1 + 37) % seeds.length] > 0.8) continue; // он уже накрыт двойным слева
+      if (f > 0 && k < f * 0.45) continue;                       // часть кубиков у края выпала
+      const n = big ? 2 : 1;
+      const dx = (k - 0.5) * f * tw * 0.9, dy = (k2 - 0.5) * f * th * 0.9;
+      const sc = 1 - f * 0.25 * k2;
+      const x = q * tw + dx, y = r * th + dy, w = tw * n * sc + 0.5, h = th * sc + 0.5;
+      ctx.drawImage(img, sx + q * stw, sy + r * sth, stw * n, sth, x, y, w, h);
+      const fade = f * 0.7 * k;                                  // кубик у края тает в светлый фон
+      if (fade > 0.01){ ctx.fillStyle = `rgba(237,239,236,${fade.toFixed(2)})`; ctx.fillRect(x, y, w, h); }
+    }
+  }
+  ctx.filter = 'none';
+  // затемнение: соседние дома чуть темнее, центральный обычный
+  const lit = 1 - Math.min(1, center);
+  const dark = 0.22 * (1 - lit);
+  if (dark > 0.01){ ctx.fillStyle = `rgba(0,0,0,${dark.toFixed(2)})`; ctx.fillRect(0, 0, W, H); }
+  // подсветка центрального: середина чуть ярче
+  if (lit > 0.01){
+    const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.6);
+    g.addColorStop(0, `rgba(255,255,255,${(0.12 * lit).toFixed(2)})`);
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+}
+
+let raf = 0;
+function update(){
+  raf = 0;
+  const H = innerHeight, mid = H * 0.5;
+  for (const c of cards){
+    const r = c.cv.getBoundingClientRect();
+    if (r.bottom < -H || r.top > 2 * H) continue;
+    if (r.bottom < 0 || r.top > H) continue;
+    const key = Math.round(r.top);
+    if (key !== c.last){ c.last = key; draw(c, r.top); }
+  }
+  document.getElementById('tick').style.setProperty('--tx', (-scrollY * 0.35).toFixed(0) + 'px');
+}
+function queue(){ if (!raf) raf = requestAnimationFrame(update); }
+addEventListener('scroll', queue, {passive:true});
+addEventListener('resize', () => { size(); queue(); });
+size(); update();
+</script>
+</body>
+</html>

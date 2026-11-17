@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{text:pages/noch/copy/text0}}</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Onest:wght@400;500;600&display=swap">
+<style>
+:root { --bg:#EDEFEC; --surface:#fff; --ink:#1D2125; --muted:#5E666C; --wood:#B4672C; --radius:14px; }
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background:var(--bg); color:var(--ink); font-family:"Onest","Segoe UI",Roboto,system-ui,sans-serif; font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+.app { max-width:520px; margin:0 auto; padding:14px 16px 70vh; }
+.brand { font-family:"Oswald",sans-serif; font-weight:600; font-size:21px; margin:6px 0 2px; }
+.sub { color:var(--muted); font-size:13px; margin:0 0 18px; }
+.spacer { height:30vh; }
+.card { display:block; width:calc(100% + 32px); margin-inline:-16px; background:var(--surface); border-radius:calc(var(--radius) * var(--r, 1)); overflow:hidden; transform:scale(var(--s, 1)); transform-origin:50% 50%; will-change:transform; }
+.card .body { padding:12px 16px 14px; }
+.photo { position:relative; aspect-ratio:4/3; background:#222; overflow:hidden; }
+.photo img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transform:translateY(var(--dy,0)) scale(var(--z,1)); transform-origin:50% 55%; will-change:transform; }
+.card.settle .photo img { transition:transform .22s cubic-bezier(.2,.9,.3,1.35); }
+.card.settle .body { transition:transform .22s cubic-bezier(.2,.9,.3,1.35); transform:translateY(var(--dy,0)); }
+/* Огонёк: светящийся отрезок на рамке фото, бежит по периметру пока карточка едет к центру */
+.photo svg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:2; }
+.photo svg rect { fill:none; stroke-linecap:round; }
+.photo svg .trail { stroke:#fff; stroke-width:5; opacity:var(--o,0); filter:drop-shadow(0 0 6px rgba(255,255,255,.95)) drop-shadow(0 0 14px rgba(255,200,120,.8)); }
+.photo svg .core { stroke:#FFE7B8; stroke-width:2.5; opacity:var(--o,0); }
+.badge { position:absolute; left:12px; top:12px; background:rgba(17,20,22,.78); color:#fff; font-size:12px; font-weight:500; padding:4px 9px; border-radius:999px; }
+.name { font-family:"Oswald",sans-serif; font-weight:600; font-size:20px; line-height:1.15; margin:0 0 4px; }
+.dim { color:var(--muted); font-size:13px; margin:0 0 6px; }
+.lead { margin:0; font-size:15px; }
+.hint { position:fixed; left:0; right:0; bottom:0; padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); text-align:center; font-size:13px; color:#fff; background:rgba(20,24,30,.85); backdrop-filter:blur(6px); }
+</style>
+<script src="data/catalog.js?v=__DATA_REVISION__"></script>
+</head>
+<body>
+<div class="app">
+  <h1 class="brand">{{text:pages/noch/copy/text1}}</h1>
+  <p class="sub">{{text:pages/noch/copy/text2}}</p>
+  <div class="spacer"></div>
+  <div id="list"></div>
+</div>
+<div class="hint">{{text:pages/noch/copy/text3}}</div>
+<script>
+const HOUSES = [
+  {fx:"settle", a:"hero-1", badge:"Чёрный фасад", name:"Чёрный снаружи, белый внутри", dim:"6×8,5 м: дом 6×6 м и терраса 2,5×6 м", lead:"Две спальни, кухня-гостиная с печью и терраса под общей крышей."},
+  {fx:"settle", a:"c2", badge:"Баня с комнатой", name:"Баня с жилой комнатой", dim:"31,5 м² + терраса 12 м²", lead:"Баня, в которой можно жить: комната 14 м², парная, душевая и санузел."},
+  {fx:"settle", a:"c8", badge:"Студия", name:"Дом-студия 27 м²", dim:"27 м²", lead:"Светлая комната с печью, кухня и санузел."},
+];
+const list = document.getElementById('list');
+list.innerHTML = HOUSES.map(h => `
+  <div class="card ${h.fx}">
+    <div class="photo">
+      <img src="img/${h.a}.webp" alt="">
+      ${h.fx==="led" ? `<svg viewBox="0 0 400 300" preserveAspectRatio="none"><rect class="trail" x="1.5" y="1.5" width="397" height="297" rx="0"/><rect class="core" x="1.5" y="1.5" width="397" height="297" rx="0"/></svg>` : ``}
+      <span class="badge">${h.badge}</span>
+    </div>
+    <div class="body"><h2 class="name">${h.name}</h2><p class="dim">${h.dim}</p><p class="lead">${h.lead}</p></div>
+  </div>`).join('');
+
+const cards = [...document.querySelectorAll('.card')];
+const PER = 2 * (400 + 300); // периметр в единицах viewBox
+const SEG = 150;             // длина огонька
+for (const r of document.querySelectorAll('.photo svg rect')) { r.style.strokeDasharray = `${SEG} ${PER - SEG}`; }
+let raf = 0;
+function update(){
+  raf = 0;
+  const mid = innerHeight * 0.48, reach = innerHeight * 0.6, flat = 0.08;
+  for (const c of cards){
+    const ph = c.querySelector('.photo');
+    const r = ph.getBoundingClientRect();
+    const off = r.top + r.height / 2 - mid;          // + ниже центра, − выше
+    const d = Math.max(0, Math.min(1, Math.abs(off) / reach) - flat) / (1 - flat);
+    const k = 1 - d, e = k * k * (3 - 2 * k);
+    c.style.setProperty('--s', (0.86 + e * 0.14).toFixed(3));
+    c.style.setProperty('--r', Math.min(1, (1 - e) / 0.35).toFixed(3));
+    ph.style.setProperty('--z', (1 + e * 0.06).toFixed(3));
+    // огонёк: виден, пока карточка идёт к центру (от 80% до 10% высоты экрана от центра), за это время обегает рамку один раз
+    const a = Math.abs(off) / innerHeight;             // 0 — в центре
+    let p = (0.8 - a) / 0.7; p = Math.min(1, Math.max(0, p));   // 0..1 путь к центру
+    const vis = a > 0.1 && a < 0.8 ? Math.min(1, (0.8 - a) / 0.12, (a - 0.1) / 0.08) : 0;
+    const dir = off > 0 ? 1 : -1;                       // снизу вверх — по часовой, сверху вниз — против
+    const offset = -dir * p * PER;
+    for (const rect of ph.querySelectorAll('rect')) rect.style.strokeDashoffset = offset.toFixed(1);
+    if (ph.querySelector('svg')) ph.style.setProperty('--o', vis.toFixed(3));
+    if (c.classList.contains('settle')) {
+      // приподнят на подходе (10–40% высоты экрана от центра), в центре (<8%) опускается на место
+      const lift = a < 0.08 ? 0 : Math.min(1, (a - 0.08) / 0.12);
+      ph.style.setProperty('--dy', (-22 * lift).toFixed(1) + 'px');
+      c.querySelector('.body').style.setProperty('--dy', (-10 * lift).toFixed(1) + 'px');
+    }
+  }
+}
+const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+addEventListener('scroll', queue, {passive:true});
+addEventListener('resize', queue);
+update();
+</script>
+</body>
+</html>
