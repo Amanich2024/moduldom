@@ -86,6 +86,8 @@ def compile_pages(data):
     def token(match):
         kind, path = match.group(1), match.group(2)
         value = str(lookup(data, path))
+        if kind == "phone" and len(value) == 12 and value.startswith("+7"):
+            value = value[:2] + " " + value[2:5] + " " + value[5:8] + "-" + value[8:10] + "-" + value[10:]
         if kind == "photo":
             value = "img/" + value + ".webp"
         return html.escape(value, quote=kind != "text")
@@ -93,7 +95,7 @@ def compile_pages(data):
     for template in sorted((ROOT / "templates").rglob("*.html")):
         relative = template.relative_to(ROOT / "templates")
         source = template.read_text(encoding="utf-8")
-        source = re.sub(r"\{\{(text|attr|photo):([^{}]+)\}\}", token, source)
+        source = re.sub(r"\{\{(text|attr|photo|phone):([^{}]+)\}\}", token, source)
         source = source.replace("__DATA_REVISION__", revision)
         # Static HTML and JavaScript template strings use the same contact links.
         for key in ("telegram", "channel", "avito"):
