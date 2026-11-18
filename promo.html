@@ -454,6 +454,16 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
 
 .index__mark { display:flex; align-items:center; gap:12px; }
 .studio-logo { width:42px; height:42px; object-fit:contain; border-radius:10px; flex-shrink:0; }
+
+.story-project{display:block;margin-top:24px;background:#fffcf5;border:1px solid #d8cbb9;border-radius:18px;overflow:hidden;text-decoration:none;color:#332b23;box-shadow:0 10px 25px #0001}
+.story-project iframe{display:block;width:100%;height:155px;border:0;pointer-events:none}.story-project-copy{display:grid;gap:10px;padding:18px}.story-project strong{font-size:24px;line-height:1.15}.story-project-copy>span{font-size:15px;line-height:1.4;color:#746a60}.story-project-copy>b{font-size:16px;color:#8b583d}
+@media(min-width:900px){.hero__brand{width:min(380px,28vw)}.hero__brand p{font-size:clamp(20px,2.2vw,30px)}.story-project{max-width:360px}}
+
+@media(min-width:900px){
+.hero__brand{top:calc(var(--nav-h) + 1.5rem);width:min(420px,31vw)}.hero__brand>p{display:none}
+.story-project{margin-top:0;display:grid;grid-template-columns:105px minmax(0,1fr);align-items:center;max-width:420px;min-height:140px}
+.story-project iframe{height:135px;width:105px}.story-project-copy{padding:14px 12px;gap:7px}.story-project strong{font-size:22px}.story-project-copy>span{font-size:13px}.story-project-copy>b{font-size:14px}
+}
 </style>
 <style>
 /* ===== Тема: цвета и шрифты бренда мини-приложения ===== */
@@ -780,7 +790,7 @@ html.has-house { overflow: hidden; }
     <li><a href="#doma">Дома</a></li>
     <li><a href="#otzyvy">Отзывы</a></li>
     <li><a href="#voprosy">Вопросы</a></li>
-    <li><a data-build href="index.html#/build">Конструктор</a></li>
+    <li><a data-build href="builder-desktop-draft.html#/build">Конструктор</a></li>
     <li><a href="#vecher">Вечер</a></li>
   </ul>
 </nav>
@@ -792,6 +802,10 @@ html.has-house { overflow: hidden; }
     <div data-sc-stage data-sc-verify-state="">
       <div class="hero__brand">
         <p>Модульные дома и бани под того, кто будет в них жить.</p>
+        <a class="story-project" data-build href="builder-desktop-draft.html#/build">
+          <iframe src="builder-desktop-draft.html?thumbnail=1#/build" title="Ваш дом" tabindex="-1" aria-hidden="true" scrolling="no"></iframe>
+          <span class="story-project-copy"><strong id="story-project-title">Начните строить свой дом</strong><span id="story-project-sub">Размер, планировка и цвета — на ваш выбор</span><b id="story-project-action">Открыть конструктор →</b></span>
+        </a>
       </div>
       <figure class="hero__photo" data-house="h1">
         <div class="hero__lean"><div class="hero__move">
@@ -2269,7 +2283,15 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   var root = document.documentElement;
   var wide = matchMedia('(min-width: 900px)');
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var APP = new URL('index.html', location.href).href;
+  var APP = new URL('builder-desktop-draft.html', location.href).href;
+  try {
+    var saved=JSON.parse(localStorage.getItem('modul-build-v1')||'null');
+    if(saved && localStorage.getItem('modul-build-v1-t')){
+      document.getElementById('story-project-title').textContent='Ваш проект';
+      document.getElementById('story-project-sub').textContent='Дом '+saved.size.replace('x','×')+' м. Планировка и цвета сохранены в этом браузере.';
+      document.getElementById('story-project-action').textContent='Продолжить мой проект →';
+    }
+  } catch(e){}
   var WRITE = 'https://vk.me/zagorodnaya_studia';
 
   /* Telegram: только если страницу открыли как мини-приложение */
@@ -2281,7 +2303,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
     try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {}
     try {
       tg.MainButton.setParams({ text: 'Собрать свой дом', color: '#D88B4C', text_color: '#1A1206' });
-      tg.MainButton.onClick(function () { location.href = 'index.html#/build'; });
+      tg.MainButton.onClick(function () { location.href = 'builder-desktop-draft.html#/build'; });
     } catch (e) {}
   }
   function openOut(url) {
@@ -2289,7 +2311,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
     window.open(url, '_blank', 'noopener');
   }
   function goBuild() {
-    if (inTG) location.href = 'index.html#/build'; else openOut(APP + '#/build');
+    if (inTG) location.href = 'builder-desktop-draft.html#/build'; else openOut(APP + '#/build');
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-build]');
