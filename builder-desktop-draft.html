@@ -362,6 +362,22 @@ body.pe-open { overflow: hidden; }
 .plan-help-content p{margin:10px 0 0}.b-preview:has(.pe-inline){position:relative;top:0;padding:12px}
 .pe-inline .pe-panel[hidden]{display:none}.pe-inline .pe-canvas{margin-top:8px}
 @media(min-width:1000px){.b-head p{margin-bottom:18px}.b-head h1{font-size:36px}.b-top{grid-template-columns:minmax(0,1.8fr) minmax(340px,1fr)}}
+</style><style>
+@media(min-width:1000px){
+html:has(.b-head),body:has(.b-head){height:100%;overflow:hidden}
+.app:has(.b-head){height:100dvh;min-height:0;box-sizing:border-box;padding:12px 28px 82px;display:flex;flex-direction:column}
+.app:has(.b-head)>.topbar{flex:0 0 auto;margin:0 0 6px}.b-head{flex:0 0 auto}.b-head h1{font-size:30px;margin:0 0 4px}.b-head p{font-size:14px;margin:0 0 12px}
+.b-top{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.8fr) minmax(340px,1fr);grid-template-rows:minmax(0,1fr);gap:24px;overflow:hidden}
+.b-preview:has(.pe-inline),.b-preview{grid-row:1;grid-column:1;min-height:0;height:100%;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;position:relative;top:0;padding:10px}
+.pe-inline{flex:1;min-height:0;display:flex;flex-direction:column}.pe-inline .pe-top{flex:0 0 44px;box-sizing:border-box;padding:4px 10px}
+.pe-inline .pe-canvas{flex:1;min-height:0;margin:4px 0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pe-inline .pe-canvas svg{display:block;width:100%;height:100%;max-height:100%;min-height:0;object-fit:contain}
+.pe-inline .pe-panel:not([hidden]){flex:0 0 auto;max-height:120px;overflow:auto;padding:6px 0}
+.b-bar{flex:0 0 auto;padding-top:4px}.b-meta{font-size:14px}.b-preview>.b-canvas:not([hidden]){flex:1;min-height:0;aspect-ratio:auto}.b-preview>.b-canvas svg{width:100%;height:100%}
+.b-settings-scroll{grid-column:2;grid-row:1;height:100%;box-sizing:border-box;min-width:0;overflow-y:auto;min-height:0;padding-right:6px;overscroll-behavior:contain}
+.b-settings-scroll>.b-group{margin:0 0 14px}.b-summary{display:none}.buybar{z-index:20;padding:10px 28px}.buybar-inner{max-width:1444px}.buy{padding:12px}
+.plan-help-content{max-height:min(360px,55vh);overflow:auto}
+}
 </style></head>
 <body>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
@@ -1602,6 +1618,7 @@ function renderBuild() {
         <div class="b-meta" id="b-meta"></div>
       </div>
     </div>
+    <div class="b-settings-scroll">
     <section class="b-group"><h2>Размер</h2><div class="chips">${chips("size", B_SIZES.map((s) => [s.id, `${s.name} · ${fmt(s.L * s.W)} м²`]), c.size)}</div></section>
     <section class="b-group"><h2>Планировка</h2><div class="chips" id="b-layouts"></div><div id="b-adj"></div></section>
     <section class="b-group"><h2>Терраса</h2><div class="chips">${chips("terrace", Object.entries(TERR).map(([id, o]) => [id, o.n]), c.terrace)}</div><div id="b-tx"></div></section>
@@ -1609,6 +1626,7 @@ function renderBuild() {
     <section class="b-group"><h2>Углы и окна</h2><div class="swatches">${sw("accent", ACCENTS, c.accent)}</div></section>
     <section class="b-group"><h2>Отделка внутри</h2><div class="swatches">${sw("inner", Object.fromEntries(Object.entries(INNER).map(([id, o]) => [id, { n: o.n, c: o.c || o.pal[0] }])), c.inner)}</div></section>
     <section class="b-group"><h2>Дополнительно</h2><div class="toggles">${EXTRAS.map(([k, n]) => `<label class="toggle"><input type="checkbox" data-x="${k}"${c[k] ? " checked" : ""}><span class="sw" aria-hidden="true"></span><span class="t">${esc(n)}</span></label>`).join("")}</div></section>
+    </div>
     </div>
     <section class="block b-summary" id="b-summary">
       <h2>Ваш дом</h2>
@@ -1794,7 +1812,7 @@ async function bImage() {
 
 /* ===== Редактор плана: стены и двери двигаются пальцем ===== */
 let pe = null;
-function bMain() { setMain("Мой дом — итог", () => { const el = document.getElementById("b-summary"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }); }
+function bMain() { setMain("Мой дом — итог", () => { const el = document.getElementById("b-summary"); if (el) { el.style.display="block"; el.style.position="fixed"; el.style.inset="8vh 8vw 90px"; el.style.overflow="auto"; el.style.zIndex="25"; if(!el.querySelector(".summary-close")){const close=document.createElement("button");close.className="ghost summary-close";close.textContent="← Вернуться к плану";close.onclick=()=>{el.style.display="none";};el.prepend(close);} } }); }
 function gabTxt(c) {
   const s = sizeOf(c), add = 0.08 + (c.ins150 ? 0.1 : 0);
   return `${fmt(s.W)} × ${fmt(s.L)} м, снаружи с отделкой ${fmt2(s.W + add)} × ${fmt2(s.L + add)} м`;
