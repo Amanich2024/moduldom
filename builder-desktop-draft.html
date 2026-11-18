@@ -1311,11 +1311,11 @@ function planSVG(c, opt = {}) {
   const tLeft = tc && endSide(c) === "left";
   const entF = entranceOf(c);   // вход на фасаде (м от левого края) или null
   const sideDoorsS = lay.doors.filter((d) => d.ext && d.o === "h" && Math.abs(d.c - W) < 0.01 && (entF === null || Math.abs((d.a + d.b) / 2 - entF) > 0.05));
-  const VW = 360;
+  const VW = ed ? 480 : 360;
   let VH, s, ox, oy;
   if (ed) {   // масштаб дома как без террасы; торцевая терраса видна краем у границы экрана
-    s = (VW - 76) / (L + tc + (tc ? 0.6 : 0)); VH = Math.round((W + ta + 0.6) * s + 84);
-    ox = 38 + (tLeft ? (tc + 0.6) * s : 0); oy = 48; planGeo = { ox, oy, s };
+    s = (VW - 172) / (L + tc + (tc ? 0.6 : 0)); VH = Math.round((W + ta + 0.6) * s + 84);
+    ox = 86 + (tLeft ? (tc + 0.6) * s : 0); oy = 48; planGeo = { ox, oy, s };
   }
   else {   // запас под ступени снаружи: у торцевой террасы — сбоку, у входа на фасаде — снизу
     const stX = tc ? 0.6 : 0, stY = !tc ? 0.6 : sideDoorsS.length ? 0.4 : 0;
@@ -1554,7 +1554,7 @@ function planSVG(c, opt = {}) {
     if(q.wall==="W")lx=X(0)-wpx/2-10;
     if(q.wall==="E")lx=X(L)+wpx/2+10;
     // Keep side labels readable at the edge of the drawing.
-    lx=Math.max(wpx/2+2,Math.min(VW-wpx/2-2,lx));
+    // Reserved side gutters keep every label outside its window.
     const ex=horizontal?lx:(q.wall==="W"?lx+wpx/2:lx-wpx/2);
     const ey=horizontal?(q.wall==="N"?ly+8:ly-8):ly;
     p.push(`<line x1="${cx}" y1="${cy}" x2="${ex}" y2="${ey}" stroke="#5B7F95" stroke-width="0.8" pointer-events="none"/>`);
