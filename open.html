@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const projectLink = /^#(?:d\/|b\/|built$|katalog$)/.test(hash);
   const wideScreen = matchMedia("(min-width: 900px)").matches;
   const page = inMiniApp ? "katalog/" :
-    (wideScreen && !projectLink ? "desktop-preview.html" : "katalog/preview.html");
+    (wideScreen && !projectLink ? "promo.html" : "katalog/preview.html");
   const destination = new URL(page, location.href);
   destination.search = location.search;
   if (projectLink) destination.hash = hash;

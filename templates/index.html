@@ -6,6 +6,7 @@
 <title>{{text:pages/index/copy/text0}}</title>
 <script>
 (function () {
+  if (/^#\/build(?:$|[/?])/.test(location.hash)) return;
   if (["zagorodnaya-studiya.ru", "www.zagorodnaya-studiya.ru"].includes(location.hostname)) {
     location.replace("open.html" + location.search + location.hash);
     return;

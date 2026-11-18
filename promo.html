@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Юлия и Юрий · дома</title>
+<title>Загородная студия</title>
 <meta name="description" content="Модульные дома и бани с собственного производства в Петербурге: дома за последний год с фото, подписями и планами, отзывы и вечер в готовом доме.">
 <meta name="theme-color" content="#EDEFEC">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231D2125'/><path d='M7 17 16 9l9 8v8H7z' fill='%23D88B4C'/></svg>">
@@ -452,6 +452,8 @@ video[data-sc-scrub].sc-has-clip { opacity: 1; }
   }
 }
 
+.index__mark { display:flex; align-items:center; gap:12px; }
+.studio-logo { width:42px; height:42px; object-fit:contain; border-radius:10px; flex-shrink:0; }
 </style>
 <style>
 /* ===== Тема: цвета и шрифты бренда мини-приложения ===== */
@@ -766,18 +768,19 @@ html.has-house { overflow: hidden; }
   .smoke circle { animation: none; opacity: .4; }
 }
 </style>
-<script src="data/catalog.js?v=fc05e576acfd"></script>
+<script src="data/catalog.js?v=3a2047d2d33b"></script>
 </head>
 <body>
 <div class="sc-grain" aria-hidden="true"></div>
 
 <nav class="index" aria-label="Разделы">
-  <a class="index__mark" href="#dom">Юлия и Юрий · дома</a>
+  <a class="index__mark" href="#dom"><img class="studio-logo" src="katalog/img/logo.png" alt=""> <span>Загородная студия</span></a>
   <ul class="index__list">
     <li><a href="#dom">Дом</a></li>
     <li><a href="#doma">Дома</a></li>
     <li><a href="#otzyvy">Отзывы</a></li>
     <li><a href="#voprosy">Вопросы</a></li>
+    <li><a data-build href="index.html#/build">Конструктор</a></li>
     <li><a href="#vecher">Вечер</a></li>
   </ul>
 </nav>
@@ -947,7 +950,7 @@ html.has-house { overflow: hidden; }
             <a class="cta2" data-write href="https://vk.me/zagorodnaya_studia">Написать нам</a>
           </div>
           <p class="tg-hint">Кнопка «Собрать свой дом» внизу откроет конструктор.</p>
-          <p class="plate__foot">Юлия и Юрий · дома. Собственное производство, Санкт-Петербург.</p>
+          <p class="plate__foot">Загородная студия. Собственное производство, Санкт-Петербург.</p>
         </div>
       </div>
     </div>
@@ -2266,7 +2269,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   var root = document.documentElement;
   var wide = matchMedia('(min-width: 900px)');
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var APP = 'https://amanich2024.github.io/moduldom/';
+  var APP = new URL('index.html', location.href).href;
   var WRITE = 'https://vk.me/zagorodnaya_studia';
 
   /* Telegram: только если страницу открыли как мини-приложение */
