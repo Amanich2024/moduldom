@@ -394,6 +394,12 @@ html:has(.b-head),body:has(.b-head){height:100%;overflow:hidden}
 .pe-floating-panel[hidden]{display:none!important}.pe-floating-panel .pe-card{padding:10px}.pe-floating-panel .selection-close{position:sticky;top:0;z-index:3;margin:0 0 8px;padding:8px;background:#fffdf7!important}
 .pe-floating-panel .chips{gap:6px}.pe-floating-panel .chip{padding:8px 12px}
 @media(max-width:999px){.pe-floating-panel{left:12px;right:12px;bottom:82px;width:auto;max-height:45vh}}
+</style><style>
+#b-summary{inset:6vh auto 84px 50%!important;transform:translateX(-50%);width:min(900px,calc(100vw - 36px));box-sizing:border-box;padding:24px 30px!important;background:#fffcf7;box-shadow:0 14px 70px #0004;border:1px solid #ddd2c4;border-radius:18px}
+#b-summary h2{font-size:28px;margin:14px 0 18px}.b-specs div{display:grid;grid-template-columns:160px minmax(0,1fr);justify-content:initial;gap:22px;padding:12px 0;font-size:16px;line-height:1.5;align-items:start}
+.b-specs b{text-align:left;overflow-wrap:anywhere}.b-specs span{white-space:normal}.summary-close{position:sticky;top:0;z-index:2;background:#fffcf7!important;padding:10px 14px;box-shadow:0 4px 12px #fffcf7}
+#b-summary .block-note{line-height:1.6;font-size:15px;margin-top:20px}
+@media(max-width:600px){#b-summary{padding:18px!important}.b-specs div{grid-template-columns:1fr;gap:4px}}
 </style></head>
 <body>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
@@ -1782,7 +1788,7 @@ function bUpdate() {
   }
   const tv = document.getElementById("tlen-v");
   if (tv) tv.textContent = `${fmt(sum.terA / T_DEPTH)} м · ${fmt(sum.terA)} м²`;
-  document.getElementById("b-specs").innerHTML = sum.rows.map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("");
+  document.getElementById("b-specs").innerHTML = sum.rows.map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v).replace(/; /g,"<br>")}</b></div>`).join("");
   if (bView === "plan") peOpen(true);
 }
 function bToast(msg) {
@@ -2054,7 +2060,7 @@ function peAddWin(wall, m) {
 function peRender() {
   if (!pe) return;
   const c = bcfg;
-  if (pe.inline) { const sum=bSummary(c); document.getElementById("b-specs").innerHTML=sum.rows.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join(""); }
+  if (pe.inline) { const sum=bSummary(c); document.getElementById("b-specs").innerHTML=sum.rows.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v).replace(/; /g,"<br>")}</b></div>`).join(""); }
   document.getElementById("pe-canvas").innerHTML = planSVG(c, { edit: true, sel: pe.sel, drag: pe.drag });
   const lay = layoutOf(c), box = document.getElementById("pe-panel");
   box.hidden = !!pe.inline && (pe.sel === null || !pe.menu);
@@ -2360,11 +2366,11 @@ function renderHouse(h) {
       <h1>${esc(h.name)}</h1>
       <div class="dim">${esc(h.dim)}</div>
     </div>
-    <div class="specs">${h.specs.map(([k, v]) => `<div class="spec"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>
+    <div class="specs">${h.specs.map(([k, v]) => `<div class="spec"><span>${esc(k)}</span><b>${esc(v).replace(/; /g,"<br>")}</b></div>`).join("")}</div>
     <div class="text">${h.text.map((t) => `<p>${esc(t)}</p>`).join("")}</div>
     ${h.quote ? `<div class="quote">«${esc(h.quote[0])}»<small>${esc(h.quote[1])}</small></div>` : ""}
     ${h.inside && h.inside.length ? `<section class="block"><h2>${esc(h.insideTitle || "Что в доме")}</h2><ul class="checks">${h.inside.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>` : ""}
-    ${h.prices ? `<section class="block"><h2>${esc(h.prices.title)}</h2><div class="prices">${h.prices.rows.map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("")}</div>${h.prices.note ? `<p class="block-note">${esc(h.prices.note)}</p>` : ""}</section>` : ""}
+    ${h.prices ? `<section class="block"><h2>${esc(h.prices.title)}</h2><div class="prices">${h.prices.rows.map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v).replace(/; /g,"<br>")}</b></div>`).join("")}</div>${h.prices.note ? `<p class="block-note">${esc(h.prices.note)}</p>` : ""}</section>` : ""}
     ${h.plans && h.plans.length ? `<section class="block"><h2>Планировка</h2><div class="plans">${h.plans.map((p) => `<button class="plan" type="button" data-src="${p}" aria-label="Открыть планировку"><img src="${src(p)}" alt="Планировка: ${esc(h.name)}" loading="lazy"></button>`).join("")}</div></section>` : ""}`;
 
   const gallery = document.getElementById("gallery");
