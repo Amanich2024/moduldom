@@ -2060,6 +2060,22 @@ function peRender() {
       <p class="pe-gab">Размеры комнат — внутри, от стены до стены. Дом: ${esc(gabTxt(c))}.</p></div>`;
   }
   if (pe.inline && pe.sel !== null) box.insertAdjacentHTML("afterbegin",`<button type="button" class="ghost selection-close" data-dismiss-selection="1">✕ Закрыть настройки</button>`);
+  if (pe.inline && pe.sel !== null && matchMedia("(min-width:1000px)").matches) {
+    const selector=typeof pe.sel==="number" ? `[data-door="${pe.sel}"]` : typeof pe.sel==="string" && pe.sel.startsWith("w") ? `[data-win="${pe.sel.slice(1)}"]` : null;
+    const anchor=selector && document.querySelector("#pe-canvas g"+selector);
+    if(anchor){
+      const r=anchor.getBoundingClientRect();
+      box.style.right="auto";box.style.bottom="auto";
+      const w=box.offsetWidth,h=box.offsetHeight,pad=12,gap=16;
+      let x=r.right+gap;
+      if(x+w>innerWidth-pad)x=r.left-gap-w;
+      x=Math.max(pad,Math.min(innerWidth-w-pad,x));
+      const floor=document.querySelector(".buybar").getBoundingClientRect().top-pad;
+      const y=Math.max(pad,Math.min(floor-h,r.top+r.height/2-h/2));
+      box.style.left=x+"px";box.style.top=y+"px";
+    }
+  }
+
 }
 window.addEventListener("hashchange", () => { if (pe) { ovKind = null; peClose(true); } });
 
