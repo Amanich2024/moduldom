@@ -389,7 +389,12 @@ html:has(.b-head),body:has(.b-head){height:100%;overflow:hidden}
 .pe-inline .pe-panel:not([hidden]){position:fixed;right:28px;bottom:88px;width:340px;max-height:min(300px,50vh);padding:14px;background:#fffdf7;border:1px solid #d7cbbc;border-radius:14px;box-shadow:0 10px 32px #0003;z-index:40;box-sizing:border-box}
 .selection-close{width:100%;text-align:right;margin-bottom:6px}.buybar{padding:8px 16px}.buybar-inner{max-width:none}
 }
-</style><style>.selection-close{position:sticky;top:0;z-index:2;background:#fffdf7!important}.pe-panel{scroll-behavior:auto}</style></head>
+</style><style>.selection-close{position:sticky;top:0;z-index:2;background:#fffdf7!important}.pe-panel{scroll-behavior:auto}</style><style>
+.pe-floating-panel{position:fixed;z-index:100;box-sizing:border-box;width:340px;max-width:calc(100vw - 24px);max-height:calc(100dvh - 110px);overflow:auto;background:#fffdf7;border:1px solid #d7cbbc;border-radius:14px;padding:12px;box-shadow:0 10px 32px #0003;scroll-padding-top:52px}
+.pe-floating-panel[hidden]{display:none!important}.pe-floating-panel .pe-card{padding:10px}.pe-floating-panel .selection-close{position:sticky;top:0;z-index:3;margin:0 0 8px;padding:8px;background:#fffdf7!important}
+.pe-floating-panel .chips{gap:6px}.pe-floating-panel .chip{padding:8px 12px}
+@media(max-width:999px){.pe-floating-panel{left:12px;right:12px;bottom:82px;width:auto;max-height:45vh}}
+</style></head>
 <body>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
 <div class="app" id="app"></div>
@@ -1749,7 +1754,7 @@ function bChanged() {
   bUpdate();
 }
 function bUpdate() {
-  if (pe && pe.inline) { document.getElementById("pe")?.remove(); pe=null; }
+  if (pe && pe.inline) { document.getElementById("pe-panel")?.remove(); document.getElementById("pe")?.remove(); pe=null; }
   document.getElementById("b-canvas").hidden = bView === "plan";
   const c = bcfg, sum = bSummary(c);
   document.getElementById("b-canvas").innerHTML = bView === "plan" ? planSVG(c, {edit:true, sel:inlinePlanSel}) : bView === "back" ? facadeSVG(c, "back") : bView === "ends" ? endsSVG(c) : facadeSVG(c);
@@ -1848,10 +1853,10 @@ function gabTxt(c) {
 }
 function peOpen(inline = false) {
   if (pe) return;
-  pe = { sel: null, drag: null, ptr: null, inline };
+  pe = { sel: null, drag: null, ptr: null, inline, menu:false };
   const ov = document.createElement("div");
   ov.className = "pe"; ov.id = "pe";
-  ov.innerHTML = `<div class="pe-top"><button type="button" class="pe-reset" id="pe-reset">Сбросить</button><b>План вашего дома</b><details class="plan-help"><summary aria-label="Как редактировать план" title="Как редактировать план">ⓘ</summary><div class="plan-help-content"><strong>Как изменить план</strong><p>Тяните оранжевые ручки — меняйте стены и длину террасы.</p><p>Окна и двери можно перетаскивать. Окно переходит через угол на другую внешнюю стену той же комнаты.</p><p>Нажмите на окно или дверь — появятся размеры и настройки. Нажмите на пустую внешнюю стену — добавится окно.</p><p>Пунктир — стык модулей, его не двигаем. «Сбросить» возвращает исходную планировку.</p></div></details><button type="button" class="pe-done" id="pe-done">Готово</button></div>
+  ov.innerHTML = `<div class="pe-top"><button type="button" class="pe-reset" id="pe-reset">Сбросить</button><b>План вашего дома</b><details class="plan-help"><summary aria-label="Как редактировать план" title="Как редактировать план">ⓘ</summary><div class="plan-help-content"><strong>Как изменить план</strong><p>Тяните оранжевые ручки — меняйте стены и длину террасы.</p><p>Окна и двери можно перетаскивать. Окно переходит через угол на другую внешнюю стену той же комнаты.</p><p>Левой кнопкой перетаскивайте окно или дверь. Правой кнопкой откройте размеры и настройки. Нажмите на пустую внешнюю стену — добавится окно.</p><p>Пунктир — стык модулей, его не двигаем. «Сбросить» возвращает исходную планировку.</p></div></details><button type="button" class="pe-done" id="pe-done">Готово</button></div>
     <div class="pe-canvas" id="pe-canvas"></div><div class="pe-panel" id="pe-panel"></div>
     <div class="pe-foot"><button type="button" class="ghost pe-mat" id="pe-mat">🧮 Рассчитать материалы</button></div>`;
   if (inline) {
@@ -1876,13 +1881,16 @@ function peOpen(inline = false) {
     e.preventDefault();
     const target=e.target.closest("[data-door],[data-win]");
     if (!target || !pe) return;
-    pe.ptr=null;
+    pe.ptr=null; pe.menu=true;
+    document.querySelector(".plan-help")?.removeAttribute("open");
     pe.sel=target.dataset.win!=null ? "w"+target.dataset.win : (target.dataset.door==="x2" ? "x2" : +target.dataset.door);
     peRender();
   });
   document.getElementById("pe-panel").addEventListener("contextmenu",e=>e.preventDefault());
   cv.addEventListener("pointerdown", (e) => {
     if (e.button !== 0) return;
+    pe.menu=false;
+    document.querySelector(".plan-help")?.removeAttribute("open");
     const t = e.target.closest("[data-tend],[data-stove],[data-wall],[data-door],[data-win],[data-owall]");
     if (!t) { if (pe.sel !== null) { pe.sel = null; peRender(); } return; }
     e.preventDefault();
@@ -1919,7 +1927,7 @@ function peOpen(inline = false) {
   cv.addEventListener("pointerup", up);
   cv.addEventListener("pointercancel", up);
   document.getElementById("pe-panel").addEventListener("click", (e) => {
-    if (e.target.closest("[data-dismiss-selection]")) { pe.sel=null; peRender(); return; }
+    if (e.target.closest("[data-dismiss-selection]")) { pe.sel=null; pe.menu=false; peRender(); return; }
     const swing=e.target.closest("[data-door-swing]");
     if(swing && typeof pe.sel==="number"){
       const {key}=variantOf(bcfg),d=layoutOf(bcfg).doors[pe.sel];
@@ -1945,11 +1953,14 @@ function peOpen(inline = false) {
     if (inTG) { try { tg.HapticFeedback.selectionChanged(); } catch (er) {} }
     bSave(); peRender();
   });
+  if (inline) { const panel=document.getElementById("pe-panel"); panel.classList.add("pe-floating-panel"); document.body.appendChild(panel); }
+  document.querySelector(".plan-help")?.addEventListener("toggle",e=>{if(e.target.open && pe){pe.menu=false;peRender();}});
   peRender();
   if (!inline) ovPush("pe");
 }
 function peClose(fromHistory) {
   if (!fromHistory && !pe?.inline && ovKind === "pe") ovPop();
+  if(pe?.inline)document.getElementById("pe-panel")?.remove();
   const ov = document.getElementById("pe");
   if (ov) ov.remove();
   document.body.classList.remove("pe-open");
@@ -2041,7 +2052,7 @@ function peRender() {
   if (pe.inline) { const sum=bSummary(c); document.getElementById("b-specs").innerHTML=sum.rows.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join(""); }
   document.getElementById("pe-canvas").innerHTML = planSVG(c, { edit: true, sel: pe.sel, drag: pe.drag });
   const lay = layoutOf(c), box = document.getElementById("pe-panel");
-  box.hidden = !!pe.inline && pe.sel === null;
+  box.hidden = !!pe.inline && (pe.sel === null || !pe.menu);
   const d = typeof pe.sel === "number" ? lay.doors[pe.sel] : null;
   if (d) {
     const names = d.rs.map((r) => ROOM[r.t].n.toLowerCase());
@@ -2077,9 +2088,9 @@ function peRender() {
   }
   if(d)box.insertAdjacentHTML("beforeend",`<div class="pe-card"><b>Открывание двери</b><div class="chips" style="margin-top:10px"><button type="button" class="chip" data-door-swing="hinge">Поменять петли ↔</button><button type="button" class="chip" data-door-swing="side">Открывать в другую сторону ↕</button></div><p>Дуга на плане показывает выбранное открывание.</p></div>`);
   if (pe.inline && pe.sel !== null) box.insertAdjacentHTML("afterbegin",`<button type="button" class="ghost selection-close" data-dismiss-selection="1">✕ Закрыть настройки</button>`);
-  if (pe.inline && pe.sel !== null && matchMedia("(min-width:1000px)").matches) {
+  if (pe.inline && pe.menu && pe.sel !== null && matchMedia("(min-width:1000px)").matches) {
     const selector=typeof pe.sel==="number" ? `[data-door="${pe.sel}"]` : typeof pe.sel==="string" && pe.sel.startsWith("w") ? `[data-win="${pe.sel.slice(1)}"]` : null;
-    const anchor=selector && document.querySelector("#pe-canvas g"+selector);
+    const anchor=selector && document.querySelector("#pe-canvas rect"+selector);
     if(anchor){
       const r=anchor.getBoundingClientRect();
       box.style.right="auto";box.style.bottom="auto";
