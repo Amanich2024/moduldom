@@ -1546,6 +1546,7 @@ function planSVG(c, opt = {}) {
   for (const { d, lx: originalX, ly: originalY, box } of doorPx) {
     let lx=originalX,ly=originalY;
     const txt = String(d.ext ? cm(d.w) : cm(d.w) - 9), sel = ed && opt.sel === d.i;
+    if (ed && !sel) continue;
     if (ed) {
       const menu = !d.ext, wpx = Math.round(txt.length * 6.2 + (menu ? 11 : 0) + 9);
       if(d.o==="h")ly=d.side>0?box[1]-13:box[1]+box[3]+13;
@@ -1560,6 +1561,10 @@ function planSVG(c, opt = {}) {
   }
   if (ed) for (const { q, cx, cy, box } of winPx) {
     const sel = opt.sel === "w" + q.idx, txt = winName(q.key), wpx = Math.round(txt.length * 5.9 + 10);
+    if (!sel) {
+      p.push(`<rect data-win="${q.idx}" x="${box[0]-5}" y="${box[1]-5}" width="${box[2]+10}" height="${box[3]+10}" fill="transparent"/>`);
+      continue;
+    }
     const horizontal=q.wall==="N"||q.wall==="S";
     let lx=cx, ly=cy;
     if(q.wall==="N")ly=Y(0)-19;
