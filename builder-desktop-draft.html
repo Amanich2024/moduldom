@@ -1865,7 +1865,17 @@ function peOpen(inline = false) {
     pe.sel = null; bSave(); peRender(); bToast("План вернулся к исходному");
   });
   const cv = document.getElementById("pe-canvas");
+  cv.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    const target=e.target.closest("[data-door],[data-win]");
+    if (!target || !pe) return;
+    pe.ptr=null;
+    pe.sel=target.dataset.win!=null ? "w"+target.dataset.win : (target.dataset.door==="x2" ? "x2" : +target.dataset.door);
+    peRender();
+  });
+  document.getElementById("pe-panel").addEventListener("contextmenu",e=>e.preventDefault());
   cv.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
     const t = e.target.closest("[data-tend],[data-stove],[data-wall],[data-door],[data-win],[data-owall]");
     if (!t) { if (pe.sel !== null) { pe.sel = null; peRender(); } return; }
     e.preventDefault();
