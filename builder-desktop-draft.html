@@ -378,6 +378,17 @@ html:has(.b-head),body:has(.b-head){height:100%;overflow:hidden}
 .b-settings-scroll>.b-group{margin:0 0 14px}.b-summary{display:none}.buybar{z-index:20;padding:10px 28px}.buybar-inner{max-width:1444px}.buy{padding:12px}
 .plan-help-content{max-height:min(360px,55vh);overflow:auto}
 }
+</style><style>
+@media(min-width:1000px){
+.app:has(.b-head){max-width:none;width:100%;position:relative;padding:8px 16px 72px}
+.app:has(.b-head)>.topbar{position:absolute;top:8px;left:16px;margin:0;height:36px;z-index:5}
+.b-head{height:40px;box-sizing:border-box;padding-left:140px;display:flex;align-items:center;margin-bottom:6px}
+.b-head h1{font-size:27px;margin:0}.b-head p{display:none}
+.b-top{grid-template-columns:minmax(0,2.4fr) minmax(340px,1fr);gap:16px}
+.b-preview:has(.pe-inline),.b-preview{padding:6px}.pe-inline .pe-top{flex-basis:34px;padding:0 8px}
+.pe-inline .pe-panel:not([hidden]){position:fixed;right:28px;bottom:88px;width:340px;max-height:min(300px,50vh);padding:14px;background:#fffdf7;border:1px solid #d7cbbc;border-radius:14px;box-shadow:0 10px 32px #0003;z-index:40;box-sizing:border-box}
+.selection-close{width:100%;text-align:right;margin-bottom:6px}.buybar{padding:8px 16px}.buybar-inner{max-width:none}
+}
 </style></head>
 <body>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
@@ -1602,7 +1613,7 @@ function renderBuild() {
   const pick = (k, cur) => `<input type="color" class="sw-pick" data-cc="${k}" value="${cur}" aria-label="Выбрать свой цвет">`;
   const sw = (k, obj, sel) => Object.entries(obj).map(([id, o]) => `<button type="button" class="swatch${id === "custom" ? " sw-custom" : ""}" data-k="${k}" data-v="${id}" aria-pressed="${id === sel}"><i style="background:${o.c}"></i><span>${esc(o.n)}</span>${id === "custom" ? pick(k, o.c) : ""}</button>`).join("");
   app.innerHTML = `
-    <div class="topbar"${inTG ? " hidden" : ""}><button class="back" type="button" id="back">← Все дома</button></div>
+    <div class="topbar"${inTG ? " hidden" : ""}><button class="back" type="button" id="back">← На сайт</button></div>
     <header class="b-head"><h1>Собрать свой дом</h1><p>Выберите размер и планировку — затем настройте дом прямо на плане.</p></header>
     <div class="b-top">
     <div class="b-preview">
@@ -1660,7 +1671,7 @@ function renderBuild() {
   document.getElementById("b-copy").addEventListener("click", bCopy);
   document.getElementById("b-mat").addEventListener("click", () => bToast("Расчёт материалов — в разработке"));
   const back = document.getElementById("back");
-  if (back) back.addEventListener("click", () => go("#/"));
+  if (back) back.addEventListener("click", () => { bSave(); location.href="promo.html"; });
   bMain();
 
   bControls();
@@ -1880,6 +1891,7 @@ function peOpen(inline = false) {
   cv.addEventListener("pointerup", up);
   cv.addEventListener("pointercancel", up);
   document.getElementById("pe-panel").addEventListener("click", (e) => {
+    if (e.target.closest("[data-dismiss-selection]")) { pe.sel=null; peRender(); return; }
     const wb = e.target.closest("[data-wk],[data-wdel]");
     if (wb && typeof pe.sel === "string" && pe.sel[0] === "w") {
       const list = winMaterialize(bcfg), i = +pe.sel.slice(1);
@@ -2026,6 +2038,7 @@ function peRender() {
       ${lay.seam ? "<p>Пунктир — здесь соединяются модули, эту стену не двигаем.</p>" : ""}
       <p class="pe-gab">Размеры комнат — внутри, от стены до стены. Дом: ${esc(gabTxt(c))}.</p></div>`;
   }
+  if (pe.inline && pe.sel !== null) box.insertAdjacentHTML("afterbegin",`<button type="button" class="ghost selection-close" data-dismiss-selection="1">✕ Закрыть настройки</button>`);
 }
 window.addEventListener("hashchange", () => { if (pe) { ovKind = null; peClose(true); } });
 
