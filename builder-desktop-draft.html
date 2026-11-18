@@ -347,7 +347,7 @@ body.pe-open { overflow: hidden; }
 .b-group h2{font-size:15px}.b-meta{font-size:17px;padding-top:10px}.b-bar{padding-top:12px}
 .b-summary{max-width:100%;padding:28px}.buybar-inner{max-width:1420px}.buybar{padding-inline:40px}.buybar-inner{width:auto}.buybar button{width:100%;color:white}
 }
-</style></head>
+</style><style>#b-canvas [data-wall],#b-canvas [data-tend]{display:none}#b-canvas [data-win],#b-canvas [data-door]{cursor:grab}</style></head>
 <body>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
 <div class="app" id="app"></div>
@@ -1559,6 +1559,7 @@ function bSummary(c) {
   return { rows, text, houseA, terA, size, lay };
 }
 
+let inlinePlanSel = null;
 let bView = "plan";
 let bBound = false;
 function renderBuild() {
@@ -1571,7 +1572,7 @@ function renderBuild() {
   const sw = (k, obj, sel) => Object.entries(obj).map(([id, o]) => `<button type="button" class="swatch${id === "custom" ? " sw-custom" : ""}" data-k="${k}" data-v="${id}" aria-pressed="${id === sel}"><i style="background:${o.c}"></i><span>${esc(o.n)}</span>${id === "custom" ? pick(k, o.c) : ""}</button>`).join("");
   app.innerHTML = `
     <div class="topbar"${inTG ? " hidden" : ""}><button class="back" type="button" id="back">← Все дома</button></div>
-    <header class="b-head"><h1>Собрать свой дом</h1><p>Выберите размер, планировку и цвета — картинка меняется сразу.</p></header>
+    <header class="b-head"><h1>Собрать свой дом</h1><p>Выберите планировку. Окна и двери можно двигать прямо на плане; окна переходят через угол по внешним стенам.</p></header>
     <div class="b-top">
     <div class="b-preview">
       <div class="b-canvas" id="b-canvas"></div>
@@ -1628,10 +1629,33 @@ function renderBuild() {
   const back = document.getElementById("back");
   if (back) back.addEventListener("click", () => go("#/"));
   bMain();
-  document.getElementById("b-canvas").addEventListener("click", () => { if (bView === "plan") peOpen(); });
+  bindInlinePlan();
   bControls();
   bUpdate();
   window.scrollTo(0, 0);
+}
+function bindInlinePlan() {
+  const cv=document.getElementById("b-canvas"); let drag=null;
+  cv.style.touchAction="none";
+  cv.addEventListener("pointerdown",e=>{
+    if(bView!=="plan")return;
+    const target=e.target.closest("[data-win],[data-door]");
+    if(!target)return;
+    const win=target.dataset.win!=null?+target.dataset.win:null;
+    const door=target.dataset.door!=null?+target.dataset.door:null;
+    if(win===null && !Number.isFinite(door))return;
+    e.preventDefault();drag={id:e.pointerId,win,door};
+    cv.setPointerCapture(e.pointerId);
+    inlinePlanSel=win!==null?"w"+win:door;bUpdate();
+  });
+  cv.addEventListener("pointermove",e=>{
+    if(!drag||drag.id!==e.pointerId)return;
+    const m=peMeters(e.clientX,e.clientY);if(!m)return;
+    if(drag.win!==null)peMoveWin(drag.win,m,bUpdate);
+    else peMoveDoor(drag.door,m,bUpdate);
+  });
+  const stop=e=>{if(drag&&drag.id===e.pointerId){drag=null;bSave();bUpdate();}};
+  cv.addEventListener("pointerup",stop);cv.addEventListener("pointercancel",stop);
 }
 function bClick(e) {
   const b = e.target.closest("button[data-k]");
@@ -1664,7 +1688,7 @@ function bChanged() {
 }
 function bUpdate() {
   const c = bcfg, sum = bSummary(c);
-  document.getElementById("b-canvas").innerHTML = bView === "plan" ? planSVG(c) : bView === "back" ? facadeSVG(c, "back") : bView === "ends" ? endsSVG(c) : facadeSVG(c);
+  document.getElementById("b-canvas").innerHTML = bView === "plan" ? planSVG(c, {edit:true, sel:inlinePlanSel}) : bView === "back" ? facadeSVG(c, "back") : bView === "ends" ? endsSVG(c) : facadeSVG(c);
   app.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === bView)));
   const fb = document.getElementById("b-flip"); if (fb) fb.setAttribute("aria-pressed", String(!!c.flip));
   document.getElementById("b-meta").textContent = `${sum.size.name} · ${fmt(sum.houseA)} м²` + (sum.terA ? ` + терраса ${fmt(sum.terA)} м²` : "") + ` · ${sum.lay.name.toLowerCase()}`;
@@ -1844,7 +1868,7 @@ function peClose(fromHistory) {
   if (location.hash.startsWith("#/build") && document.getElementById("b-canvas")) { bUpdate(); bMain(); }
 }
 function peMeters(cx, cy) {
-  const svg = document.querySelector("#pe-canvas svg");
+  const svg = document.querySelector(pe ? "#pe-canvas svg" : "#b-canvas svg");
   if (!svg || !planGeo) return null;
   const pt = svg.createSVGPoint(); pt.x = cx; pt.y = cy;
   const v = pt.matrixTransform(svg.getScreenCTM().inverse());
@@ -1872,7 +1896,7 @@ function peMoveTer(end, m) {
   bcfg.tsp[key] = nx;
   peRender();
 }
-function peMoveDoor(i, m) {
+function peMoveDoor(i, m, render = peRender) {
   const lay = layoutOf(bcfg), d = lay.doors[i];
   if (!d) return;
   const [mn, mx] = doorRange(d, d.w);
@@ -1884,15 +1908,31 @@ function peMoveDoor(i, m) {
   if (clash) return;
   const { key } = variantOf(bcfg);
   bcfg.dpos[key] = Object.assign({}, bcfg.dpos[key], { [i]: c });
-  peRender();
+  render();
 }
-function peMoveWin(i, m) {
+function peMoveWin(i, m, render = peRender) {
   const list = winMaterialize(bcfg), o = list[i];
   if (!o) return;
-  const v = Math.round((o.wall === "S" || o.wall === "N" ? m.x : m.y) * 100) / 100;
-  if (o.m === v) return;
-  list[i] = Object.assign({}, o, { m: v });
-  peRender();
+  const lay = layoutOf(bcfg), { L, W } = sizeOf(bcfg);
+  const clamp = (v, hi) => Math.max(0, Math.min(hi, v));
+  const sides = [
+    {wall:"N", along:clamp(m.x,L), distance:Math.hypot(m.x-clamp(m.x,L),m.y)},
+    {wall:"S", along:clamp(m.x,L), distance:Math.hypot(m.x-clamp(m.x,L),m.y-W)},
+    {wall:"W", along:clamp(m.y,W), distance:Math.hypot(m.x,m.y-clamp(m.y,W))},
+    {wall:"E", along:clamp(m.y,W), distance:Math.hypot(m.x-L,m.y-clamp(m.y,W))}
+  ].filter(side=>roomWalls(lay.rooms[o.ri],L,W).includes(side.wall))
+   .sort((a,b)=>a.distance-b.distance || (a.wall===o.wall?-1:1));
+  const side=sides[0], horizontal=side.wall==="N" || side.wall==="S";
+  const ri=o.ri;
+  const before=winsOf(bcfg,lay);
+  list[i]={...o,wall:side.wall,ri,m:Math.round(side.along*100)/100,custom:true};
+  const after=winsOf(bcfg,lay), placed=after.find(q=>q.idx===i);
+  if(!placed || before.some(q=>!after.some(n=>n.idx===q.idx)) ||
+     before.some(q=>q.idx!==i && after.some(n=>n.idx===q.idx && Math.abs(n.m-q.m)>0.01))) {
+    list[i]=o; return;
+  }
+  list[i].m=placed.m;
+  render();
 }
 function peAddWin(wall, m) {
   const c = bcfg, lay = layoutOf(c), { L, W } = sizeOf(c);
