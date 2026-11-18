@@ -1548,9 +1548,10 @@ function bSummary(c) {
   return { rows, text, houseA, terA, size, lay };
 }
 
-let bView = "facade";
+let bView = "plan";
 let bBound = false;
 function renderBuild() {
+  bView = "plan";
   current = null;
   const c = bcfg;
   const chips = (k, items, sel) => items.map(([id, n]) => `<button type="button" class="chip" data-k="${k}" data-v="${id}" aria-pressed="${id === sel}">${esc(n)}</button>`).join("");
@@ -1565,10 +1566,10 @@ function renderBuild() {
       <div class="b-canvas" id="b-canvas"></div>
       <div class="b-bar">
         <div class="b-seg" role="group" aria-label="Вид">
+          <button type="button" data-view="plan" aria-pressed="${bView === "plan"}">План</button>
           <button type="button" data-view="facade" aria-pressed="${bView === "facade"}">Спереди</button>
           <button type="button" data-view="back" aria-pressed="${bView === "back"}">Сзади</button>
           <button type="button" data-view="ends" aria-pressed="${bView === "ends"}">Сбоку</button>
-          <button type="button" data-view="plan" aria-pressed="${bView === "plan"}">План</button>
         </div>
         <button type="button" class="b-flip" id="b-flip" aria-pressed="${!!c.flip}" title="Отразить дом зеркально">⇄ Отразить</button>
         <div class="b-meta" id="b-meta"></div>
