@@ -347,7 +347,14 @@ body.pe-open { overflow: hidden; }
 .b-group h2{font-size:15px}.b-meta{font-size:17px;padding-top:10px}.b-bar{padding-top:12px}
 .b-summary{max-width:100%;padding:28px}.buybar-inner{max-width:1420px}.buybar{padding-inline:40px}.buybar-inner{width:auto}.buybar button{width:100%;color:white}
 }
-</style><style>#b-canvas [data-wall],#b-canvas [data-tend]{display:none}#b-canvas [data-win],#b-canvas [data-door]{cursor:grab}</style></head>
+</style><style>#b-canvas [data-wall],#b-canvas [data-tend]{display:none}#b-canvas [data-win],#b-canvas [data-door]{cursor:grab}</style><style>
+.pe-inline{position:relative;inset:auto;z-index:auto;background:transparent;display:block}
+.pe-inline .pe-top{border-radius:12px;background:#fffaf1}.pe-inline .pe-done,.pe-inline .pe-foot{display:none}
+.pe-inline .pe-canvas{margin:12px 0 0}.pe-inline .pe-canvas svg{max-height:56vh;min-height:320px}
+.pe-inline .pe-panel{max-height:220px;padding:10px 0;overflow:auto}
+.pe-inline [data-wall],.pe-inline [data-tend],.pe-inline [data-win],.pe-inline [data-door]{cursor:grab}
+.b-preview:has(.pe-inline){position:sticky;top:10px}.b-head p{max-width:1100px;line-height:1.5}
+</style><style>#b-edit{display:none}.buybar{z-index:20}.pe-inline .pe-top b{font-size:15px}</style></head>
 <body>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
 <div class="app" id="app"></div>
@@ -1572,7 +1579,7 @@ function renderBuild() {
   const sw = (k, obj, sel) => Object.entries(obj).map(([id, o]) => `<button type="button" class="swatch${id === "custom" ? " sw-custom" : ""}" data-k="${k}" data-v="${id}" aria-pressed="${id === sel}"><i style="background:${o.c}"></i><span>${esc(o.n)}</span>${id === "custom" ? pick(k, o.c) : ""}</button>`).join("");
   app.innerHTML = `
     <div class="topbar"${inTG ? " hidden" : ""}><button class="back" type="button" id="back">← Все дома</button></div>
-    <header class="b-head"><h1>Собрать свой дом</h1><p>Выберите планировку. Окна и двери можно двигать прямо на плане; окна переходят через угол по внешним стенам.</p></header>
+    <header class="b-head"><h1>Собрать свой дом</h1><p>Тяните оранжевые ручки — меняйте стены и террасу. Голубые окна и двери с цифрами можно перетаскивать. Окно переходит через угол только на внешнюю стену той же комнаты. Нажмите на окно или дверь, чтобы изменить размер.</p></header>
     <div class="b-top">
     <div class="b-preview">
       <div class="b-canvas" id="b-canvas"></div>
@@ -1629,7 +1636,7 @@ function renderBuild() {
   const back = document.getElementById("back");
   if (back) back.addEventListener("click", () => go("#/"));
   bMain();
-  bindInlinePlan();
+
   bControls();
   bUpdate();
   window.scrollTo(0, 0);
@@ -1687,6 +1694,8 @@ function bChanged() {
   bUpdate();
 }
 function bUpdate() {
+  if (pe && pe.inline) { document.getElementById("pe")?.remove(); pe=null; }
+  document.getElementById("b-canvas").hidden = bView === "plan";
   const c = bcfg, sum = bSummary(c);
   document.getElementById("b-canvas").innerHTML = bView === "plan" ? planSVG(c, {edit:true, sel:inlinePlanSel}) : bView === "back" ? facadeSVG(c, "back") : bView === "ends" ? endsSVG(c) : facadeSVG(c);
   app.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === bView)));
@@ -1709,6 +1718,7 @@ function bUpdate() {
   const tv = document.getElementById("tlen-v");
   if (tv) tv.textContent = `${fmt(sum.terA / T_DEPTH)} м · ${fmt(sum.terA)} м²`;
   document.getElementById("b-specs").innerHTML = sum.rows.map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join("");
+  if (bView === "plan") peOpen(true);
 }
 function bToast(msg) {
   const t = document.createElement("div"); t.className = "toast"; t.textContent = msg;
@@ -1781,17 +1791,22 @@ function gabTxt(c) {
   const s = sizeOf(c), add = 0.08 + (c.ins150 ? 0.1 : 0);
   return `${fmt(s.W)} × ${fmt(s.L)} м, снаружи с отделкой ${fmt2(s.W + add)} × ${fmt2(s.L + add)} м`;
 }
-function peOpen() {
+function peOpen(inline = false) {
   if (pe) return;
-  pe = { sel: null, drag: null, ptr: null };
+  pe = { sel: null, drag: null, ptr: null, inline };
   const ov = document.createElement("div");
   ov.className = "pe"; ov.id = "pe";
   ov.innerHTML = `<div class="pe-top"><button type="button" class="pe-reset" id="pe-reset">Сбросить</button><b>Редактировать план</b><button type="button" class="pe-done" id="pe-done">Готово</button></div>
     <div class="pe-canvas" id="pe-canvas"></div><div class="pe-panel" id="pe-panel"></div>
     <div class="pe-foot"><button type="button" class="ghost pe-mat" id="pe-mat">🧮 Рассчитать материалы</button></div>`;
-  document.body.appendChild(ov);
-  document.body.classList.add("pe-open");
-  setMain(null);
+  if (inline) {
+    ov.classList.add("pe-inline");
+    document.getElementById("b-canvas").after(ov);
+  } else {
+    document.body.appendChild(ov);
+    document.body.classList.add("pe-open");
+    setMain(null);
+  }
   // в Telegram свайп вниз сворачивает приложение — на время правки плана отключаем
   if (inTG) { try { tg.BackButton.show(); if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {} }
   document.getElementById("pe-done").addEventListener("click", () => peClose());
@@ -1856,10 +1871,10 @@ function peOpen() {
     bSave(); peRender();
   });
   peRender();
-  ovPush("pe");
+  if (!inline) ovPush("pe");
 }
 function peClose(fromHistory) {
-  if (!fromHistory && ovKind === "pe") ovPop();
+  if (!fromHistory && !pe?.inline && ovKind === "pe") ovPop();
   const ov = document.getElementById("pe");
   if (ov) ov.remove();
   document.body.classList.remove("pe-open");
@@ -1948,6 +1963,7 @@ function peAddWin(wall, m) {
 function peRender() {
   if (!pe) return;
   const c = bcfg;
+  if (pe.inline) { const sum=bSummary(c); document.getElementById("b-specs").innerHTML=sum.rows.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join(""); }
   document.getElementById("pe-canvas").innerHTML = planSVG(c, { edit: true, sel: pe.sel, drag: pe.drag });
   const lay = layoutOf(c), box = document.getElementById("pe-panel");
   const d = typeof pe.sel === "number" ? lay.doors[pe.sel] : null;
