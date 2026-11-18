@@ -354,7 +354,15 @@ body.pe-open { overflow: hidden; }
 .pe-inline .pe-panel{max-height:220px;padding:10px 0;overflow:auto}
 .pe-inline [data-wall],.pe-inline [data-tend],.pe-inline [data-win],.pe-inline [data-door]{cursor:grab}
 .b-preview:has(.pe-inline){position:sticky;top:10px}.b-head p{max-width:1100px;line-height:1.5}
-</style><style>#b-edit{display:none}.buybar{z-index:20}.pe-inline .pe-top b{font-size:15px}</style></head>
+</style><style>#b-edit{display:none}.buybar{z-index:20}.pe-inline .pe-top b{font-size:15px}</style><style>
+.pe-inline .pe-canvas svg{width:100%;height:auto;max-height:none;min-height:0}
+.pe-inline .pe-top{position:relative;padding:8px 12px;gap:16px}.pe-inline .pe-top b{margin-left:auto}
+.plan-help{position:relative}.plan-help summary{display:grid;place-items:center;list-style:none;width:34px;height:34px;border:1px solid #b8afa2;border-radius:50%;cursor:pointer;font-size:24px;color:#654b36;background:#fff}
+.plan-help summary::-webkit-details-marker{display:none}.plan-help-content{position:absolute;right:0;top:44px;width:min(360px,65vw);padding:20px;background:#fffdf8;border:1px solid #d8cdbf;border-radius:14px;box-shadow:0 12px 36px #0002;z-index:30;font-size:15px;line-height:1.5}
+.plan-help-content p{margin:10px 0 0}.b-preview:has(.pe-inline){position:relative;top:0;padding:12px}
+.pe-inline .pe-panel[hidden]{display:none}.pe-inline .pe-canvas{margin-top:8px}
+@media(min-width:1000px){.b-head p{margin-bottom:18px}.b-head h1{font-size:36px}.b-top{grid-template-columns:minmax(0,1.8fr) minmax(340px,1fr)}}
+</style></head>
 <body>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
 <div class="app" id="app"></div>
@@ -1279,8 +1287,8 @@ function planSVG(c, opt = {}) {
   const VW = 360;
   let VH, s, ox, oy;
   if (ed) {   // масштаб дома как без террасы; торцевая терраса видна краем у границы экрана
-    s = Math.min((VW - 96) / L, 50); VH = Math.round((W + ta) * s + 110);
-    ox = !tc ? (VW - L * s) / 2 : tLeft ? VW - 44 - L * s : 44; oy = 62; planGeo = { ox, oy, s };
+    s = (VW - 56) / (L + tc + (tc ? 0.6 : 0)); VH = Math.round((W + ta + 0.6) * s + 66);
+    ox = 28 + (tLeft ? (tc + 0.6) * s : 0); oy = 42; planGeo = { ox, oy, s };
   }
   else {   // запас под ступени снаружи: у торцевой террасы — сбоку, у входа на фасаде — снизу
     const stX = tc ? 0.6 : 0, stY = !tc ? 0.6 : sideDoorsS.length ? 0.4 : 0;
@@ -1579,7 +1587,7 @@ function renderBuild() {
   const sw = (k, obj, sel) => Object.entries(obj).map(([id, o]) => `<button type="button" class="swatch${id === "custom" ? " sw-custom" : ""}" data-k="${k}" data-v="${id}" aria-pressed="${id === sel}"><i style="background:${o.c}"></i><span>${esc(o.n)}</span>${id === "custom" ? pick(k, o.c) : ""}</button>`).join("");
   app.innerHTML = `
     <div class="topbar"${inTG ? " hidden" : ""}><button class="back" type="button" id="back">← Все дома</button></div>
-    <header class="b-head"><h1>Собрать свой дом</h1><p>Тяните оранжевые ручки — меняйте стены и террасу. Голубые окна и двери с цифрами можно перетаскивать. Окно переходит через угол только на внешнюю стену той же комнаты. Нажмите на окно или дверь, чтобы изменить размер.</p></header>
+    <header class="b-head"><h1>Собрать свой дом</h1><p>Выберите размер и планировку — затем настройте дом прямо на плане.</p></header>
     <div class="b-top">
     <div class="b-preview">
       <div class="b-canvas" id="b-canvas"></div>
@@ -1678,7 +1686,7 @@ function bControls() {
   const adjBox = document.getElementById("b-adj"), txBox = document.getElementById("b-tx");
   const { key } = variantOf(c), edited = !!(c.pv[key] || c.dpos[key] || c.dw[key] || c.win[key] || (c.spos && c.spos[key]) || (c.tsp && c.tsp[key]));
   adjBox.innerHTML = `<button type="button" class="ghost b-edit" id="b-edit">✎ Редактировать проект</button>
-    <p class="sl-note">План откроется на весь экран: стены, двери, окна${c.terrace === "along" ? " и терраса" : ""} — всё можно двигать.${edited ? " Ваши правки сохранены." : ""}</p>`;
+    <p class="sl-note">Редактируйте план слева. Инструкция — под кнопкой ⓘ.${edited ? " Ваши правки сохранены." : ""}</p>`;
   document.getElementById("b-edit").addEventListener("click", peOpen);
   if (c.terrace === "along") {
     txBox.innerHTML = `<div class="slider"><div class="sl-lbl"><span>Длина террасы</span><b id="tlen-v"></b></div>
@@ -1796,7 +1804,7 @@ function peOpen(inline = false) {
   pe = { sel: null, drag: null, ptr: null, inline };
   const ov = document.createElement("div");
   ov.className = "pe"; ov.id = "pe";
-  ov.innerHTML = `<div class="pe-top"><button type="button" class="pe-reset" id="pe-reset">Сбросить</button><b>Редактировать план</b><button type="button" class="pe-done" id="pe-done">Готово</button></div>
+  ov.innerHTML = `<div class="pe-top"><button type="button" class="pe-reset" id="pe-reset">Сбросить</button><b>План вашего дома</b><details class="plan-help"><summary aria-label="Как редактировать план" title="Как редактировать план">ⓘ</summary><div class="plan-help-content"><strong>Как изменить план</strong><p>Тяните оранжевые ручки — меняйте стены и длину террасы.</p><p>Окна и двери можно перетаскивать. Окно переходит через угол на другую внешнюю стену той же комнаты.</p><p>Нажмите на окно или дверь — появятся размеры и настройки. Нажмите на пустую внешнюю стену — добавится окно.</p><p>Пунктир — стык модулей, его не двигаем. «Сбросить» возвращает исходную планировку.</p></div></details><button type="button" class="pe-done" id="pe-done">Готово</button></div>
     <div class="pe-canvas" id="pe-canvas"></div><div class="pe-panel" id="pe-panel"></div>
     <div class="pe-foot"><button type="button" class="ghost pe-mat" id="pe-mat">🧮 Рассчитать материалы</button></div>`;
   if (inline) {
@@ -1966,6 +1974,7 @@ function peRender() {
   if (pe.inline) { const sum=bSummary(c); document.getElementById("b-specs").innerHTML=sum.rows.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join(""); }
   document.getElementById("pe-canvas").innerHTML = planSVG(c, { edit: true, sel: pe.sel, drag: pe.drag });
   const lay = layoutOf(c), box = document.getElementById("pe-panel");
+  box.hidden = !!pe.inline && pe.sel === null;
   const d = typeof pe.sel === "number" ? lay.doors[pe.sel] : null;
   if (d) {
     const names = d.rs.map((r) => ROOM[r.t].n.toLowerCase());
