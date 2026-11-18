@@ -389,7 +389,7 @@ html:has(.b-head),body:has(.b-head){height:100%;overflow:hidden}
 .pe-inline .pe-panel:not([hidden]){position:fixed;right:28px;bottom:88px;width:340px;max-height:min(300px,50vh);padding:14px;background:#fffdf7;border:1px solid #d7cbbc;border-radius:14px;box-shadow:0 10px 32px #0003;z-index:40;box-sizing:border-box}
 .selection-close{width:100%;text-align:right;margin-bottom:6px}.buybar{padding:8px 16px}.buybar-inner{max-width:none}
 }
-</style></head>
+</style><style>.selection-close{position:sticky;top:0;z-index:2;background:#fffdf7!important}.pe-panel{scroll-behavior:auto}</style></head>
 <body>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
 <div class="app" id="app"></div>
@@ -595,7 +595,7 @@ const B_KEY = "modul-build-v1";
 function bNorm(v) {
   const c = Object.assign({}, B_DEFAULT, v && B_LAYOUTS[v.size] ? v : {});
   if (c.terrace === "corner") c.terrace = "end";
-  for (const k of ["pv", "dpos", "dw", "win", "spos", "tsp"]) c[k] = c[k] && typeof c[k] === "object" ? c[k] : {};
+  for (const k of ["pv", "dpos", "dw", "win", "spos", "tsp", "ds"]) c[k] = c[k] && typeof c[k] === "object" ? c[k] : {};
   return c;
 }
 let bcfg = (() => {
@@ -704,6 +704,8 @@ function layoutOf(c) {
     const sg = doorSeg(b.rooms, d0);
     const w = d0.ext ? DOOR_EXT : (DOOR_OPT.includes(wid[i]) ? wid[i] : doorDefW(d0, sg.rs));
     const d = Object.assign({}, d0, { i, w, lo: sg.lo, hi: sg.hi, rs: sg.rs });
+    const swing=c.ds && c.ds[key] && c.ds[key][i];
+    if(swing){d.hinge=swing.hinge === "b" ? "b" : "a";d.side=swing.side === -1 ? -1 : 1;}
     const [mn, mx] = doorRange(d, w);
     let m = typeof pos[i] === "number" ? pos[i] : (d0.a + d0.b) / 2;
     m = mn > mx ? (sg.lo + sg.hi) / 2 : Math.max(mn, Math.min(mx, m));
@@ -1536,10 +1538,15 @@ function planSVG(c, opt = {}) {
     p.push(`<text x="${(VW / 2).toFixed(1)}" y="${(oy - 34).toFixed(1)}" text-anchor="middle" font-size="11" fill="#8A8F92" ${M}>${fmt(L)} × ${fmt(W)} м</text>`);
   }
   // подписи проёмов (см); в редакторе — кнопка «⋯» у каждой межкомнатной двери
-  for (const { d, lx, ly } of doorPx) {
+  for (const { d, lx: originalX, ly: originalY, box } of doorPx) {
+    let lx=originalX,ly=originalY;
     const txt = String(d.ext ? cm(d.w) : cm(d.w) - 9), sel = ed && opt.sel === d.i;
     if (ed) {
       const menu = !d.ext, wpx = Math.round(txt.length * 6.2 + (menu ? 11 : 0) + 9);
+      if(d.o==="h")ly=d.side>0?box[1]-13:box[1]+box[3]+13;
+      else lx=d.side>0?box[0]-wpx/2-10:box[0]+box[2]+wpx/2+10;
+      p.push(`<line x1="${originalX}" y1="${originalY}" x2="${lx}" y2="${ly}" stroke="#B4672C" stroke-width="0.7" pointer-events="none"/>`);
+
       p.push(`<g data-door="${d.i}"><rect x="${(lx - wpx / 2).toFixed(1)}" y="${(ly - 8).toFixed(1)}" width="${wpx}" height="16" rx="8" fill="${sel ? "#E07A2E" : "#FFFFFF"}" stroke="#E07A2E" stroke-width="1"/>` +
         `<text x="${lx.toFixed(1)}" y="${(ly + 3.5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="${sel ? "#FFFFFF" : "#B4672C"}" ${F}>${txt}${menu ? "⋯" : ""}</text></g>`);
     } else if (s >= 22) {
@@ -1861,7 +1868,7 @@ function peOpen(inline = false) {
   document.getElementById("pe-mat").addEventListener("click", () => { pe.sel = "mat"; peRender(); });
   document.getElementById("pe-reset").addEventListener("click", () => {
     const { key } = variantOf(bcfg);
-    delete bcfg.pv[key]; delete bcfg.dpos[key]; delete bcfg.dw[key]; delete bcfg.win[key]; delete bcfg.spos[key]; delete bcfg.tsp[key];
+    delete bcfg.pv[key]; delete bcfg.dpos[key]; delete bcfg.dw[key]; delete bcfg.ds?.[key]; delete bcfg.win[key]; delete bcfg.spos[key]; delete bcfg.tsp[key];
     pe.sel = null; bSave(); peRender(); bToast("План вернулся к исходному");
   });
   const cv = document.getElementById("pe-canvas");
@@ -1913,6 +1920,15 @@ function peOpen(inline = false) {
   cv.addEventListener("pointercancel", up);
   document.getElementById("pe-panel").addEventListener("click", (e) => {
     if (e.target.closest("[data-dismiss-selection]")) { pe.sel=null; peRender(); return; }
+    const swing=e.target.closest("[data-door-swing]");
+    if(swing && typeof pe.sel==="number"){
+      const {key}=variantOf(bcfg),d=layoutOf(bcfg).doors[pe.sel];
+      bcfg.ds=bcfg.ds||{};bcfg.ds[key]=bcfg.ds[key]||{};
+      bcfg.ds[key][pe.sel]={hinge:d.hinge,side:d.side};
+      if(swing.dataset.doorSwing==="hinge")bcfg.ds[key][pe.sel].hinge=d.hinge==="a"?"b":"a";
+      else bcfg.ds[key][pe.sel].side=-d.side;
+      bSave();peRender();return;
+    }
     const wb = e.target.closest("[data-wk],[data-wdel]");
     if (wb && typeof pe.sel === "string" && pe.sel[0] === "w") {
       const list = winMaterialize(bcfg), i = +pe.sel.slice(1);
@@ -2059,6 +2075,7 @@ function peRender() {
       ${lay.seam ? "<p>Пунктир — здесь соединяются модули, эту стену не двигаем.</p>" : ""}
       <p class="pe-gab">Размеры комнат — внутри, от стены до стены. Дом: ${esc(gabTxt(c))}.</p></div>`;
   }
+  if(d)box.insertAdjacentHTML("beforeend",`<div class="pe-card"><b>Открывание двери</b><div class="chips" style="margin-top:10px"><button type="button" class="chip" data-door-swing="hinge">Поменять петли ↔</button><button type="button" class="chip" data-door-swing="side">Открывать в другую сторону ↕</button></div><p>Дуга на плане показывает выбранное открывание.</p></div>`);
   if (pe.inline && pe.sel !== null) box.insertAdjacentHTML("afterbegin",`<button type="button" class="ghost selection-close" data-dismiss-selection="1">✕ Закрыть настройки</button>`);
   if (pe.inline && pe.sel !== null && matchMedia("(min-width:1000px)").matches) {
     const selector=typeof pe.sel==="number" ? `[data-door="${pe.sel}"]` : typeof pe.sel==="string" && pe.sel.startsWith("w") ? `[data-win="${pe.sel.slice(1)}"]` : null;
@@ -2101,12 +2118,12 @@ function bEncode(c) {
   const wn = Array.isArray(c.win[key]) ? c.win[key].map((o) => b36w(o.ri, 1) + b36w(ENC.wallIds.indexOf(o.wall), 1) + b36w(Math.max(0, ENC.wkeys().indexOf(o.key)), 1) +
     (typeof o.m === "number" ? b36w(o.m * 100, 2) : "zz") + (o.custom ? "1" : "0")).join("") : "";
   const ts = c.tsp && c.tsp[key] ? b36w(c.tsp[key][0] * 20, 2) + b36w(c.tsp[key][1] * 20, 2) : "";
-  return "d" + [head, pv, dp, dw, wn, ts].join("_").replace(/_+$/, "");
+  return "d" + [head, pv, dp, dw, wn, ts, c.ds && c.ds[key] ? Object.entries(c.ds[key]).map(([i,d])=>b36w(+i,1)+(d.hinge==="b"?"1":"0")+(d.side===-1?"0":"1")).join("") : ""].join("_").replace(/_+$/, "");
 }
 function bDecode(str) {
   try {
     if (!str || str[0] !== "d") return null;
-    const [h, pv, dp, dw, wn, ts] = str.slice(1).split("_");
+    const [h, pv, dp, dw, wn, ts, ds] = str.slice(1).split("_");
     const H = h.split("-").map((x) => parseInt(x, 36));
     const c = Object.assign({}, B_DEFAULT, { pv: {}, dpos: {}, dw: {}, win: {}, spos: {}, tsp: {} });
     c.size = ENC.sizes()[H[0]] || c.size;
@@ -2120,6 +2137,7 @@ function bDecode(str) {
     const { key, v } = variantOf(c);
     if (pv) { const vals = pv.split("-"); c.pv[key] = {}; v.params.forEach((q, i) => { if (vals[i]) c.pv[key][q.k] = parseInt(vals[i], 36) / 100; }); }
     if (ts && ts.length === 4) c.tsp[key] = [parseInt(ts.slice(0, 2), 36) / 20, parseInt(ts.slice(2, 4), 36) / 20];
+    if(ds){c.ds={ [key]:{} };for(let i=0;i+3<=ds.length;i+=3)c.ds[key][parseInt(ds[i],36)]={hinge:ds[i+1]==="1"?"b":"a",side:ds[i+2]==="0"?-1:1};}
     if (dp) { c.dpos[key] = {}; for (let i = 0; i + 3 <= dp.length; i += 3) c.dpos[key][parseInt(dp[i], 36)] = parseInt(dp.slice(i + 1, i + 3), 36) / 100; }
     if (dw) { c.dw[key] = {}; for (let i = 0; i + 2 <= dw.length; i += 2) c.dw[key][parseInt(dw[i], 36)] = DOOR_OPT[parseInt(dw[i + 1], 36)] || DOOR_OPT[1]; }
     if (wn) {
