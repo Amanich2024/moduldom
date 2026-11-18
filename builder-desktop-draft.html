@@ -1314,8 +1314,8 @@ function planSVG(c, opt = {}) {
   const VW = 360;
   let VH, s, ox, oy;
   if (ed) {   // масштаб дома как без террасы; торцевая терраса видна краем у границы экрана
-    s = (VW - 56) / (L + tc + (tc ? 0.6 : 0)); VH = Math.round((W + ta + 0.6) * s + 66);
-    ox = 28 + (tLeft ? (tc + 0.6) * s : 0); oy = 42; planGeo = { ox, oy, s };
+    s = (VW - 76) / (L + tc + (tc ? 0.6 : 0)); VH = Math.round((W + ta + 0.6) * s + 84);
+    ox = 38 + (tLeft ? (tc + 0.6) * s : 0); oy = 48; planGeo = { ox, oy, s };
   }
   else {   // запас под ступени снаружи: у торцевой террасы — сбоку, у входа на фасаде — снизу
     const stX = tc ? 0.6 : 0, stY = !tc ? 0.6 : sideDoorsS.length ? 0.4 : 0;
@@ -1546,10 +1546,20 @@ function planSVG(c, opt = {}) {
     }
   }
   if (ed) for (const { q, cx, cy, box } of winPx) {
-    const sel = opt.sel === "w" + q.idx, txt = winName(q.key) + "⋯", wpx = Math.round(txt.length * 5.9 + 10);
-    p.push(`<rect data-win="${q.idx}" x="${(box[0] - 5).toFixed(1)}" y="${(box[1] - 5).toFixed(1)}" width="${(box[2] + 10).toFixed(1)}" height="${(box[3] + 10).toFixed(1)}" fill="transparent"/>`);
-    p.push(`<g data-win="${q.idx}"><rect x="${(cx - wpx / 2).toFixed(1)}" y="${(cy - 8).toFixed(1)}" width="${wpx}" height="16" rx="8" fill="${sel ? "#3F7FA6" : "#FFFFFF"}" stroke="#3F7FA6" stroke-width="1"/>` +
-      `<text x="${cx.toFixed(1)}" y="${(cy + 3.5).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${sel ? "#FFFFFF" : "#2F6488"}" ${F}>${txt}</text></g>`);
+    const sel = opt.sel === "w" + q.idx, txt = winName(q.key), wpx = Math.round(txt.length * 5.9 + 10);
+    const horizontal=q.wall==="N"||q.wall==="S";
+    let lx=cx, ly=cy;
+    if(q.wall==="N")ly=Y(0)-19;
+    if(q.wall==="S")ly=Y(W)+19;
+    if(q.wall==="W")lx=X(0)-wpx/2-10;
+    if(q.wall==="E")lx=X(L)+wpx/2+10;
+    // Keep side labels readable at the edge of the drawing.
+    lx=Math.max(wpx/2+2,Math.min(VW-wpx/2-2,lx));
+    const ex=horizontal?lx:(q.wall==="W"?lx+wpx/2:lx-wpx/2);
+    const ey=horizontal?(q.wall==="N"?ly+8:ly-8):ly;
+    p.push(`<line x1="${cx}" y1="${cy}" x2="${ex}" y2="${ey}" stroke="#5B7F95" stroke-width="0.8" pointer-events="none"/>`);
+    p.push(`<rect data-win="${q.idx}" x="${box[0]-5}" y="${box[1]-5}" width="${box[2]+10}" height="${box[3]+10}" fill="transparent"/>`);
+    p.push(`<g data-win="${q.idx}"><rect x="${lx-wpx/2}" y="${ly-8}" width="${wpx}" height="16" rx="6" fill="${sel?"#3F7FA6":"#FFFFFF"}" stroke="#3F7FA6" stroke-width="1"/><text x="${lx}" y="${ly+3.5}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${sel?"#FFFFFF":"#2F6488"}" ${F}>${txt}</text></g>`);
   }
   // в редакторе: невидимые зоны дверей (чтобы попасть пальцем), поверх — ручки стен
   if (ed) {
