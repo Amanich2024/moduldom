@@ -1312,10 +1312,11 @@ function planSVG(c, opt = {}) {
   const entF = entranceOf(c);   // вход на фасаде (м от левого края) или null
   const sideDoorsS = lay.doors.filter((d) => d.ext && d.o === "h" && Math.abs(d.c - W) < 0.01 && (entF === null || Math.abs((d.a + d.b) / 2 - entF) > 0.05));
   const VW = ed ? 480 : 360;
+  const sideGutter = L / W <= 1.1 ? 104 : 76;
   let VH, s, ox, oy;
   if (ed) {   // масштаб дома как без террасы; торцевая терраса видна краем у границы экрана
-    s = (VW - 172) / (L + tc + (tc ? 0.6 : 0)); VH = Math.round((W + ta + 0.6) * s + 84);
-    ox = 86 + (tLeft ? (tc + 0.6) * s : 0); oy = 48; planGeo = { ox, oy, s };
+    s = (VW - 2 * sideGutter) / (L + tc + (tc ? 0.6 : 0)); VH = Math.round((W + ta + 0.6) * s + 84);
+    ox = sideGutter + (tLeft ? (tc + 0.6) * s : 0); oy = 48; planGeo = { ox, oy, s };
   }
   else {   // запас под ступени снаружи: у торцевой террасы — сбоку, у входа на фасаде — снизу
     const stX = tc ? 0.6 : 0, stY = !tc ? 0.6 : sideDoorsS.length ? 0.4 : 0;
