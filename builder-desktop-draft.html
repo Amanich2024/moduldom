@@ -2534,7 +2534,18 @@ function route() {
 window.addEventListener("hashchange", route);
 route();
 if(new URLSearchParams(location.search).get("thumbnail")==="1"){
-  document.body.innerHTML=facadeSVG(bcfg);
+  function renderThumbnail(){
+    document.body.innerHTML=facadeSVG(bcfg);
+    if(new URLSearchParams(location.search).get("scene")==="evening"){
+      parent.postMessage({type:"studio-project-scene",svg:facadeSVG(bcfg),stove:!!bcfg.stove,size:bcfg.size,terrace:bcfg.terrace,saved:!!localStorage.getItem("modul-build-v1-t")},location.origin);
+    }
+  }
+  renderThumbnail();
+  window.addEventListener("storage",function(e){
+    if(e.key==="modul-build-v1"){
+      try{bcfg=JSON.parse(e.newValue)||bcfg;renderThumbnail();}catch(ignore){}
+    }
+  });
   const style=document.createElement("style");style.textContent="html,body{margin:0!important;padding:0!important;height:100%!important;overflow:hidden!important;background:#eceee7}body>svg{display:block;width:100%;height:100%}";document.head.appendChild(style);
 }else cloudLoad();
 </script>

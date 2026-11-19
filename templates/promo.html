@@ -2465,7 +2465,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
     if (wide.matches) { vb = [-70, 24, 500, 186]; w = Math.min(vw, vh * 1.25); }
     else { vb = [10, 22, 340, 188]; w = vw * 1.04; }
     var h = w * vb[3] / vb[2];
-    svgs.forEach(function (s) { s.setAttribute('viewBox', vb.join(' ')); });
+    scene.querySelectorAll('svg').forEach(function (s) { s.setAttribute('viewBox', vb.join(' ')); });
     scene.style.width = w + 'px'; scene.style.height = h + 'px';
     eve.style.setProperty('--ground-h', (h * (210 - 180) / vb[3]) + 'px');
   }
@@ -2591,5 +2591,6 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   });
 })();
 </script>
+<script src="story-project-scene.js?v=1"></script>
 </body>
 </html>
