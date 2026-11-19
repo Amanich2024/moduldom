@@ -24,13 +24,7 @@
 <script>
 try { if (/tgWebApp/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
 </script>
-<!-- Yandex.Metrika counter -->
-<script>
-(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,"script","https://mc.yandex.ru/metrika/tag.js?id=113657787","ym");
-ym(113657787,"init",{ssr:true,webvisor:true,clickmap:true,accurateTrackBounce:true,trackLinks:true,trackHash:true});
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/113657787" style="position:absolute;left:-9999px" alt=""></div></noscript>
-<!-- /Yandex.Metrika counter -->
+<script src="analytics.js?v=1"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -551,6 +545,7 @@ let bcfg = (() => {
   return bNorm(v);
 })();
 function bSave(fromCloud) {
+  if(!fromCloud && window.STUDIO_ANALYTICS) window.STUDIO_ANALYTICS.changed();
   try { localStorage.setItem(B_KEY, JSON.stringify(bcfg)); if (!fromCloud) localStorage.setItem(B_KEY + "-t", String(Date.now())); } catch (e) {}
   if (!fromCloud) cloudSave();
 }
