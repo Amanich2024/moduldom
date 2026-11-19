@@ -2525,7 +2525,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   var meta = document.querySelector('meta[name="theme-color"]');
   var lastChrome = '', lastTG = 0, mbShown = false, lastState = '', lastHero = '';
   var heroStage = heroEl.querySelector('[data-sc-stage]');
-  var links = [].slice.call(document.querySelectorAll('.index__list a'));
+  var links = [].slice.call(document.querySelectorAll('.index__list a')).filter(function(a){var href=a.getAttribute('href')||'';return /^#[A-Za-z][\w-]*$/.test(href) && document.getElementById(href.slice(1));});
   var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
 
   function frame() {
