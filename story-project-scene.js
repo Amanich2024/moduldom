@@ -38,13 +38,19 @@
         g.appendChild(node); lights.appendChild(g);
       } else lights.appendChild(node);
     }
+    var panes = Array.from(svg.querySelectorAll('rect')).filter(function (r) { return /url\(#.*g\)/.test(r.getAttribute('fill') || ''); });
+    var mirrored = !!svg.querySelector('g[transform^="matrix(-1"]');
+    function screenX(r) { var x = +r.getAttribute('x') + +r.getAttribute('width') / 2; return mirrored ? 360 - x : x; }
+    var rightPane = panes.slice().sort(function (a,b) { return screenX(b)-screenX(a); })[0];
     Array.from(svg.querySelectorAll('rect')).forEach(function (r) {
       var fill = r.getAttribute('fill') || '';
       if (/url\(#.*g\)/.test(fill)) {
         var glow = r.cloneNode(false);
-        glow.setAttribute('fill', '#FFD68C');
+        glow.setAttribute('fill', '#F3C58B');
         glow.setAttribute('class', 'spill');
-        glow.style.filter = 'drop-shadow(0 0 5px #ffc46a)';
+        // Retain visible glazing and mullions instead of a flat bright panel.
+        glow.style.opacity = r === rightPane ? 'var(--bedroom-light, 0)' : 'var(--kitchen-light, 0)';
+        glow.style.filter = 'drop-shadow(0 0 2px #DFA86B)';
         place(glow, r);
       }
       if (event.data.stove && fill.toUpperCase() === '#1E2124') {
@@ -75,4 +81,15 @@
     window.dispatchEvent(new Event('resize'));
   });
   document.body.appendChild(frame);
+  function lightSequence() {
+    var eve = document.getElementById('vecher');
+    var p = parseFloat(eve.style.getPropertyValue('--sc-p')) || 0;
+    function smooth(a,b) { var t=Math.max(0,Math.min(1,(p-a)/(b-a))); return t*t*(3-2*t); }
+    var on = smooth(0.24,0.38);
+    // Both rooms light up first. Kitchen fades out, bedroom settles to a nightlight.
+    eve.style.setProperty('--kitchen-light', (on * 0.56 * (1-smooth(0.62,0.76))).toFixed(3));
+    eve.style.setProperty('--bedroom-light', (on * (0.56-0.28*smooth(0.72,0.88))).toFixed(3));
+    requestAnimationFrame(lightSequence);
+  }
+  requestAnimationFrame(lightSequence);
 })();
