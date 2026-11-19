@@ -1662,7 +1662,7 @@ function renderBuild() {
     <section class="b-group"><h2>Размер</h2><div class="chips">${chips("size", B_SIZES.map((s) => [s.id, `${s.name} · ${fmt(s.L * s.W)} м²`]), c.size)}</div></section>
     <section class="b-group"><h2>Планировка</h2><div class="chips" id="b-layouts"></div><div id="b-adj"></div></section>
     <section class="b-group"><h2>Терраса</h2><div class="chips">${chips("terrace", Object.entries(TERR).map(([id, o]) => [id, o.n]), c.terrace)}</div><div id="b-tx"></div></section>
-    <section class="b-group"><h2>Цвет стен</h2><div class="swatches">${sw("wall", WALLS, c.wall)}</div></section>
+    <section class="b-group"><h2>Цвет дома</h2><div class="swatches">${sw("wall", WALLS, c.wall)}</div></section>
     <section class="b-group"><h2>Углы и окна</h2><div class="swatches">${sw("accent", ACCENTS, c.accent)}</div></section>
     <section class="b-group"><h2>Отделка внутри</h2><div class="swatches">${sw("inner", Object.fromEntries(Object.entries(INNER).map(([id, o]) => [id, { n: o.n, c: o.c || o.pal[0] }])), c.inner)}</div></section>
     <section class="b-group"><h2>Дополнительно</h2><div class="toggles">${EXTRAS.map(([k, n]) => `<label class="toggle"><input type="checkbox" data-x="${k}"${c[k] ? " checked" : ""}><span class="sw" aria-hidden="true"></span><span class="t">${esc(n)}</span></label>`).join("")}</div></section>
