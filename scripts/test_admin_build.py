@@ -9,6 +9,10 @@ import build
 class PublicationTests(unittest.TestCase):
     def setUp(self):
         self.data = json.loads(build.DATA.read_text(encoding='utf-8'))
+        # Scenario tests must not depend on the operator's current archive state.
+        for group in ('projects', 'built'):
+            for item in self.data[group]:
+                item['status'] = 'published'
 
     def test_price_reaches_all_catalogs(self):
         self.data['projects'][0]['warm'] = 1000100
@@ -28,7 +32,7 @@ class PublicationTests(unittest.TestCase):
         promo = outputs[Path('promo.html')]
         self.assertIn('<h1>Тест нового объекта</h1>', promo)
         self.assertIn('data-house="admin-regression-object"', promo)
-        self.assertNotIn('data-house="h1"', promo)
+        self.assertNotIn('data-house="' + self.data['built'][1]['legacyId'] + '"', promo)
         payload = outputs[Path('data/catalog.js')].split('window.STUDIO_DATA = ', 1)[1].rsplit(';', 1)[0]
         public = json.loads(payload)
         self.assertEqual(public['built'][0]['id'], new['id'])

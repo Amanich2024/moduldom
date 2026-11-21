@@ -115,7 +115,15 @@ def compile_pages(data):
             value = value[:2] + " " + value[2:5] + " " + value[5:8] + "-" + value[8:10] + "-" + value[10:]
         if kind == "photo":
             value = "img/" + value + ".webp"
-        return html.escape(value, quote=kind != "text")
+        escaped = html.escape(value, quote=kind != "text")
+        # Some legacy templates place content inside JavaScript string literals.
+        # An editor's quote/backtick must remain text, not executable source.
+        before = match.string[:match.start()]
+        if before.rfind('<script') > before.rfind('</script>'):
+            escaped = (escaped.replace('\\', '\\\\').replace('`', '\\`')
+                       .replace('${', '\\${').replace("'", "\\'")
+                       .replace('"', '\\"').replace('\r', '\\r').replace('\n', '\\n'))
+        return escaped
 
     for template in sorted((ROOT / "templates").rglob("*.html")):
         relative = template.relative_to(ROOT / "templates")
