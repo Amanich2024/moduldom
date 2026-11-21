@@ -1996,7 +1996,7 @@ function bLead() {
   const c = bcfg, sum = bSummary(c);
   const text = "Здравствуйте! Хочу обсудить такой дом.\n\n" + sum.rows.map(([k, v]) => `${k}: ${v}`).join("\n") + `\n\nМой вариант в приложении: ${bLink(c)}`;
   if (MANAGER) tgLink(`https://t.me/${MANAGER}?text=${encodeURIComponent(text)}`);
-  else go("#/done/my");   // пробная версия: «Поздравляю с покупкой!» вместо заявки менеджеру
+  else window.open(STUDIO_DATA.contacts.write || STUDIO_DATA.contacts.telegram, "_blank", "noopener,noreferrer");
 }
 /* Поделиться: ссылка открывает приложение сразу с этим домом */
 function bShare() {

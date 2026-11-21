@@ -317,7 +317,7 @@ body.intg .back button { display:none; }
 
 
 </div>
-<script src="../data/catalog.js?v=4a38edd7c4c4"></script>
+<script src="../data/catalog.js?v=2656b7d79974"></script>
 <script>
 const PHONE = STUDIO_DATA.contacts.phone;
 const T = window.Telegram && window.Telegram.WebApp;
@@ -410,7 +410,7 @@ function renderList() {
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-pressed", String(t.dataset.t === tab)));
   if (tab === "built") {
     const short = (q) => q.length > 72 ? q.slice(0, 70).replace(/\s\S*$/, "") + "…" : q;
-    document.getElementById("list").innerHTML = B.map(b => ({ b, order: b.id === "chernyj-6x8" ? Infinity : completionDate(b).order })).sort((a, b) => b.order - a.order).map(({ b }) => `
+    document.getElementById("list").innerHTML = B.map(b => `
     <button class="card" data-b="${b.id}">
       <div class="photo built"><img src="${IMG}${b.cover}.webp" alt="" loading="lazy"${b.cover === "hero-1" ? ' style="object-position:50% 30%"' : ""}></div>
       <div class="cap">
@@ -430,7 +430,7 @@ function renderList() {
       <div class="photo"><img src="${h.media.render}" alt="" loading="lazy"></div>
       <div class="cap">
         ${linenDesign ? '<span class="linen-kicker">Визуализация проекта</span>' : ""}
-        <div class="row"><span class="name">${h.name}</span><span class="price">от ${rub(h.warm)}</span></div>
+        <div class="row"><span class="name">${h.name}</span><span class="price">${h.priceOnRequest?'Цена по запросу':'от '+rub(h.warm)}</span></div>
         <div class="dim">${dimLine(h)}</div>
         ${linenDesign ? '<div class="linen-card-link">Планировка и комплектации →</div>' : ""}
       </div>
@@ -523,8 +523,8 @@ function renderHouse(id) {
       ${linenDesign && ["30", "36", "40", "48", "54", "66", "68"].includes(h.id) ? '<p class="linen-price-note">Размеры и состав помещений уточняйте по актуальному плану производителя.</p>' : ""}
       <div class="rooms">${rooms}</div>
       <div class="prices">
-        <button class="pbtn" data-k="warm" aria-pressed="${kit==="warm"}"><span class="k">Тёплый контур</span><span class="v">${rub(h.warm)}</span></button>
-        <button class="pbtn" data-k="fin" aria-pressed="${kit==="fin"}"><span class="k">Чистовая отделка</span><span class="v">${rub(h.fin)}</span></button>
+        <button class="pbtn" data-k="warm" aria-pressed="${kit==="warm"}"><span class="k">Тёплый контур</span><span class="v">${h.priceOnRequest?'По запросу':rub(h.warm)}</span></button>
+        <button class="pbtn" data-k="fin" aria-pressed="${kit==="fin"}"><span class="k">Чистовая отделка</span><span class="v">${h.priceOnRequest?'По запросу':rub(h.fin)}</span></button>
       </div>
       ${linenDesign ? '<p class="linen-price-note">Доставку уточняют по адресу участка.</p><button class="linen-button linen-price-action" type="button" data-linen-contact="estimate">Узнать цену с доставкой</button>' : ""}
       <div class="inc"><h3>Что входит</h3><div id="inc">${incRows(h)}</div></div>
