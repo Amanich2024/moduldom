@@ -669,8 +669,9 @@ html.has-house { overflow: hidden; }
 .is-night .index { border-bottom-color: color-mix(in oklab, var(--chrome-ink) 14%, transparent); }
 
 /* ===== Окно дома: фото, подписи, план — на этой же странице ===== */
-.house { position: fixed; inset: 0; z-index: 1000; background: var(--sc-canvas); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.house { position: fixed; inset: calc(var(--nav-h) + env(safe-area-inset-top, 0px)) 0 0; z-index: 1000; background: var(--sc-canvas); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 .house[hidden] { display: none; }
+html.has-house .index{display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important;z-index:1100!important;}
 .house:focus { outline: none; }
 .only-wide { display: none; }
 .house__cta h3 { font-size: var(--sc-t-lg); margin-bottom: var(--sc-3); }
@@ -750,7 +751,7 @@ html.has-house { overflow: hidden; }
   .faq__grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
   .eve__copy { max-width: 32rem; }
   .house__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(19rem, 25rem); gap: var(--sc-8); align-items: start; padding-top: var(--sc-6); }
-  .house__side { display: block; grid-column: 2; grid-row: 1; position: sticky; top: calc(var(--nav-h) + var(--sc-6)); max-height: calc(100vh - var(--nav-h) - 2 * var(--sc-6)); overflow-y: auto; scrollbar-width: thin; padding-right: 4px; }
+  .house__side { display: block; grid-column: 2; grid-row: 1; align-self: start; position: sticky; top: calc(var(--nav-h) + var(--sc-5)); max-height: calc(100dvh - 2 * var(--nav-h) - var(--sc-5) - var(--sc-4) - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior-y: auto; scrollbar-width: thin; padding-right: 12px; padding-bottom: 8px; box-sizing: border-box; }
   .house__photos { grid-column: 1; grid-row: 1; }
   .house__more { margin-top: var(--sc-7); }
   .house__head h2 { font-size: clamp(1.7rem, 2.3vw, 2.4rem); }
@@ -780,7 +781,7 @@ html.has-house { overflow: hidden; }
  .hero__note{display:none}
 }.header-chats{display:flex;gap:8px;margin-left:18px;margin-right:auto}.header-chats a{display:grid;place-items:center;width:36px;height:36px;border:1px solid currentColor;border-radius:50%;color:inherit;transition:background .2s}.header-chats a:hover{background:#ce9c5840}.header-chats svg{width:19px;height:19px;fill:currentColor}@media(max-width:1050px){.header-chats{gap:5px;margin-left:10px}.header-chats a{width:30px;height:30px}.index__list{gap:8px}}</style>
 <script src="data/catalog.js?v=__DATA_REVISION__"></script>
-</head>
+<script src="vendor/pdf-lib-1.17.1.min.js" defer></script><script src="project-pdf.js?v=1" defer></script></head>
 <body>
 <div class="sc-grain" aria-hidden="true"></div>
 
@@ -901,7 +902,7 @@ html.has-house { overflow: hidden; }
   </section>
 
   <!-- 5 · Вечер: pin, самый длинный пролёт. Последний акт: табличка держится. -->
-  <section id="vecher" class="eve" data-sc-act="pin" data-sc-span="6.6" data-sc-drift="#111416">
+  <section id="vecher" class="eve" data-sc-act="pin" data-sc-span="9.4" data-sc-drift="#111416">
     <div data-sc-stage data-sc-verify-state="">
       <div class="eve__stars" aria-hidden="true"></div>
       <div class="eve__ground" aria-hidden="true"></div>
@@ -975,10 +976,10 @@ html.has-house { overflow: hidden; }
 </main>
 
 <!-- Окно дома: открывается поверх страницы, «Назад» мыши, браузера и Telegram его закрывают -->
-<div class="house" id="house" role="dialog" aria-modal="true" aria-labelledby="house-title" tabindex="-1" hidden>
+<div class="house" id="house" role="dialog" aria-modal="false" aria-labelledby="house-title" tabindex="-1" hidden>
   <div class="house__bar">
     <button class="house__back" type="button" data-close><span aria-hidden="true">{{text:pages/promo/copy/text175}}</span> {{text:pages/promo/copy/text176}}</button>
-    <span class="house__name" aria-hidden="true"></span>
+    <span class="house__name" aria-hidden="true"></span><button class="cta2 house__pdf" type="button" data-house-pdf>Скачать проект (PDF)</button>
     <button class="house__x" type="button" data-close aria-label="Закрыть">{{text:pages/promo/copy/text177}}</button>
   </div>
   <div class="house__body">
@@ -2328,6 +2329,8 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   var dlg = document.getElementById('house');
   var elPhotos = dlg.querySelector('.house__photos'), elHead = dlg.querySelector('.house__head'), elMore = dlg.querySelector('.house__more'), elName = dlg.querySelector('.house__name');
   var current = null, opener = null, pushed = false;
+  dlg.addEventListener('click',function(e){if(e.target.closest('[data-house-pdf]'))window.STUDIO_PROJECT_PDF.downloadHouse({...HOUSES[current],id:current});});
+  // Both columns use native wheel scrolling for matching speed and smoothing.
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function render(id) {
     var h = HOUSES[id]; if (!h) return false;
@@ -2362,7 +2365,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   function show(id) {
     if (!render(id)) return;
     current = id;
-    dlg.hidden = false; dlg.scrollTop = 0; root.classList.add('has-house');
+    dlg.hidden = false; dlg.scrollTop = 0; dlg.querySelector('.house__side').scrollTop=0; root.classList.add('has-house');
     try { dlg.focus({ preventScroll: true }); } catch (e) {}
     if (inTG) {
       try { tg.MainButton.hide(); } catch (e) {}
@@ -2394,6 +2397,11 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
     if (m && HOUSES[m[1]]) show(m[1]); else hide();
   }
   addEventListener('popstate', function () { pushed = !!(history.state && history.state.dom); sync(); });
+  document.querySelector('.index').addEventListener('click', function(e){
+    if(current===null||!e.target.closest('a'))return;
+    hide();pushed=false;
+    try{history.replaceState(null,'',location.pathname+location.search);}catch(err){}
+  },true);
   dlg.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) { e.preventDefault(); closeHouse(); } });
   dlg.addEventListener('click', function (e) { var o = e.target.closest('[data-out]'); if (o) { e.preventDefault(); openOut(o.getAttribute('href')); } });
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && current !== null) closeHouse(); });
@@ -2592,9 +2600,11 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
     a.addEventListener('click', function (e) {
       var t = document.querySelector(a.getAttribute('href')); if (!t) return;
       e.preventDefault();
-      var y = t.getBoundingClientRect().top + scrollY;
-      if (t.id === 'vecher') y += (t.offsetHeight - innerHeight) * 0.62;
-      scrollTo({ top: y, behavior: 'auto' });
+      requestAnimationFrame(function () {
+        var y = t.getBoundingClientRect().top + scrollY;
+        if (t.id === 'vecher') y += (t.offsetHeight - innerHeight) * 0.62;
+        scrollTo({ top: y, behavior: 'instant' });
+      });
     });
   });
 })();

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Загородная студия</title>
+<script src="vendor/pdf-lib-1.17.1.min.js" defer></script>
 <script>
 (function () {
   if (/^#\/build(?:$|[/?])/.test(location.hash)) return;
@@ -394,8 +395,28 @@ html:has(.b-head),body:has(.b-head){height:100%;overflow:hidden}
 .b-specs b{text-align:left;overflow-wrap:anywhere}.b-specs span{white-space:normal}.summary-close{position:sticky;top:0;z-index:2;background:#fffcf7!important;padding:10px 14px;box-shadow:0 4px 12px #fffcf7}
 #b-summary .block-note{line-height:1.6;font-size:15px;margin-top:20px}
 @media(max-width:600px){#b-summary{padding:18px!important}.b-specs div{grid-template-columns:1fr;gap:4px}}
-</style></head>
+</style><style id="builder-global-header">
+.studio-builder-nav{position:fixed;top:0;left:0;right:0;height:52px;z-index:200;box-sizing:border-box;display:flex;align-items:center;gap:24px;padding:4px clamp(16px,4.6vw,88px);background:#edefec;color:#25292b;border-bottom:1px solid #d5d9d5;font-size:16px}
+.studio-builder-nav a{color:inherit;text-decoration:none;white-space:nowrap}.studio-builder-nav .index__mark{display:flex;align-items:center;gap:12px;font-family:var(--f-display);font-size:20px;font-weight:600}.studio-builder-nav .studio-logo{width:42px;height:42px;object-fit:contain;border-radius:9px}.studio-builder-nav .header-chats{display:flex;gap:8px;margin-right:auto}.studio-builder-nav .header-chats a{display:grid;place-items:center;width:36px;height:36px;border:1px solid;border-radius:50%}.studio-builder-nav svg{width:19px;height:19px;fill:currentColor}.studio-builder-nav .index__list{display:flex;align-items:center;gap:20px;list-style:none;margin:0;padding:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;line-height:24px}.studio-builder-nav [aria-current="page"]{border-bottom:2px solid #bc762e;padding-bottom:8px}
+body:has(.studio-builder-nav)>.app{margin-top:52px}
+@media(min-width:1000px){body:has(.studio-builder-nav)>.app:has(.b-head){height:calc(100dvh - 52px)}}
+@media(max-width:1100px){.studio-builder-nav{gap:12px;padding-inline:14px}.studio-builder-nav .index__list{gap:12px;font-size:14px}.studio-builder-nav .index__mark{font-size:17px}.studio-builder-nav .header-chats{gap:5px}.studio-builder-nav .header-chats a{width:30px;height:30px}}
+@media(max-width:760px){.studio-builder-nav .index__mark span{display:none}.studio-builder-nav .index__list{gap:12px;flex:1}.studio-builder-nav{gap:10px}.studio-builder-nav .header-chats{margin:0}.studio-builder-nav .studio-logo{width:32px;height:32px}}
+</style>
+<style>#b-pdf-top{margin-left:auto;flex-shrink:0;padding:7px 12px;font-size:14px}.house__pdf{white-space:nowrap}@media(max-width:600px){#b-pdf-top{margin:8px 0;font-size:14px}}</style></head>
 <body>
+<nav class="studio-builder-nav" aria-label="Разделы">
+  <a class="index__mark" href="promo.html#dom"><img class="studio-logo" src="katalog/img/logo.png" alt=""> <span>Загородная студия</span></a>
+<div class="header-chats"><a href="https://vk.com/zagorodnaya_studia" target="_blank" rel="noopener noreferrer" aria-label="Сообщество ВКонтакте"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h3c.2 7 3.3 10 5.7 10.5V4h3v6c2.4-.3 4.9-3 5.8-6h3c-.7 3.7-3.5 6.5-5.5 7.7 2 1 5.2 3.5 6.4 7.3H21c-1-2.9-3.4-5.1-6.3-5.4V19h-.4C6.1 19 3.2 13.2 3 4z" transform="translate(-1 0)"/></svg></a><a href="https://t.me/modul_doma_SPb" target="_blank" rel="noopener noreferrer" aria-label="Канал в Telegram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.6 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.2-8.3c.4-.4-.1-.6-.6-.2L5.9 13.5l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.5 3.1c.9-.3 1.7.2 1.4 1.5z"/></svg></a><a href="https://www.avito.ru/brands/i16905878" target="_blank" rel="noopener noreferrer" aria-label="Профиль на Авито"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="16" r="5" fill="#00aaff"/><circle cx="17" cy="7" r="5" fill="#a169f7"/><circle cx="6" cy="5" r="3" fill="#ff6163"/><circle cx="18" cy="18" r="3" fill="#97cf26"/></svg></a></div>
+  <ul class="index__list">
+    <li><a href="promo.html#dom">Начало</a></li>
+    <li><a aria-current="page" href="builder-desktop-draft.html#/build">Конструктор</a></li>
+    <li><a href="promo.html#doma">Построено</a></li>
+    <li><a href="promo.html#otzyvy">Отзывы</a></li>
+    <li><a href="promo.html#voprosy">Вопросы</a></li>
+    <li><a href="promo.html#vecher">Вечер</a></li>
+  </ul>
+</nav>
 <div class="amb" id="amb" aria-hidden="true"><img alt=""><img alt=""></div>
 <div class="app" id="app"></div>
 <div class="buybar" id="buybar" hidden><div class="buybar-inner"><button class="buy" id="buy" type="button">Купить</button></div></div>
@@ -861,47 +882,41 @@ function mirrorSVG(svg) {
   return svg.slice(0, i) + `<g transform="matrix(-1 0 0 1 ${VW} 0)">` + body + "</g>" + svg.slice(j);
 }
 /* Terrace posts use the same opening geometry as the editable floor plan. */
-function terraceSupportLine(c, wall, a, b) {
- const lay=layoutOf(c),{L,W}=sizeOf(c),half=.08,clearance=.10,margin=half+clearance;
- const blocked=winsOf(c,lay).filter(q=>q.wall===wall).map(q=>[q.m-q.w/2-margin,q.m+q.w/2+margin]);
- for(const d of lay.doors){if(!d.ext)continue;const dw=d.o==='h'?(Math.abs(d.c-W)<.01?'S':'N'):(Math.abs(d.c)<.01?'W':'E');if(dw===wall)blocked.push([d.a-margin,d.b+margin]);}
- if(wall==='S'){const e=exit2Pos(c);if(e!==null)blocked.push([e-DOOR_EXT/2-margin,e+DOOR_EXT/2+margin]);}
- const legal=x=>blocked.every(([l,r])=>x<=l+1e-8||x>=r-1e-8);
- const lo=a+half,hi=b-half,grid=[];for(let x=lo;x<hi;x+=.02)if(legal(x))grid.push(x);if(legal(hi))grid.push(hi);
- blocked.forEach(([l,r])=>[l,r].forEach(x=>{if(x>=lo&&x<=hi&&legal(x))grid.push(x)}));grid.sort((x,y)=>x-y);
- const points=grid.filter((x,i)=>!i||x-grid[i-1]>1e-6);
- if(!points.length)return {positions:[],valid:false,blocked};
- const start=points[0],end=points.at(-1),span=end-start;
- for(let n=Math.max(1,Math.ceil(span/2));n<=Math.ceil(span/.3)+1;n++){
-  const xs=Array.from(new Set([...points,...Array.from({length:n+1},(_,i)=>start+span*i/n).filter(legal)])).sort((x,y)=>x-y),m=xs.length;
-  let costs=Array(m).fill(Infinity);costs[0]=0;const history=[];
-  for(let k=1;k<=n;k++){
-   const next=Array(m).fill(Infinity),parents=Array(m).fill(-1),queue=[];let head=0,j=0;
-   for(let i=0;i<m;i++){
-    while(j<i&&xs[j]<=xs[i]-.16+1e-8){if(Number.isFinite(costs[j])){while(queue.length>head&&costs[queue.at(-1)]>=costs[j])queue.pop();queue.push(j);}j++;}
-    while(queue.length>head&&xs[queue[head]]<xs[i]-2-1e-8)head++;
-    if(queue.length>head){parents[i]=queue[head];next[i]=costs[queue[head]]+(xs[i]-(start+span*k/n))**2;}
-   }
-   history.push(parents);costs=next;
-  }
-  if(Number.isFinite(costs[m-1])){let idx=m-1,result=[xs[idx]];for(let k=n-1;k>=0;k--){idx=history[k][idx];result.push(xs[idx]);}result.reverse();return {positions:result,valid:start-a<=2&&b-end<=2,blocked};}
- }
- // Keep legal positions visible and disclose an impossible support span.
- const result=[start];while(end-result.at(-1)>2){const options=points.filter(x=>x>result.at(-1)+.16&&x<=result.at(-1)+2);if(!options.length)break;result.push(options.at(-1));}if(end>result.at(-1)+.01)result.push(end);
- return {positions:result,valid:false,blocked};
+function terraceSupportLine(c,wall,a,b){
+ const {W}=sizeOf(c),lo=a+.08,hi=b-.08,lay=layoutOf(c);
+ const doors=lay.doors.filter(d=>d.ext&&(d.o==='h'?(Math.abs(d.c-W)<.01?'S':'N'):(Math.abs(d.c)<.01?'W':'E'))===wall).filter(d=>d.b>=a&&d.a<=b);
+ const entrance=doors.find(d=>d===mainDoor(c))||doors[0],blocked=doors.map(d=>[d.a-.18,d.b+.18]);
+ const windows=winsOf(c,lay).filter(q=>q.wall===wall).map(q=>[q.m-q.w/2-.18,q.m+q.w/2+.18]);
+ const anchors=[lo,hi];
+ if(entrance){const m=(entrance.a+entrance.b)/2;for(const x of [m-1,m+1]){
+  const bounded=Math.max(lo,Math.min(hi,x));
+  if(!anchors.some(y=>Math.abs(bounded-y)<.16))anchors.push(bounded);
+ }}
+ const positions=anchors.sort((x,y)=>x-y).filter(x=>Math.abs(x-lo)<1e-7||Math.abs(x-hi)<1e-7||[...blocked,...windows].every(([l,r])=>x<=l+1e-8||x>=r-1e-8));
+ const valid=true;
+
+ return {positions,valid,blocked};
+}
+function terraceRailIntervals(positions,entrance){
+ if(positions.length<2)return [];
+ const a=positions[0],b=positions.at(-1);
+ if(entrance===null||entrance<a||entrance>b)return [[a,b]];
+ const left=positions.filter(x=>x<entrance).at(-1),right=positions.find(x=>x>entrance);
+ return [[a,left],[right,b]].filter(([x,y])=>Number.isFinite(x)&&Number.isFinite(y)&&y-x>.16);
+}
+function terraceRailingSVG(a,b,floorY,scale,color){
+ if(b-a<.15*scale)return '';
+ const top=floorY-.95*scale,span=(b-a)/scale,n=Math.max(1,Math.ceil(span/2-1e-8));
+ let out='';
+ for(let i=1;i<n;i++){const x=a+(b-a)*i/n;out+=rect(x-.05*scale,top,.10*scale,.95*scale,color,'class="railing-short-post"');}
+ for(let i=0;i<5;i++)out+=rect(a,top+i*.18*scale,b-a,.10*scale,color,'class="railing-horizontal-board"');
+ return out;
 }
 function terraceSupports(c){
  const {L,W}=sizeOf(c);if(c.terrace==='none')return {posts:[],valid:true};
- const posts=[],lines=[];const add=(x,y)=>{if(!posts.some(p=>Math.hypot(p.x-x,p.y-y)<.01))posts.push({x,y});};
- if(c.terrace==='along'){
-  const [a,b]=alongSpan(c),line=terraceSupportLine(c,'S',a,b);lines.push(line);line.positions.forEach(x=>add(x,W+T_DEPTH-.08));
-  // Side perimeter: even spacing across terrace depth, matching both side elevations.
-  for(const x of [line.positions[0],line.positions.at(-1)].filter(Number.isFinite)){const count=Math.ceil((T_DEPTH-.16)/2);for(let i=0;i<count;i++)add(x,W+.08+(T_DEPTH-.16)*i/count);}
- }else{
-  const left=endSide(c)==='left',line=terraceSupportLine(c,left?'W':'E',0,W);lines.push(line);const outer=left?-T_DEPTH+.08:L+T_DEPTH-.08;line.positions.forEach(y=>add(outer,y));
-  for(const y of [line.positions[0],line.positions.at(-1)].filter(Number.isFinite)){const count=Math.ceil((T_DEPTH-.16)/2);for(let i=0;i<count;i++)add(left?-.08-(T_DEPTH-.16)*i/count:L+.08+(T_DEPTH-.16)*i/count,y);}
- }
- return {posts,valid:lines.every(l=>l.valid)};
+ if(c.terrace==='along'){const row=terraceSupportLine(c,'S',...alongSpan(c));return {posts:row.positions.map(x=>({x,y:W+T_DEPTH-.08})),valid:row.valid};}
+ const left=endSide(c)==='left',row=terraceSupportLine(c,left?'W':'E',0,W);
+ return {posts:row.positions.map(y=>({x:left?-T_DEPTH+.08:L+T_DEPTH-.08,y})),valid:row.valid};
 }
 function facadeSVG(c, view = "front") {
   applyCustom(c);
@@ -1021,12 +1036,7 @@ function facadeSVG(c, view = "front") {
   // цоколь
   p.push(rect(T(0), floorY, total * s, 0.2 * s, acc.c));
   // стойки и ограждение
-  const rail = (xa, xb) => {
-    if (xb - xa < 0.15 * s) return;
-    const top = floorY - 0.95 * s;
-    p.push(rect(xa, top, xb - xa, 0.07 * s, c.accent === "white" ? "#F1F1EE" : shade(acc.c, 0.08)));
-    for (let x = xa + 0.16 * s; x < xb - 0.05 * s; x += 0.16 * s) p.push(line(x, top + 0.07 * s, x, floorY, railC, Math.max(0.8, 0.035 * s), 'opacity=".85"'));
-  };
+  const rail = (xa,xb) => p.push(terraceRailingSVG(xa,xb,floorY,s,railC));
   const post = (px, top = eaveY) => p.push(rect(px - 0.08 * s, top, 0.16 * s, floorY - top, acc.c));
   const stepsAt = (px, wide) => {
     const sw = wide ? 1.3 : 1.1;
@@ -1039,9 +1049,9 @@ function facadeSVG(c, view = "front") {
   const stepBlock = (m, w) => p.push(rect(X(m - w / 2), floorY + 0.2 * s, w * s, pile - 0.2 * s, "#8E6C4C"));
   const entInSpan = along && entranceX !== null && entranceX > a0 + 0.5 && entranceX < a1 - 0.5;
   if (along && !back) {
-    for (const px of terraceSupportLine(c,"S",a0,a1).positions) post(X(px),eaveT);
+    for(const px of terraceSupportLine(c,"S",a0,a1).positions)post(X(px),eaveT);
     const st = entInSpan ? entranceX : (a0 + a1) / 2;
-    rail(X(a0 + 0.16), X(st - 0.6)); rail(X(st + 0.6), X(a1 - 0.16));
+    for(const [a,b] of terraceRailIntervals(terraceSupportLine(c,"S",a0,a1).positions,st))rail(X(a+.08),X(b-.08));
     stepsAt(X(st), true);
   }
   if (tc) {
@@ -1248,12 +1258,7 @@ function endsSVG(c) {
     }
     p.push(rect(xa, floorY, W * s, 0.2 * s, acc.c));
     const fwd = flip ? -1 : 1;   // в какую сторону на картинке фасад (y растёт)
-    const railE = (a, b) => {
-      if (b - a < 0.15 * s) return;
-      const top = floorY - 0.95 * s;
-      p.push(rect(a, top, b - a, 0.07 * s, shade(acc.c, 0.08)));
-      for (let x = a + 0.16 * s; x < b - 0.05 * s; x += 0.16 * s) p.push(line(x, top + 0.07 * s, x, floorY, acc.c, Math.max(0.8, 0.035 * s), 'opacity=".85"'));
-    };
+    const railE = (a,b) => p.push(terraceRailingSVG(a,b,floorY,s,acc.c));
     // терраса вдоль дома видна сбоку: настил на сваях, ограждение по боковой стороне, стойка под кровлей
     if (ta) {
       const tx0 = flip ? X(W) - ta * s : X(W), tx1 = tx0 + ta * s;
@@ -1283,14 +1288,14 @@ function endsSVG(c) {
     }
     // торцевая терраса перед этим торцом: стойки и ограждение спереди
     if (tc && ((side === "left") === (wl === "W"))) {
-      for(const y of [...new Set(terraceSupports(c).posts.map(q=>q.y))]){const px=X(y);p.push(rect(px-.08*s,H(y),.16*s,floorY-H(y),acc.c));}
+      for(const y of terraceSupportLine(c,wl,0,W).positions){const px=X(y);p.push(rect(px-.08*s,H(y),.16*s,floorY-H(y),acc.c));}
       // лестница и проход в ограждении — напротив двери в этом торце
       const ed = lay.doors.find((d) => d.ext && d.o === "v" && Math.abs(d.c - (wl === "W" ? 0 : L)) < 0.01);
       const dx = ed ? X((ed.a + ed.b) / 2) : (xa + xb) / 2;
       const top = floorY - 0.95 * s, mid = Math.max(xa + 0.95 * s, Math.min(xb - 0.95 * s, dx));
-      for (const [a, b] of [[xa + 0.2 * s, mid - 0.6 * s], [mid + 0.6 * s, xb - 0.2 * s]]) {
-        p.push(rect(a, top, b - a, 0.07 * s, shade(acc.c, 0.08)));
-        for (let x = a + 0.16 * s; x < b - 0.05 * s; x += 0.16 * s) p.push(line(x, top + 0.07 * s, x, floorY, acc.c, Math.max(0.8, 0.035 * s), 'opacity=".85"'));
+      for (const [m0,m1] of terraceRailIntervals(terraceSupportLine(c,wl,0,W).positions,ed?(ed.a+ed.b)/2:null)) {
+        const a=Math.min(X(m0),X(m1))+.08*s,b=Math.max(X(m0),X(m1))-.08*s;
+        p.push(terraceRailingSVG(a,b,floorY,s,acc.c));
       }
       for (let k = 0; k < 3; k++) p.push(rect(mid - (0.65 + k * 0.12) * s, floorY + k * pile / 3, (1.3 + k * 0.24) * s, pile / 3, k % 2 ? "#8E6C4C" : "#9C7A57"));
     }
@@ -1420,9 +1425,6 @@ function planSVG(c, opt = {}) {
       stairsPlan(cm, tLeft ? -tc : L + tc, 1.3, true, tLeft ? -1 : 1);
     } else if (entF !== null) { if (c.porch) stairsPlan(entF, W, 1.1, false, 1); else stepPlan(entF, 1.0); }
   }
-  const supportPlan=terraceSupports(c);
-  for(const q of supportPlan.posts)p.push(rect(X(q.x-.08),Y(q.y-.08),.16*s,.16*s,ACCENTS[c.accent].c,'class="terrace-post" stroke="#fff" stroke-width=".7"'));
-  if(!supportPlan.valid)p.push(`<text x="${VW/2}" y="18" text-anchor="middle" font-size="11" fill="#a43f24">Проёмы не позволяют выдержать шаг стоек до 2 м</text>`);
   // стены (заливка) и комнаты «в чистоте»
   p.push(rect(X(0), Y(0), L * s, W * s, "#4A4F54"));
   const cl = lay.rooms.map((r) => clearOf(lay, r, L, W));
@@ -1686,7 +1688,7 @@ function renderBuild() {
   const sw = (k, obj, sel) => Object.entries(obj).map(([id, o]) => `<button type="button" class="swatch${id === "custom" ? " sw-custom" : ""}" data-k="${k}" data-v="${id}" aria-pressed="${id === sel}"><i style="background:${o.c}"></i><span>${esc(o.n)}</span>${id === "custom" ? pick(k, o.c) : ""}</button>`).join("");
   app.innerHTML = `
     <div class="topbar"${inTG ? " hidden" : ""}><button class="back" type="button" id="back">← На сайт</button></div>
-    <header class="b-head"><h1>Собрать свой дом</h1><p>Выберите размер и планировку — затем настройте дом прямо на плане.</p></header>
+    <header class="b-head"><h1>Собрать свой дом</h1><button type="button" class="ghost" id="b-pdf-top">Скачать проект (PDF)</button><p>Выберите размер и планировку — затем настройте дом прямо на плане.</p></header>
     <div class="b-top">
     <div class="b-preview">
       <div class="b-canvas" id="b-canvas"></div>
@@ -1718,16 +1720,14 @@ function renderBuild() {
       <button type="button" class="b-lead" id="b-lead">Оставить заявку на этот дом</button>
       <div class="b-actions">
         <button type="button" class="ghost" id="b-share">Поделиться</button>
-        <button type="button" class="ghost" id="b-img">Картинка дома</button>
-        <button type="button" class="ghost" id="b-copy">Скопировать описание</button>
-        <button type="button" class="ghost" id="b-mat">🧮 Рассчитать материалы</button>
+        <button type="button" class="ghost" id="b-img">Скачать проект (PDF)</button>
       </div>
     </section>`;
   app.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => { bView = b.dataset.view; bUpdate(); }));
   document.getElementById("b-flip").addEventListener("click", () => { bcfg.flip = !bcfg.flip; bChanged(); });
   if (!bBound) { app.addEventListener("click", bClick); bBound = true; }
   app.querySelectorAll("[data-x]").forEach((i) => i.addEventListener("change", () => { bcfg[i.dataset.x] = i.checked; bChanged(); }));
-  document.getElementById("b-img").addEventListener("click", bImage);
+  document.getElementById("b-img").addEventListener("click", bImage); document.getElementById("b-pdf-top").addEventListener("click", bImage);
   app.querySelectorAll(".sw-pick").forEach((inp) => {
     inp.addEventListener("click", (e) => e.stopPropagation());
     inp.addEventListener("input", () => {
@@ -1740,8 +1740,6 @@ function renderBuild() {
   });
   document.getElementById("b-lead").addEventListener("click", bLead);
   document.getElementById("b-share").addEventListener("click", bShare);
-  document.getElementById("b-copy").addEventListener("click", bCopy);
-  document.getElementById("b-mat").addEventListener("click", () => bToast("Расчёт материалов — в разработке"));
   const back = document.getElementById("back");
   if (back) back.addEventListener("click", () => { bSave(); location.href="promo.html"; });
   bMain();
@@ -1828,7 +1826,7 @@ function bUpdate() {
   if (tv) tv.textContent = `${fmt(sum.terA / T_DEPTH)} м · ${fmt(sum.terA)} м²`;
   document.getElementById("b-specs").innerHTML = sum.rows.map(([k, v]) => `<div><span>${esc(k)}</span><b>${esc(v).replace(/; /g,"<br>")}</b></div>`).join("");
   document.getElementById('terrace-support-note')?.remove();
-  if(c.terrace!=='none'){const note=document.createElement('p');note.id='terrace-support-note';note.className='sl-note';const valid=terraceSupports(c).valid;note.textContent=valid?'Квадраты на плане — стойки террасы. Они перестраиваются за окнами и дверями: отступ от проёма 10 см, шаг до 2 м.':'Для этих проёмов невозможно выдержать шаг стоек до 2 м. Измените расположение или ширину проёмов.';if(!valid)note.style.color='#a43f24';document.getElementById('b-tx').append(note);}
+  if(c.terrace!=='none' && bView!=='plan'){const note=document.createElement('p');note.id='terrace-support-note';note.className='sl-note';const valid=terraceSupports(c).valid;note.textContent=valid?'Только внешние стойки: две крайние и две у входа. Крайние сохраняются всегда. Совпавшие объединены, промежуточные напротив окна убраны. Ограждение из горизонтальной доски 100 мм. В пролётах больше 2 м добавлены короткие стойки до высоты перил. Вход свободен.':'План сохранён без изменений, проходы не перекрыты. Для соблюдения шага стоек до 2 м нужно индивидуальное решение опор.';if(!valid)note.style.color='#a43f24';document.getElementById('b-tx').append(note);}
   if (bView === "plan") peOpen(true);
 }
 function bToast(msg) {
@@ -1862,12 +1860,22 @@ async function bImage() {
     const [fa, fb, en, pl] = await Promise.all([svgToImg(facadeSVG(c)), svgToImg(facadeSVG(c, "back")), svgToImg(endsSVG(c)), svgToImg(planSVG(c))]);
     const Wd = 1080, pad = 48, picH = Math.round(Wd * 210 / 360);
     const lines = sum.rows;
-    const H = pad + 70 + (picH + 24) * 4 + 30 + lines.length * 46 + 14 * 40 + 90;
+    const H = pad + 70 + (picH + 24) * 4 + 30 + lines.length * 46 + 14 * 40 + 450;
     const cv = document.createElement("canvas"); cv.width = Wd; cv.height = H;
     const g = cv.getContext("2d");
     g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, Wd, H);
     g.fillStyle = "#1D2125"; g.font = "600 44px Arial, sans-serif"; g.fillText("Мой модульный дом", pad, pad + 40);
-    let y = pad + 70;
+    const contacts=STUDIO_DATA.contacts;
+    const urls=['tel:'+contacts.phone,'https://zagorodnaya-studiya.ru',contacts.write||'https://vk.me/zagorodnaya_studia',(contacts.telegram||contacts.channel).split('?')[0],contacts.avito];
+    const labels=[contacts.phone,'zagorodnaya-studiya.ru','ВКонтакте','Telegram','Авито'],contactAreas=[];
+    const drawContacts=(baseline)=>{
+      const gap=24;g.font='28px Arial, sans-serif';
+      const total=labels.reduce((sum,label)=>sum+g.measureText(label).width,0)+gap*(labels.length-1);
+      const font=Math.min(28,28*(Wd-2*pad)/total);g.font=font+'px Arial, sans-serif';
+      let x=pad;labels.forEach((label,i)=>{const width=g.measureText(label).width;g.fillStyle='#176694';g.fillText(label,x,baseline);g.fillRect(x,baseline+4,width,1);contactAreas.push({url:urls[i],x,width,baseline,font});x+=width+gap;});
+    };
+    drawContacts(pad+80);
+    let y = pad + 110;
     for (const im of [fa, fb, en]) { g.drawImage(im, 0, y, Wd, picH); y += picH + 24; }
     g.drawImage(pl, 0, y, Wd, picH); y += picH + 46;
     const vx = 380, maxW = Wd - vx - pad;
@@ -1885,11 +1893,27 @@ async function bImage() {
     }
     g.fillStyle = "#8A9095"; g.font = "26px Arial, sans-serif";
     g.fillText("Изготовление от 2 до 5 недель «под ключ», установка — 1–2 дня", pad, y + 30);
-    const outCv = document.createElement("canvas"); outCv.width = Wd; outCv.height = Math.min(H, Math.round(y + 70));
+    y += 88;
+    g.strokeStyle = "#D8DDDA"; g.beginPath(); g.moveTo(pad,y-26); g.lineTo(Wd-pad,y-26); g.stroke();
+    g.fillStyle = "#1D2125"; g.font = "600 34px Arial, sans-serif";
+    g.fillText("Загородная студия",pad,y+16);
+    drawContacts(y+62);
+    y+=92;
+    const outCv = document.createElement("canvas"); outCv.width = Wd; outCv.height = Math.min(H, Math.round(y + 40));
     outCv.getContext("2d").drawImage(cv, 0, 0);
-    const url = outCv.toDataURL("image/png");
-    openViewerUrl(url, inTG ? "Нажмите на картинку и удерживайте, чтобы сохранить, или сделайте скриншот" : "Картинка скачана. Её можно сохранить и отсюда");
-    if (!inTG) { const a = document.createElement("a"); a.href = url; a.download = "moy-dom.png"; document.body.appendChild(a); a.click(); a.remove(); }
+    const pdf=await PDFLib.PDFDocument.create();
+    pdf.setTitle('Проект дома - Загородная студия');pdf.setAuthor('Загородная студия');
+    const image=await pdf.embedPng(outCv.toDataURL('image/png'));
+    const scale=595.28/Wd,page=pdf.addPage([595.28,outCv.height*scale]);
+    page.drawImage(image,{x:0,y:0,width:595.28,height:outCv.height*scale});
+    const annotations=contactAreas.map(({url,x,width,baseline,font})=>{
+      return pdf.context.register(pdf.context.obj({Type:'Annot',Subtype:'Link',Rect:[x*scale,(outCv.height-baseline-8)*scale,(x+width)*scale,(outCv.height-baseline+font)*scale],Border:[0,0,0],A:{Type:'Action',S:'URI',URI:PDFLib.PDFString.of(url)}}));
+    });
+    page.node.set(PDFLib.PDFName.of('Annots'),pdf.context.obj(annotations));
+    const bytes=await pdf.save(),url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
+    const a=document.createElement('a');a.href=url;a.download='zagorodnaya-studiya-proekt.pdf';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);bToast('Проект PDF скачан. Контакты сверху и снизу файла кликабельны.');
+
   } catch (e) {
     bToast("Не получилось сделать картинку");
   }
@@ -1909,7 +1933,7 @@ function peOpen(inline = false) {
   ov.className = "pe"; ov.id = "pe";
   ov.innerHTML = `<div class="pe-top"><button type="button" class="pe-reset" id="pe-reset">Сбросить</button><b>План вашего дома</b><details class="plan-help"><summary aria-label="Как редактировать план" title="Как редактировать план">ⓘ</summary><div class="plan-help-content"><strong>Как изменить план</strong><p>Тяните оранжевые ручки — меняйте стены и длину террасы.</p><p>Окна и двери можно перетаскивать. Окно переходит через угол на другую внешнюю стену той же комнаты.</p><p>Левой кнопкой перетаскивайте окно или дверь. Правой кнопкой откройте размеры и настройки. Нажмите на пустую внешнюю стену — добавится окно.</p><p>Пунктир — стык модулей, его не двигаем. «Сбросить» возвращает исходную планировку.</p></div></details><button type="button" class="pe-done" id="pe-done">Готово</button></div>
     <div class="pe-canvas" id="pe-canvas"></div><div class="pe-panel" id="pe-panel"></div>
-    <div class="pe-foot"><button type="button" class="ghost pe-mat" id="pe-mat">🧮 Рассчитать материалы</button></div>`;
+    `;
   if (inline) {
     ov.classList.add("pe-inline");
     document.getElementById("b-canvas").after(ov);
@@ -1921,7 +1945,6 @@ function peOpen(inline = false) {
   // в Telegram свайп вниз сворачивает приложение — на время правки плана отключаем
   if (inTG) { try { tg.BackButton.show(); if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {} }
   document.getElementById("pe-done").addEventListener("click", () => peClose());
-  document.getElementById("pe-mat").addEventListener("click", () => { pe.sel = "mat"; peRender(); });
   document.getElementById("pe-reset").addEventListener("click", () => {
     const { key } = variantOf(bcfg);
     delete bcfg.pv[key]; delete bcfg.dpos[key]; delete bcfg.dw[key]; delete bcfg.ds?.[key]; delete bcfg.win[key]; delete bcfg.spos[key]; delete bcfg.tsp[key];
@@ -2579,6 +2602,7 @@ function route() {
 window.addEventListener("hashchange", route);
 route();
 if(new URLSearchParams(location.search).get("thumbnail")==="1"){
+ document.querySelector(".studio-builder-nav")?.remove();
   function renderThumbnail(){
     document.body.innerHTML=facadeSVG(bcfg);
     if(new URLSearchParams(location.search).get("scene")==="evening"){
