@@ -25,6 +25,24 @@
           (r.localName === 'line' && +r.getAttribute('y1') === 180 && +r.getAttribute('x2') === 360)) r.remove();
     });
     var ns = 'http://www.w3.org/2000/svg';
+    // Interior light and the Christmas tree stay behind the terrace foreground.
+    var mask = document.createElementNS(ns, 'mask');
+    mask.id = 'studio-interior-visibility';
+    mask.setAttribute('maskUnits', 'userSpaceOnUse');
+    mask.setAttribute('maskContentUnits', 'userSpaceOnUse');
+    mask.setAttribute('x', '-100'); mask.setAttribute('y', '-100');
+    mask.setAttribute('width', '600'); mask.setAttribute('height', '500');
+    var visible = document.createElementNS(ns, 'rect');
+    visible.setAttribute('x', '-100'); visible.setAttribute('y', '-100');
+    visible.setAttribute('width', '600'); visible.setAttribute('height', '500');
+    visible.setAttribute('fill', 'white'); mask.appendChild(visible);
+    svg.querySelectorAll('.railing-horizontal-board,.railing-short-post,.terrace-front-post').forEach(function (source) {
+      var occluder = source.cloneNode(false);
+      occluder.removeAttribute('class'); occluder.setAttribute('fill', 'black');
+      mask.appendChild(occluder);
+    });
+    svg.querySelector('defs').appendChild(mask);
+
     var lights = document.createElementNS(ns, 'svg');
     lights.setAttribute('class', 'eve__lights');
     lights.setAttribute('viewBox', box);
@@ -51,7 +69,10 @@
         // Retain visible glazing and mullions instead of a flat bright panel.
         glow.style.opacity = r === rightPane ? 'var(--bedroom-light, 0)' : 'var(--kitchen-light, 0)';
         glow.style.filter = 'drop-shadow(0 0 2px #DFA86B)';
-        place(glow, r);
+        var interior = document.createElementNS(ns, 'g');
+        interior.setAttribute('mask', 'url(#studio-interior-visibility)');
+        interior.appendChild(glow);
+        place(interior, r);
       }
       if (event.data.stove && fill.toUpperCase() === '#1E2124') {
         var smoke = document.createElementNS(ns, 'g');
