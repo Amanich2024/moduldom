@@ -4,6 +4,8 @@ let busy=false;
 const W=1240,H=1754,pad=52;
 async function downloadHouse(h){
  if(busy||!h)return;busy=true;
+ const started=performance.now(),analytics=window.STUDIO_ANALYTICS,details={house:h.id||'dom',house_name:h.title,document_type:'built_house'};
+ analytics?.goal('pdf_start',details);
  const buttons=[...document.querySelectorAll('[data-house-pdf]')];buttons.forEach(b=>{b.disabled=true;b.textContent='Готовлю PDF…';});
  try{
   const pdf=await PDFLib.PDFDocument.create(),contacts=STUDIO_DATA.contacts;
@@ -22,8 +24,8 @@ async function downloadHouse(h){
    const photo=h.photos[i],im=await new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error('Не удалось загрузить фото '+(i+1)));image.src='img/'+photo[0]+'.webp';});
    newPage();wrap(h.title,pad,154,W-pad*2,34,44);const maxW=W-pad*2,maxH=1280,scale=Math.min(maxW/im.naturalWidth,maxH/im.naturalHeight),w=im.naturalWidth*scale,hh=im.naturalHeight*scale;g.drawImage(im,(W-w)/2,210,w,hh);wrap((photo[2]?'План. ':'')+(i+1)+' / '+h.photos.length+'. '+photo[1],pad,1540,W-pad*2,25,34);await finish();
   }
-  const url=URL.createObjectURL(new Blob([await pdf.save()],{type:'application/pdf'})),a=document.createElement('a');a.href=url;a.download='zagorodnaya-studiya-'+(h.id||'dom')+'.pdf';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
- }catch(e){alert('Не удалось скачать PDF. '+e.message);}finally{busy=false;buttons.forEach(b=>{b.disabled=false;b.textContent='Скачать проект (PDF)';});}
+  const bytes=await pdf.save(),url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'})),a=document.createElement('a');a.href=url;a.download='zagorodnaya-studiya-'+(h.id||'dom')+'.pdf';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);analytics?.goal('pdf_download',{...details,bytes:bytes.length,elapsed_ms:Math.round(performance.now()-started)});
+ }catch(e){analytics?.goal('pdf_error',{...details,reason:'generation'});alert('Не удалось скачать PDF. '+e.message);}finally{busy=false;buttons.forEach(b=>{b.disabled=false;b.textContent='Скачать проект (PDF)';});}
 }
 window.STUDIO_PROJECT_PDF={downloadHouse};
 })();

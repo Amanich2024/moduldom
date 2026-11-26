@@ -24,6 +24,8 @@ jobs:
         run: python scripts/test_admin_build.py
       - name: Verify admin client safety and publication flow
         run: node scripts/test_admin_client.cjs
+      - name: Verify analytics accuracy and privacy
+        run: node scripts/test-analytics.cjs
       - name: Prepare public files
         run: |
           mkdir -p /tmp/studio-public

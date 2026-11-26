@@ -25,7 +25,7 @@
 <script>
 try { if (/tgWebApp/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
 </script>
-<script src="analytics.js?v=1"></script>
+<script src="analytics.js?v=20261126-2"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -629,7 +629,7 @@ let bcfg = (() => {
 })();
 function bSave(fromCloud) {
   if(!fromCloud && window.STUDIO_ANALYTICS) window.STUDIO_ANALYTICS.changed();
-  try { localStorage.setItem(B_KEY, JSON.stringify(bcfg)); if (!fromCloud) localStorage.setItem(B_KEY + "-t", String(Date.now())); } catch (e) {}
+  try { localStorage.setItem(B_KEY, JSON.stringify(bcfg)); if (!fromCloud) localStorage.setItem(B_KEY + "-t", String(Date.now())); } catch (e) {window.STUDIO_ANALYTICS?.error("project_save");}
   if (!fromCloud) cloudSave();
 }
 /* Облако Telegram: план дома хранится за человеком и открывается на всех его устройствах. В обычном браузере — только в этом браузере */
@@ -1855,7 +1855,8 @@ function svgToImg(svg) {
   });
 }
 async function bImage() {
-  const c = bcfg, sum = bSummary(c);
+  const c = bcfg, sum = bSummary(c), pdfStarted=performance.now();
+  window.STUDIO_ANALYTICS?.goal("pdf_start",{...window.STUDIO_ANALYTICS.project(),document_type:"custom_project"});
   try {
     const [fa, fb, en, pl] = await Promise.all([svgToImg(facadeSVG(c)), svgToImg(facadeSVG(c, "back")), svgToImg(endsSVG(c)), svgToImg(planSVG(c))]);
     const Wd = 1080, pad = 48, picH = Math.round(Wd * 210 / 360);
@@ -1912,10 +1913,12 @@ async function bImage() {
     page.node.set(PDFLib.PDFName.of('Annots'),pdf.context.obj(annotations));
     const bytes=await pdf.save(),url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
     const a=document.createElement('a');a.href=url;a.download='zagorodnaya-studiya-proekt.pdf';document.body.appendChild(a);a.click();a.remove();
+    window.STUDIO_ANALYTICS?.goal('pdf_download',{...window.STUDIO_ANALYTICS.project(),document_type:'custom_project',bytes:bytes.length,elapsed_ms:Math.round(performance.now()-pdfStarted)});
     setTimeout(()=>URL.revokeObjectURL(url),60000);bToast('Проект PDF скачан. Контакты сверху и снизу файла кликабельны.');
 
   } catch (e) {
-    bToast("Не получилось сделать картинку");
+    window.STUDIO_ANALYTICS?.goal("pdf_error",{document_type:"custom_project",reason:"generation"});
+    bToast("Не получилось сформировать PDF. Попробуйте ещё раз.");
   }
 }
 
@@ -2255,9 +2258,9 @@ function bShare() {
   const c = bcfg, s = sizeOf(c), link = bLink(c);
   const text = `Посмотри, какой дом я собрал: ${s.name}, ${layoutOf(c).name.toLowerCase()}`;
   const T = window.Telegram && window.Telegram.WebApp;
-  if (T && T.platform && T.platform !== "unknown") { tgLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`); return; }
-  if (navigator.share) { navigator.share({ title: "Мой модульный дом", text, url: link }).catch(() => {}); return; }
-  try { navigator.clipboard.writeText(link).then(() => bToast("Ссылка скопирована")); } catch (e) { bToast(link); }
+  if (T && T.platform && T.platform !== "unknown") { tgLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`); window.STUDIO_ANALYTICS?.goal("builder_share",{outcome:"telegram_share_opened"}); return; }
+  if (navigator.share) { navigator.share({ title: "Мой модульный дом", text, url: link }).then(()=>window.STUDIO_ANALYTICS?.goal("builder_share",{outcome:"shared"})).catch(() => {}); return; }
+  try { navigator.clipboard.writeText(link).then(() => {bToast("Ссылка скопирована");window.STUDIO_ANALYTICS?.goal("builder_share",{outcome:"link_copied"});}).catch(()=>bToast(link)); } catch (e) { bToast(link); }
 }
 /* Открыли по ссылке «Поделиться» — загрузить этот дом и сразу открыть конструктор */
 (() => {

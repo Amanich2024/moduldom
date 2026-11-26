@@ -216,7 +216,7 @@ body.intg .back button { display:none; }
 @media(max-width:480px){.top{gap:8px;padding-left:10px;padding-right:10px}.top .logo{width:36px;height:36px}.top .acts{gap:5px}.top .call{width:32px;height:32px}.top .brand{font-size:17px}.top .sub{font-size:12px}}
 </style>
 <link rel="stylesheet" href="linen.css?v=1">
-<script src="../analytics.js?v=1"></script>
+<script src="../analytics.js?v=20261126-2"></script>
 <meta name="robots" content="noindex"><style>@media (min-width: 900px) {
   .app { max-width: 1320px; padding-inline: clamp(24px,4vw,72px); }
   #v-list .list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; padding-top:24px; }
@@ -514,7 +514,7 @@ function renderHouse(id) {
   el.innerHTML = `
     <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${h.name}</span></div>
     <div class="gal">
-      <div class="track" id="track">${slides.map(([c, s, label]) => `<div class="slide ${c}"><img src="${s}" alt="${label}"></div>`).join("")}</div>
+      <div class="track" id="track">${slides.map(([c, s, label]) => `<div data-analytics-photo="${slides.findIndex(x=>x[0]===c)+1}" data-analytics-plan="${c==='plan'||c==='furn'}" class="slide ${c}"><img src="${s}" alt="${label}"></div>`).join("")}</div>
       <span class="zoomhint">нажмите, чтобы увеличить</span>
       <div class="gallery-views" role="group" aria-label="Изображения проекта">${slides.map(([, , label], i) => `<button type="button" data-gallery-slide="${i}" aria-pressed="${i === 0}">${label}</button>`).join("")}</div>
     </div>
@@ -679,7 +679,7 @@ function renderBuilt(id) {
   el.innerHTML = `
     <div class="back"><button id="h-back" aria-label="Назад">‹</button><span class="t">${b.name}</span></div>
     <div class="gal bgal" data-built-id="${b.id}">
-      <div class="track" id="track">${photos.map(([src], i) => `<div class="slide ${i < b.photos.length ? "render" : "plan"}"><img src="${src}" alt="" decoding="async"></div>`).join("")}</div>
+      <div class="track" id="track">${photos.map(([src], i) => `<div data-analytics-photo="${i+1}" data-analytics-plan="${i>=b.photos.length}" class="slide ${i < b.photos.length ? "render" : "plan"}"><img src="${src}" alt="" decoding="async"></div>`).join("")}</div>
       <span class="zoomhint">нажмите, чтобы увеличить</span>
       <div class="thumbs" id="thumbs">${photos.map(([src], i) => `<button class="thumb" type="button" data-i="${i}" aria-current="${i === 0}"><img src="${src}" alt="" decoding="async"></button>`).join("")}</div>
       <p class="bcap" id="bcap"></p>
@@ -845,7 +845,7 @@ renderChips(); renderList(); route();
 
 // ---------- Яндекс.Метрика: цели и виртуальные просмотры ----------
 const YM_ID = window.STUDIO_METRIKA_ID || 114125638;
-const ymGoal = (name, params) => { try { if (window.ym) ym(YM_ID, "reachGoal", name, params || {}); } catch (e) {} };
+const ymGoal = (name, params) => window.STUDIO_ANALYTICS?.goal(name, params);
 const ymHit = (path, title) => { try { if (window.ym) ym(YM_ID, "hit", path, { title: title || document.title }); } catch (e) {} };
 const YM_PLATFORM = (T && T.platform && T.platform !== "unknown") ? T.platform : "web";
 try { ym(YM_ID, "params", { platform: YM_PLATFORM, where: inTG ? "telegram" : "browser" }); } catch (e) {}
@@ -857,25 +857,20 @@ function trackRoute() {
     const id = h.slice(3);
     const item = H.find(x => x.id === id);
     ymHit(base + h, item ? item.name + " — Загородная студия" : document.title);
-    ymGoal("open_house", { house: id });
+    ymGoal("open_house", { house: id, name: item?.name || id });
   } else if (h.indexOf("#b/") === 0) {
     const id = h.slice(3);
     const item = B.find(x => x.id === id);
     ymHit(base + h, item ? item.name + " — Загородная студия" : document.title);
-    ymGoal("open_built", { built: id });
+    ymGoal("open_built", { built: id, name: item?.name || id });
   } else {
     ymHit(base + h, document.title);
   }
 }
 addEventListener("hashchange", trackRoute);
-addEventListener("click", (e) => {
-  const t = e.target;
-  if (!t || !t.closest) return;
-  if (t.closest('a[href^="tel:"]')) { ymGoal("call_click"); return; }
-  if (t.closest('[data-act="tg"], #tgbtn')) ymGoal("write_click");
-}, true);
+trackRoute();
 const _lbOpen = lbOpen;
-lbOpen = function (list, i) { ymGoal("photo_zoom"); return _lbOpen(list, i); };
+lbOpen = function (list, i) { ymGoal("photo_zoom",{photo:i+1}); return _lbOpen(list, i); };
 </script>
 </body>
 </html>

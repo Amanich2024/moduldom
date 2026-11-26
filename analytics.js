@@ -1,33 +1,46 @@
-/* Shared analytics for the studio website. No names, contacts or custom free text. */
+/* Shared first-party event schema. Never send user text, Telegram IDs or contact details. */
 (function(){
-  if(new URLSearchParams(location.search).get('thumbnail')==='1')return;
-  const isCatalog=/\/katalog\//.test(location.pathname);
-  const ownDomain=/^(www\.)?zagorodnaya-studiya\.ru$/.test(location.hostname);
-  const id=ownDomain?114379195:(isCatalog?114125638:113657787);
-  window.STUDIO_METRIKA_ID=id;
-  window.ym=window.ym||function(){(window.ym.a=window.ym.a||[]).push(arguments)};window.ym.l=Date.now();
-  const script=document.createElement('script');script.async=true;script.src='https://mc.yandex.ru/metrika/tag.js?id='+id;document.head.appendChild(script);
-  ym(id,'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true,trackHash:!isCatalog});
-  let lastActivity=Date.now(),lastTick=Date.now(),activeSeconds=0,entered=false,changeTimer=null;
-  const thresholds=new Set();
-  function inBuilder(){return location.hash.startsWith('#/build') && !isCatalog;}
-  function project(){try{const p=JSON.parse(localStorage.getItem('modul-build-v1')||'null');if(!p)return {};return {size:p.size,layout:p.layout,terrace:p.terrace,wall:p.wall,accent:p.accent,insulation:p.ins150?'150':'standard',active_seconds:Math.round(activeSeconds)};}catch(e){return {};}}
-  function goal(name,params){try{ym(id,'reachGoal',name,params||{});if(name.startsWith('builder_')&&params&&params.size)ym(id,'params',{builder_project:params});}catch(e){}}
-  function tick(){const now=Date.now();if(inBuilder()&&document.visibilityState==='visible'&&now-lastActivity<60000){activeSeconds+=Math.min(5,(now-lastTick)/1000);for(const n of [30,60,180,300])if(activeSeconds>=n&&!thresholds.has(n)){thresholds.add(n);goal('builder_active_'+n,project());}}lastTick=now;}
-  function enter(){if(inBuilder()&&!entered){entered=true;activeSeconds=0;thresholds.clear();lastTick=lastActivity=Date.now();goal('builder_open',project());}else if(!inBuilder()&&entered){tick();goal('builder_time',project());entered=false;}}
-  window.STUDIO_ANALYTICS={goal,project,changed(){if(!inBuilder())return;clearTimeout(changeTimer);changeTimer=setTimeout(()=>goal('builder_change',project()),1200);}};
-  for(const event of ['pointerdown','pointermove','keydown','scroll','touchstart'])document.addEventListener(event,()=>{lastActivity=Date.now();},{passive:true});
-  addEventListener('hashchange',enter);addEventListener('pagehide',()=>{tick();if(entered)goal('builder_time',project());});
-  document.addEventListener('visibilitychange',()=>{tick();if(document.visibilityState==='hidden'&&entered)goal('builder_time',project());});
-  document.addEventListener('DOMContentLoaded',()=>{enter();document.addEventListener('click',e=>{const t=e.target.closest('button,a');if(!t)return;
-    if(t.matches('[data-build]'))goal('builder_click');
-    if(!isCatalog&&t.matches('a[href^="tel:"]'))goal('call_click');
-    if(!isCatalog&&t.matches('a[href*="t.me"],a[href*="vk.me"]'))goal('write_click');
-    if(t.id==='buy'&&inBuilder())goal('builder_summary',project());
-    if(t.id==='b-lead')goal('builder_request',project());
-    if(t.id==='b-share')goal('builder_share',project());
-    if(t.id==='b-img')goal('builder_image',project());
-    if(t.matches('[data-k]'))goal('builder_option',{option:t.dataset.k,value:t.dataset.v,...project()});
-  });});
-  setInterval(tick,5000);
+'use strict';
+const query=new URLSearchParams(location.search);
+if(query.get('thumbnail')==='1')return;
+const catalog=/\/katalog\//.test(location.pathname),live=/^(www\.)?zagorodnaya-studiya\.ru$/.test(location.hostname);
+const debug=query.get('analytics_debug')==='1',qa=debug||query.has('_ym_debug');
+const id=live?114379195:(catalog?114125638:113657787),enabled=live||/\.github\.io$/.test(location.hostname);
+window.STUDIO_METRIKA_ID=id;
+window.ym=window.ym||function(){(window.ym.a=window.ym.a||[]).push(arguments)};window.ym.l=Date.now();
+if(enabled){const s=document.createElement('script');s.async=true;s.src='https://mc.yandex.ru/metrika/tag.js?id='+id;document.head.appendChild(s);ym(id,'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true,trackHash:!catalog});}
+const version='20261126-analytics2',page=catalog?'mobile_catalog':/builder-desktop/.test(location.pathname)?'constructor':'desktop_story';
+let active=0,lastTick=Date.now(),lastActivity=Date.now(),entered=false,dirtyTimer,house=null,lastProject='',changeCount=0;
+const thresholds=new Set(),seenNodes=new WeakSet(),events=[],errorKeys=new Set();
+let journey={};try{const saved=JSON.parse(sessionStorage.getItem('studio-journey')||'null');if(saved&&Date.now()-saved.at<1800000)journey=saved.flags||{};}catch(e){}
+function remember(key){journey[key]=true;try{sessionStorage.setItem('studio-journey',JSON.stringify({at:Date.now(),flags:journey}));}catch(e){}}
+function inBuilder(){return !catalog&&location.hash.startsWith('#/build');}
+function project(){try{const p=JSON.parse(localStorage.getItem('modul-build-v1')||'null');if(!p)return {};const value={};for(const k of ['size','layout','terrace','wall','accent','inner','tSide'])if(typeof p[k]==='string')value[k]=p[k];for(const k of ['stove','ins150','gutter','aerator','flip'])value[k]=!!p[k];const dimensions=String(p.size||'').split('x').map(Number),length=dimensions[1]||0,width=dimensions[0]||0;value.terrace_length=p.terrace==='none'?0:p.terrace==='end'?width:Math.max(2,Math.min(length,Number(p.tLen)||length));value.terrace_area=Math.round(value.terrace_length*2.5*10)/10;for(const [key,label] of [['pv','walls'],['dpos','doors'],['win','windows'],['dw','door_widths']])value[label+'_edited']=!!p[key]&&Object.keys(p[key]).length>0;value.active_seconds=Math.round(active);value.change_count=changeCount;return value;}catch(e){return {};}}
+function context(){return {site_version:version,site_part:page,viewport:innerWidth<600?'phone':innerWidth<1000?'tablet':'wide',environment:window.Telegram?.WebApp?.initData?'telegram':'browser',traffic_type:qa?'qa':'visitor',...(house?{house:house.id,house_name:house.name,house_type:house.type}:{}),...(inBuilder()?project():{})};}
+const allowed=new Set(('size layout terrace wall accent inner tSide stove ins150 gutter aerator flip terrace_length terrace_area walls_edited doors_edited windows_edited door_widths_edited active_seconds change_count house house_name house_type built name photo photos_viewed plan_viewed channel placement option value view outcome reason document_type bytes elapsed_ms section filter active_delta_seconds resumed shared_link after_pdf after_builder after_summary').split(' '));
+function send(name,data){if(!/^[a-z][a-z0-9_]{0,63}$/.test(name))return;const clean={...context()};for(const [k,v] of Object.entries(data||{}))if(allowed.has(k)&&['string','number','boolean'].includes(typeof v))clean[k]=typeof v==='string'?v.slice(0,120):v;if(enabled)ym(id,'reachGoal',name,clean);if(debug){events.push({event:name,...clean});if(events.length>100)events.shift();let out=document.getElementById('studio-analytics-debug');if(!out&&document.body){out=document.createElement('output');out.id='studio-analytics-debug';out.hidden=true;document.body.appendChild(out);}if(out)out.textContent=JSON.stringify(events);}}
+function closeHouse(){if(!house)return;tick();send('house_engagement',{active_seconds:Math.round(house.seconds),photos_viewed:house.photos.size,plan_viewed:house.plan});house=null;}
+function goal(name,data={}){if(name==='open_built'||name==='open_house'){const hid=data.built||data.house;if(!house||house.id!==hid){closeHouse();house={id:hid,name:data.name||'',type:name==='open_built'?'built':'catalog',seconds:0,photos:new Set(),plan:false,engaged:false};}else return;}if(name==='pdf_download')remember('pdf');if(name==='builder_summary')remember('summary');if(name==='builder_open')remember('builder');send(name,data);if(enabled&&inBuilder()&&['builder_change','builder_summary','builder_request','pdf_download'].includes(name))ym(id,'params',{builder_project:project()});}
+function tick(){const now=Date.now(),delta=Math.max(0,Math.min(5,(now-lastTick)/1000));lastTick=now;if(document.visibilityState!=='visible'||now-lastActivity>=60000)return;if(entered){active+=delta;for(const n of [30,60,180,300])if(active>=n&&!thresholds.has(n)){thresholds.add(n);goal('builder_active_'+n,project());}}if(house){house.seconds+=delta;if(house.seconds>=30&&!house.engaged){house.engaged=true;send('house_engaged',{active_seconds:Math.round(house.seconds)});}}}
+function flushTime(){tick();if(entered){const now=Math.round(active),delta=now-(flushTime.last||0);if(delta>0){goal('builder_time',{...project(),active_delta_seconds:delta});flushTime.last=now;}}}
+function enter(){if(inBuilder()&&!entered){entered=true;active=0;changeCount=0;flushTime.last=0;thresholds.clear();lastTick=lastActivity=Date.now();try{lastProject=localStorage.getItem('modul-build-v1')||'';}catch(e){}goal('builder_open',{...project(),resumed:!!lastProject,shared_link:query.has('d')||query.has('tgWebAppStartParam')});}else if(!inBuilder()&&entered){flushTime();entered=false;}if(catalog&&!/^#[bd]\//.test(location.hash))closeHouse();}
+function changed(){if(!inBuilder())return;clearTimeout(dirtyTimer);dirtyTimer=setTimeout(()=>{let current='';try{current=localStorage.getItem('modul-build-v1')||'';}catch(e){}if(current===lastProject)return;let previous={};try{previous=JSON.parse(lastProject||'{}');}catch(e){}let next={};try{next=JSON.parse(current||'{}');}catch(e){}lastProject=current;changeCount++;goal('builder_change',project());if(changeCount===1)goal('builder_started',project());for(const [key,type] of [['pv','wall'],['dpos','door'],['dw','door_width'],['win','window']])if(JSON.stringify(previous[key]||{})!==JSON.stringify(next[key]||{}))send('builder_plan_edit',{option:type,...project()});},1000);}
+function fail(reason,details={}){if(errorKeys.has(reason))return;errorKeys.add(reason);send('site_error',{reason,...details});}
+window.STUDIO_ANALYTICS={goal,project,changed,closeHouse,error:fail};
+for(const event of ['pointerdown','pointermove','keydown','scroll','touchstart'])document.addEventListener(event,()=>{lastActivity=Date.now();},{passive:true,capture:true});
+addEventListener('hashchange',enter);addEventListener('pagehide',()=>{flushTime();closeHouse();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushTime();lastTick=Date.now();});
+function placement(t){if(t.closest('.index,.studio-builder-nav,.brand,.acts'))return 'header';if(t.closest('#b-summary'))return 'builder_summary';if(t.closest('.house'))return 'house_card';if(t.closest('#v-house,#v-built'))return 'catalog_card';if(t.closest('.endcta,footer'))return 'footer';return 'page';}
+function contact(channel,t){const p={channel,placement:placement(t),after_pdf:!!journey.pdf,after_builder:!!journey.builder,after_summary:!!journey.summary};send('contact_click',p);if(channel==='phone')send('call_click',p);if(channel==='telegram_message'||channel==='vk_message')send('write_click',p);}
+function click(e){const t=e.target.closest?.('button,a,summary');if(!t)return;const href=t.getAttribute('href')||'';
+ if(t.matches('a[href^="tel:"]'))contact('phone',t);else if(/^https:\/\/vk\.me\//.test(href))contact('vk_message',t);else if(/^https:\/\/vk\.com\//.test(href))contact('vk_community',t);else if(/^https:\/\/t\.me\//.test(href))contact(/t\.me\/(?:\+|share\/)/.test(href)?'telegram_message':'telegram_channel',t);else if(/^https:\/\/(?:www\.)?avito\.ru\//.test(href))contact('avito',t);
+ if(t.matches('[data-build]')||/builder-desktop-draft/.test(href))send('builder_click',{placement:placement(t)});
+ if(t.id==='buy'&&inBuilder())goal('builder_summary',project());if(t.id==='b-lead'){goal('builder_request',{...project(),channel:'manager_chat',after_pdf:!!journey.pdf});send('contact_click',{...project(),channel:'manager_chat',placement:'builder_summary',after_pdf:!!journey.pdf,after_builder:true,after_summary:!!journey.summary});}
+ if(inBuilder()&&t.matches('[data-k]'))send('builder_option',{option:t.dataset.k,value:t.dataset.v});if(t.matches('[data-view]'))send('builder_view',{view:t.dataset.view});if(t.matches('.pbtn[data-k]'))send('catalog_equipment',{option:'equipment',value:t.dataset.k});if(t.matches('[data-f]'))send('catalog_filter',{filter:t.dataset.f});if(t.matches('.index__list a'))send('section_view',{section:href.split('#')[1]||'constructor'});
+}
+function scan(){if(!observer)return;document.querySelectorAll('[data-analytics-photo]').forEach(el=>{if(!seenNodes.has(el)){seenNodes.add(el);observer.observe(el);}});}
+const observer=typeof IntersectionObserver==='undefined'?null:new IntersectionObserver(entries=>{for(const item of entries){if(!item.isIntersecting||item.intersectionRatio<.35||!house)continue;const el=item.target;if(el.closest('[hidden]'))continue;const n=Number(el.dataset.analyticsPhoto);if(house.photos.has(n))continue;house.photos.add(n);send('photo_view',{photo:n});if(el.dataset.analyticsPlan==='true'){house.plan=true;send('plan_view',{photo:n});}}},{threshold:.35});
+function ready(){enter();document.addEventListener('click',click,true);document.addEventListener('change',e=>{if(inBuilder()&&e.target.matches?.('input[data-x]'))send('builder_option',{option:e.target.dataset.x,value:e.target.checked});},true);scan();let scheduled=false;new MutationObserver(()=>{if(!scheduled){scheduled=true;requestAnimationFrame(()=>{scheduled=false;scan();});}}).observe(document.body,{subtree:true,childList:true});if(enabled)ym(id,'params',{site_part:page,site_version:version,traffic_type:qa?'qa':'visitor'});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready);else ready();
+addEventListener('error',e=>{if(e.target?.tagName==='IMG')fail('image_load');else if(e.message)fail('javascript');},true);addEventListener('unhandledrejection',()=>fail('unhandled_promise'));
+setInterval(tick,5000);
 })();

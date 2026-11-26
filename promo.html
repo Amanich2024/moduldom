@@ -7,7 +7,7 @@
 <meta name="description" content="Модульные дома и бани с собственного производства в Петербурге: дома за последний год с фото, подписями и планами, отзывы и вечер в готовом доме.">
 <meta name="theme-color" content="#EDEFEC">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%231D2125'/><path d='M7 17 16 9l9 8v8H7z' fill='%23D88B4C'/></svg>">
-<script src="analytics.js?v=1"></script>
+<script src="analytics.js?v=20261126-2"></script>
 <script src="telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -781,7 +781,7 @@ html.has-house .index{display:flex!important;visibility:visible!important;opacit
  .hero__note{display:none}
 }.header-chats{display:flex;gap:8px;margin-left:18px;margin-right:auto}.header-chats a{display:grid;place-items:center;width:36px;height:36px;border:1px solid currentColor;border-radius:50%;color:inherit;transition:background .2s}.header-chats a:hover{background:#ce9c5840}.header-chats svg{width:19px;height:19px;fill:currentColor}@media(max-width:1050px){.header-chats{gap:5px;margin-left:10px}.header-chats a{width:30px;height:30px}.index__list{gap:8px}}</style>
 <script src="data/catalog.js?v=2656b7d79974"></script>
-<script src="vendor/pdf-lib-1.17.1.min.js" defer></script><script src="project-pdf.js?v=1" defer></script></head>
+<script src="vendor/pdf-lib-1.17.1.min.js" defer></script><script src="project-pdf.js?v=2" defer></script></head>
 <body>
 <div class="sc-grain" aria-hidden="true"></div>
 
@@ -2338,7 +2338,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
     var ph = '';
     h.photos.forEach(function (p, i) {
       var s = SIZES[p[0]] || [1000, 1333];
-      ph += '<figure class="shot' + (p[2] ? ' shot--plan' : '') + '"><img src="img/' + p[0] + '.webp" width="' + s[0] + '" height="' + s[1] + '" alt="' + esc(p[1]) + '"' + (i > 1 ? ' loading="lazy"' : '') + ' decoding="async">' +
+      ph += '<figure data-analytics-photo="' + (i+1) + '" data-analytics-plan="' + !!p[2] + '" class="shot' + (p[2] ? ' shot--plan' : '') + '"><img src="img/' + p[0] + '.webp" width="' + s[0] + '" height="' + s[1] + '" alt="' + esc(p[1]) + '"' + (i > 1 ? ' loading="lazy"' : '') + ' decoding="async">' +
         '<figcaption><span class="shot__n">' + (i + 1) + ' / ' + h.photos.length + '</span>' + esc(p[1]) + '</figcaption></figure>';
     });
     elPhotos.innerHTML = ph;
@@ -2357,6 +2357,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   function show(id) {
     if (!render(id)) return;
     current = id;
+    window.STUDIO_ANALYTICS?.goal("open_built",{built:id,name:HOUSES[id].title});
     dlg.hidden = false; dlg.scrollTop = 0; dlg.querySelector('.house__side').scrollTop=0; root.classList.add('has-house');
     try { dlg.focus({ preventScroll: true }); } catch (e) {}
     if (inTG) {
@@ -2367,6 +2368,7 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   }
   function hide() {
     if (current === null) return;
+    window.STUDIO_ANALYTICS?.closeHouse();
     current = null; dlg.hidden = true; root.classList.remove('has-house');
     elPhotos.innerHTML = '';
     if (opener) { try { opener.focus({ preventScroll: true }); } catch (e) {} opener = null; }
@@ -2374,7 +2376,6 @@ var SIZES = {"h1-01": [960, 1280], "h1-02": [960, 1280], "h1-03": [1000, 1334], 
   }
   function openHouse(id, from) {
     if (!HOUSES[id]) return;
-    if(window.STUDIO_ANALYTICS)window.STUDIO_ANALYTICS.goal("open_built",{built:id,name:HOUSES[id].title});
     opener = from || null;
     if (location.hash !== '#dom/' + id) { try { history.pushState({ dom: id }, '', '#dom/' + id); pushed = true; } catch (e) { pushed = false; } }
     show(id);
