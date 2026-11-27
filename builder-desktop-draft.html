@@ -906,12 +906,12 @@ function terraceRailIntervals(positions,entrance){
  const left=positions.filter(x=>x<entrance).at(-1),right=positions.find(x=>x>entrance);
  return [[a,left],[right,b]].filter(([x,y])=>Number.isFinite(x)&&Number.isFinite(y)&&y-x>.16);
 }
-function terraceRailingSVG(a,b,floorY,scale,color){
+function terraceRailingSVG(a,b,floorY,scale,color,boardA=a,boardB=b){
  if(b-a<.15*scale)return '';
  const top=floorY-.95*scale,span=(b-a)/scale,n=Math.max(1,Math.ceil(span/2-1e-8));
  let out='';
  for(let i=1;i<n;i++){const x=a+(b-a)*i/n;out+=rect(x-.05*scale,top,.10*scale,.95*scale,color,'class="railing-short-post"');}
- for(let i=0;i<5;i++)out+=rect(a,top+i*.18*scale,b-a,.10*scale,color,'class="railing-horizontal-board"');
+ for(let i=0;i<5;i++)out+=rect(boardA,top+i*.18*scale,boardB-boardA,.10*scale,color,'class="railing-horizontal-board"');
  return out;
 }
 function terraceSupports(c){
@@ -1038,7 +1038,7 @@ function facadeSVG(c, view = "front") {
   // цоколь
   p.push(rect(T(0), floorY, total * s, 0.2 * s, acc.c));
   // стойки и ограждение
-  const rail = (xa,xb) => p.push(terraceRailingSVG(xa,xb,floorY,s,railC));
+  const rail = (xa,xb,boardA=xa,boardB=xb) => p.push(terraceRailingSVG(xa,xb,floorY,s,railC,boardA,boardB));
   const post = (px, top = eaveY) => p.push(rect(px - 0.08 * s, top, 0.16 * s, floorY - top, acc.c, 'class="terrace-front-post"'));
   const stepsAt = (px, wide) => {
     const sw = wide ? 1.3 : 1.1;
@@ -1059,7 +1059,11 @@ function facadeSVG(c, view = "front") {
   if (tc) {
     // торцевая терраса сбоку: ограждение сплошное, лестница — на внешнем краю, напротив двери в торце (видна в профиль)
     for(const x of [...new Set(terraceSupports(c).posts.map(q=>q.x))])post(X(x));
-    rail(T(tStart + 0.2), T(tStart + tc - 0.2));
+    // Extend only the boards to the existing outer post and house corner.
+    // Keep the original support span so short uprights do not move.
+    const outerPostX=X(terraceSupports(c).posts[0].x);
+    const innerPostEdge=outerPostX+(tLeft?.08:-.08)*s,wallEdge=tLeft?xl:xr;
+    rail(T(tStart + 0.2), T(tStart + tc - 0.2),Math.min(innerPostEdge,wallEdge),Math.max(innerPostEdge,wallEdge));
     const edge = tLeft ? T(0) : T(total), dir = tLeft ? -1 : 1, d = 0.3 * s, h = pile / 3;
     const sx = (k) => edge + dir * k * d;
     p.push(`<polygon points="${[[sx(0), floorY + h], [sx(1), floorY + h], [sx(1), floorY + 2 * h], [sx(2), floorY + 2 * h], [sx(2), ground], [sx(0), ground]].map(([x, y]) => x.toFixed(1) + "," + y.toFixed(1)).join(" ")}" fill="#9C7A57"/>`);
@@ -1260,14 +1264,16 @@ function endsSVG(c) {
     }
     p.push(rect(xa, floorY, W * s, 0.2 * s, acc.c));
     const fwd = flip ? -1 : 1;   // в какую сторону на картинке фасад (y растёт)
-    const railE = (a,b) => p.push(terraceRailingSVG(a,b,floorY,s,acc.c));
+    const railE = (a,b,boardA=a,boardB=b) => p.push(terraceRailingSVG(a,b,floorY,s,acc.c,boardA,boardB));
     // терраса вдоль дома видна сбоку: настил на сваях, ограждение по боковой стороне, стойка под кровлей
     if (ta) {
       const tx0 = flip ? X(W) - ta * s : X(W), tx1 = tx0 + ta * s;
       for (const y of [W + 1.2, W + ta - 0.2]) p.push(rect(X(y) - 0.07 * s, floorY, 0.14 * s, pile, "#4A4F53"));
       p.push(rect(tx0, floorY, ta * s, 0.2 * s, acc.c));
       const px = flip ? tx0 + 0.1 * s : tx1 - 0.1 * s, pt = H(W + ta - 0.1);
-      railE(flip ? px + 0.08 * s : X(W) + 0.04 * s, flip ? X(W) - 0.04 * s : px - 0.08 * s);
+      const outerPostY=terraceSupports(c).posts[0].y;
+      const boardOuterEdge=X(outerPostY)+(flip?.08:-.08)*s,boardWallEdge=X(W);
+      railE(flip ? px + 0.08 * s : X(W) + 0.04 * s, flip ? X(W) - 0.04 * s : px - 0.08 * s,Math.min(boardOuterEdge,boardWallEdge),Math.max(boardOuterEdge,boardWallEdge));
       for(const yy of [...new Set(terraceSupports(c).posts.map(q=>q.y))]){const xx=X(yy),top=H(yy);p.push(rect(xx-.08*s,top,.16*s,floorY-top,acc.c));}
     }
     // ступени у входа на фасаде видны сбоку, в профиль: у террасы вдоль дома — от её края, у крыльца — от стены
